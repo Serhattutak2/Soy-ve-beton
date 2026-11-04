@@ -1,0 +1,22 @@
+{
+  "name": "soy-ve-beton",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Soy ve Beton — ameleden hanedana 3D inşaat, hayat ve aile simülasyonu",
+  "type": "module",
+  "scripts": {
+    "build": "node tools/build.mjs",
+    "build:artifact": "node tools/build.mjs --artifact dist/artifact.html",
+    "test": "vitest run",
+    "typecheck": "tsc --noEmit",
+    "sim": "node tools/sim.mjs"
+  },
+  "dependencies": { "three": "0.170.0" },
+  "devDependencies": {
+    "@types/three": "0.170.0",
+    "esbuild": "^0.25.0",
+    "playwright-core": "^1.48.2",
+    "typescript": "^5.6.0",
+    "vitest": "^3.0.0"
+  }
+}

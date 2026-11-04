@@ -1,0 +1,3 @@
+import {newWorld,advance,botTurn} from '../src/core/sim';import {year,age,pl} from '../src/core/util';
+const w=newWorld({seed:+(process.argv[2]||1000),scen:'koy'});const y0=year(w);let last='';
+while(year(w)-y0<70&&!w.over){botTurn(w);advance(w);if(w.m%24===0)console.log(year(w)-y0,'gen',w.gen,'age',age(w,pl(w)),'rank',w.rank,'st',w.firm?.stage,'rep',Math.round(w.firm?.rep||0),'crew',w.firm?.crew,'cert',w.firm?.cert,'cash',Math.round(w.cash),'debt',Math.round(w.debt),'pr',w.projects.map(p=>p.stage+(p.status[0])+(p.halt?'H':'')+Math.round(p.prog*100)).join(' '),'bank',w.stats.bankrupt,'hp',Math.round(w.health));}
