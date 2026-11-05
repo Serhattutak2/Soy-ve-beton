@@ -12,7 +12,7 @@ Ameleden hanedana 3D inşaat, hayat ve aile simülasyonu. Fikir ve oynanış: Se
 - Oyun durumu (`World`) düz JSON. Kartlar `{id,a}` olarak durur, metin ve seçenekler `core/events.ts`te.
 - Rastgelelik yalnızca `util.rnd(w)` ile. Çekirdek (`src/core`) arayüzü bilmez.
 - `confirm/alert` kullanılmaz. TestFlight'a yükleme yalnızca Serhat açıkça isterse.
-- Şehir, ekonomi ve depremler kurgusaldır.
+- Şehir ve mahalle adları gerçektir. Ekonomi, deprem tarihleri ve şiddetleri kurgusaldır, gerçek depremler oyuna konmaz. Para sabit değerlidir.
 
 ## Dosyalar
-`core/data.ts` 30 aşama, ev, araba, yatırım, senaryo tabloları · `core/sim.ts` aylık motor, eylemler, veraset, test botu · `core/events.ts` olay kartları ve hikâye yayları · `ui/city3d.ts` canlı 3D şehir · `ui/app.ts` arayüz.
+`core/data.ts` 30 aşama, 32 inşaat kalemi, branşlar, malzeme, şehirler · `core/project.ts` daire, piyasa, malzeme hesabı · `core/sim.ts` aylık motor, pazarlık, veraset, test botu · `core/events.ts` olay kartları ve hikâye yayları · `ui/city3d.ts` canlı 3D şehir · `ui/app.ts` arayüz.
