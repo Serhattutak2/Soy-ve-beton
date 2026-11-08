@@ -84,3 +84,26 @@ select{font:600 14px var(--body);background:var(--bet3);color:var(--ak);border:0
 
 .camb2{background:rgba(43,50,56,.92);white-space:nowrap;flex:none;font:700 13.5px var(--disp);text-transform:uppercase}
 .hud .date{font-size:17px;white-space:nowrap}
+/* Mini oyun */
+.mgov{position:fixed;inset:0;z-index:9;background:rgba(8,10,12,.82);display:flex;align-items:center;justify-content:center;padding:calc(env(safe-area-inset-top,0px) + 10px) max(10px,env(safe-area-inset-right,0px)) calc(env(safe-area-inset-bottom,0px) + 10px) max(10px,env(safe-area-inset-left,0px))}
+.mgbox{width:min(560px,100%);height:100%;max-height:820px;background:var(--bet2);display:flex;flex-direction:column;gap:8px;padding:12px;border-top:4px solid var(--sari)}
+.mghead{display:flex;justify-content:space-between;align-items:center;gap:10px}.mghead h2{font-size:24px}
+.mgh{font-size:13.5px;line-height:1.4}.mgc{flex:1;width:100%;min-height:0;touch-action:none;display:block;background:#1a1e22}
+.mgbtn{display:flex;gap:6px;flex-wrap:wrap}.mgbtn button{flex:1;padding:14px;font:700 17px var(--disp);text-transform:uppercase}
+/* İpucu ve uyarı */
+.tut{background:#ece6d7;color:#201c15;margin:0 10px 8px;padding:10px 12px;display:flex;flex-direction:column;gap:6px;border-left:5px solid var(--sari);box-shadow:0 6px 20px rgba(0,0,0,.35)}
+.tut b{font:700 14px var(--disp);text-transform:uppercase;letter-spacing:.06em;color:#6f6754}.tut p{font-size:14.5px;line-height:1.4}.tut button{align-self:flex-start}
+.warnb{background:#7a2a1a;color:#ffe6dc;font-size:13px;padding:6px max(14px,env(safe-area-inset-right,0px)) 6px max(14px,env(safe-area-inset-left,0px));cursor:pointer}
+.strip .y{margin-top:4px}
+/* Kayıt yuvaları, başarımlar */
+.slots{display:flex;flex-direction:column;gap:6px;max-width:520px}.slot{display:flex;justify-content:space-between;align-items:center;gap:10px;background:rgba(36,42,47,.94);padding:10px 12px}.slot>div:first-child{display:flex;flex-direction:column;min-width:0}.slot b{font:700 18px var(--disp);text-transform:uppercase}.slot span{font-size:13px;color:var(--kum)}
+.achg{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:5px;max-width:560px}.ach{background:var(--bet3);padding:7px 9px;display:flex;flex-direction:column;opacity:.5}.ach.on{opacity:1;background:rgba(242,185,15,.16);outline:1px solid rgba(242,185,15,.5)}.ach b{font:700 14px var(--disp);text-transform:uppercase}.ach span{font-size:12px;color:var(--kum)}
+input[type=range]{accent-color:var(--sari);width:100%}
+/* Proje çizimi */
+.card.dz{background:var(--bet2);color:var(--ak);max-height:92vh}.card.dz h2{color:var(--ak)}.card.dz .dt{color:var(--kum)}.m2{font-size:14px;color:var(--kum)}
+.dzrow{display:flex;justify-content:space-between;align-items:center;gap:10px;font-size:14.5px;flex-wrap:wrap}.dzrow .seg{flex:1;min-width:200px}.dzrow .btns{align-items:center}
+.dzlab{display:flex;justify-content:space-between;font-size:13px;color:var(--kum);gap:8px}.dzlab span:first-of-type{margin-left:auto}
+.sw{display:flex;gap:5px;flex-wrap:wrap}.swc{width:30px;height:30px;padding:0;border:2px solid transparent;border-radius:2px}.swc.on{border-color:var(--sari);transform:scale(1.08)}
+.dzg{display:grid;grid-template-columns:1fr auto;gap:3px 12px;background:var(--bet);padding:10px;font-size:14px}.dzg b{font:700 16px var(--disp);text-align:right;font-variant-numeric:tabular-nums}
+.card.dz .ops button{background:var(--bet3);color:var(--ak)}
+.fc{width:100%;height:auto;display:block}

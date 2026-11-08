@@ -126,3 +126,18 @@ export const DREAMS:Record<string,string>={insaat:'inşaatçı olmak',doktor:'do
 export const TRAITS:Record<string,string>={hirsli:'Hırslı',durust:'Dürüst',savurgan:'Savurgan',sakin:'Sakin',kurnaz:'Kurnaz'};
 // Pazarlık karakterleri
 export const OWNERS:Record<string,{n:string;open:string;}>={inat:{n:'inatçı',open:'"Dedemin toprağı burası. Ucuza gitmez."'},para:{n:'paraya sıkışmış',open:'"Çocuğun düğünü var, nakit lazım. Ama hakkımı da yedirmem."'},kavga:{n:'mirasçılarla kavgalı',open:'"Kardeşlerimi ikna etmem lazım. En iyi katları görmek isterler."'},yasli:{n:'yaşlı ve temkinli',open:'"Oğlum, ben bu yaştan sonra kandırılmak istemem."'}};
+// Ekipman: satın al ya da kirala
+export const EQUIP:Record<string,{n:string;d:string;buy:number;rent:number;maint:number;st:number}>={
+ vinc:{n:'Kule vinç',d:'5 kat ve üstünde şart. Yoksa her şantiye için aylık kira ödenir. Kendi vincin kaba işi %15 hızlandırır.',buy:9e4,rent:2200,maint:500,st:3},
+ pompa:{n:'Beton pompası',d:'Beton dökümünü %25 hızlandırır, döküm hatasını azaltır.',buy:6e4,rent:0,maint:350,st:4},
+ kamyon:{n:'Kamyon filosu',d:'Malzeme nakliyesi senden: malzeme %4 ucuzlar.',buy:7e4,rent:0,maint:450,st:4},
+ tunel:{n:'Tünel kalıp',d:'30 daire üstü projelerde kalıp ve beton 1,6 kat hızlı. Pahalı ama toplu konutun anahtarı.',buy:5e5,rent:0,maint:2500,st:9}};
+export const FURN:Record<string,{n:string;lv:string[]}>={salon:{n:'Salon',lv:['Minder ve soba','Koltuk takımı ve büfe','Köşe takımı, büyük televizyon','Avize, ithal takım']},mutfak:{n:'Mutfak',lv:['Tüp ocak','Masa, sandalye','Buzdolabı, çamaşır makinesi','Ankastre mutfak']},yatak:{n:'Yatak odası',lv:['Yer yatağı','Karyola','Yatak odası takımı','Gömme dolap, şık takım']},cocuk:{n:'Çocuk odası',lv:['Yok','Ranza ve masa','Bilgisayarlı oda','Her çocuğa ayrı oda']}};
+export const furnCost=(lv:number,home:number)=>[0,2500,9000,32000][lv]*(1+home*.55);
+// Başarımlar
+export const ACH:Record<string,{n:string;d:string}>={
+ ilkbina:{n:'İlk tapu',d:'Adını taşıyan ilk binayı bitir.'},usta:{n:'Usta eli',d:'Bir mini oyunda kusursuza yakın iş çıkar.'},gozu:{n:'Usta gözü',d:'Denetimde bütün hataları bul.'},
+ depremAyakta:{n:'Ayakta kalan',d:'Büyük depremde tek binan bile yıkılmasın.'},onbina:{n:'Mahallenin müteahhidi',d:'10 bina bitir.'},ellibina:{n:'Şehrin silüeti',d:'50 bina bitir.'},
+ asama12:{n:'Havuzlu site',d:'12. aşamaya ulaş.'},asama20:{n:'Büyük oyuncu',d:'20. aşamaya ulaş.'},kule:{n:'Şehrin en yükseği',d:'Kuleyi bitir.'},
+ kusak3:{n:'Üç kuşak',d:'Şirketi üçüncü kuşağa devret.'},batmadan:{n:'Sağlam kasa',d:'Hiç batmadan 30 yıl geçir.'},kazasiz:{n:'Sıfır kaza',d:'20 yıl iş kazası olmadan çalış.'},
+ kiraci:{n:'Kira geliri',d:'Elinde 10 kiralık daire tut.'},meclis:{n:'Meclis üyesi',d:'Belediye meclisine gir.'},sampiyon:{n:'Rakibi geç',d:'Bütün rakip ailelerden yüksek aşamaya çık.'},yali:{n:'Gecekondudan yalıya',d:'Koğuşta başlayıp yalıya taşın.'}};

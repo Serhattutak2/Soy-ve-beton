@@ -39,4 +39,4 @@ export function heirCandidates(w:World){const me=w.playerId;return family(w).fil
 export function blood(w:World,p:Person){return p.fa!==undefined||p.mo!==undefined||p.id===w.founderId||!!w.flags['kan'+p.id];}
 export function title(w:World){const f=w.firm;if(!f)return['Amele','Kalfa','Usta','Ustabaşı'][w.rank];const s=f.stage;
  if(s<2)return'Taşeron';if(s<6)return'Mahalle müteahhidi';if(s<12)return'İlçe müteahhidi';if(s<19)return'Şehrin müteahhidi';if(s<25)return'Büyük müteahhit';if(s<29)return'Holding patronu';return'Şehrin kurucusu';}
-export function netWorth(w:World){let t=w.cash-w.debt;for(const k in w.inv)t+=w.inv[k];return t;}
+export function netWorth(w:World){let t=w.cash-w.debt;for(const k in w.inv)t+=w.inv[k];for(const r of w.rentals||[])t+=r.val;return t;}
