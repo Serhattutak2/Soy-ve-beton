@@ -9,17 +9,22 @@ import {City,VM,FACADE_COLS} from './city3d';
 import {sound} from './audio';
 import {openMini,tradeGame,itemGame,MG_NAMES} from './minigames';
 const SLOT='sb_slot',LEG='soybeton_legacy',MUS='sb_museum',ACHG='sb_ach',TUT='sb_tut';
-const store={get(k:string){try{return localStorage.getItem(k);}catch{return null;}},set(k:string,v:string){try{localStorage.setItem(k,v);}catch{}},del(k:string){try{localStorage.removeItem(k);}catch{}}};
+// Kayıt: tarayıcı belleği + telefonda kalıcı cihaz deposu (Capacitor Preferences). Biri silinse öbüründen geri gelir.
+const mem:Record<string,string>={};const PREF=()=>(window as any).Capacitor?.Plugins?.Preferences;
+const store={get(k:string){try{const v=localStorage.getItem(k);if(v!==null)return v;}catch{}return mem[k]??null;},
+ set(k:string,v:string){mem[k]=v;try{localStorage.setItem(k,v);}catch{}try{PREF()?.set({key:k,value:v});}catch{}},
+ del(k:string){delete mem[k];try{localStorage.removeItem(k);}catch{}try{PREF()?.remove({key:k});}catch{}}};
+async function restoreNative(){const P=PREF();if(!P)return;try{const {keys}=await P.keys();for(const k of keys){const {value}=await P.get({key:k});if(value==null)continue;mem[k]=value;try{if(localStorage.getItem(k)===null)localStorage.setItem(k,value);}catch{}}}catch{}}
 let w:World|null=null;let slot=1;let tab:string|null=null;let speed=1;let acc=0;let lastT=0;let city:City;let ui:HTMLElement;let menuView='home';let pickS='';let pickC='';let lastQuake=0;
 let sel=0;let sub='is';let pazar=0;let dz:{oid:number;D:Design}|null=null;let mgOpen=false;let confirmK='';let homeView=false;let sndT=0;
 const SPD=[0,1,4,15];const MONTH_MS=60000;
 const e=(s:any)=>String(s).replace(/[&<>"]/g,(c)=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c] as string));
 const num=(n:number,d=0)=>n.toLocaleString('tr-TR',{maximumFractionDigits:d});
 const tutOn=()=>store.get(TUT)!=='0';
-export function boot(){ui=document.getElementById('app')!;city=new City(document.getElementById('city') as HTMLCanvasElement);
+export async function boot(){try{(window as any).Capacitor?.Plugins?.StatusBar?.setStyle({style:'DARK'});}catch{}await restoreNative();ui=document.getElementById('app')!;city=new City(document.getElementById('city') as HTMLCanvasElement);
  const seed=Math.floor(Math.random()*1e9);const ks=Object.keys(CITIES);const c=ks[seed%ks.length];const order=['kurulum','hafriyat','temel','kalip','demir','beton','duvar','cati','pencere','cephe','korkuluk'];city.mode='city';city.update({seed,city:c,terrain:CITIES[c].terrain,year:1990+seed%70,month:seed%12,phase:'canli',surname:'',buildings:[],sites:[{id:1,slot:0,floors:8,prog:.5,halt:false,stage:6,seal:false,item:'duvar',itemProg:.6,order},{id:2,slot:4,floors:12,prog:.3,halt:false,stage:12,seal:false,item:'demir',itemProg:.5,order},{id:3,slot:9,floors:5,prog:.8,halt:false,stage:3,seal:false,item:'cephe',itemProg:.7,order}]});
  document.addEventListener('pointerdown',()=>sound.start(),{capture:true});
- ui.addEventListener('click',onClick);ui.addEventListener('input',onInput);ui.addEventListener('change',onChange);render();requestAnimationFrame(tick);
+ document.addEventListener('visibilitychange',()=>{if(document.hidden)save();});addEventListener('pagehide',()=>save());setInterval(()=>save(),20000);ui.addEventListener('click',onClick);ui.addEventListener('input',onInput);ui.addEventListener('change',onChange);render();requestAnimationFrame(tick);
  (window as any).__g={city,sound,get w(){return w;},advance:()=>{if(w){S.advance(w);sync();render();}},set(x:World){w=x;sync();render();},S,WD,setTab(t:string){tab=t;render();},openMini};}
 function vm(w:World):VM{const lk=(l:any)=>l?{...l,col:FACADE_COLS[l.col%8]}:undefined;const sites=w.projects.filter(p=>p.status==='insa'&&p.city===w.city&&p.slot>=0).map(p=>{const it=p.items[p.cur];return{id:p.id,slot:p.slot,floors:p.floors,prog:p.prog,halt:p.halt,stage:p.stage,seal:p.seal>0,item:it?it.id:'',itemProg:it?it.prog:1,order:p.items.map(i=>i.id),look:lk(p.look)};});
  if(!w.firm&&!sites.length){const order=['kurulum','hafriyat','temel','kalip','demir','beton','duvar','cati','pencere','cephe','korkuluk'];const t=(w.m%36)/36;const i=Math.min(order.length-1,Math.floor(t*order.length));sites.push({id:9999,slot:1,floors:5,prog:t,halt:false,stage:3,seal:false,item:order[i],itemProg:(t*order.length)%1,order,look:undefined});}
@@ -30,7 +35,7 @@ function fix(x:World){x.rivals=x.rivals||[];x.rentals=x.rentals||[];x.ach=x.ach|
 function tick(t:number){requestAnimationFrame(tick);const dt=Math.min(250,t-lastT);lastT=t;
  sndT-=dt;if(sndT<=0){sndT=500;const i=city.soundInfo();sound.update({...i,menu:!w,winter:w?[11,0,1].includes(mon(w)):false,crisis:w?.econ.phase==='kriz'});}
  if(!w||w.over||w.walk)return;const hold=w.cards.length>0||mgOpen||w.result!==null||!!dz;
- if(hold||speed===0)return;acc+=dt*SPD[speed];const b=document.getElementById('mb');if(b)b.style.width=Math.min(100,acc/MONTH_MS*100)+'%';if(acc>=MONTH_MS){acc=0;const c0=w.cards.length;S.advance(w);sync();if(w.cards.length>c0){const k=EV[w.cards[0]?.id]?.kind;sound.sfx(k==='kotu'?'knock':'card');}if(w.m%3===0)save();render();}}
+ if(hold||speed===0)return;acc+=dt*SPD[speed];const b=document.getElementById('mb');if(b)b.style.width=Math.min(100,acc/MONTH_MS*100)+'%';if(acc>=MONTH_MS){acc=0;const c0=w.cards.length;S.advance(w);sync();if(w.cards.length>c0){const k=EV[w.cards[0]?.id]?.kind;sound.sfx(k==='kotu'?'knock':'card');}save();render();}}
 function onClick(ev:Event){const t=(ev.target as HTMLElement).closest('[data-a]') as HTMLElement|null;if(!t||(t as any).disabled)return;sound.sfx('click');act(t.dataset.a!,t.dataset.v??'',t.dataset.x??'');}
 function onInput(ev:Event){const t=ev.target as HTMLInputElement;if(!w&&t.id!=='vol')return;if(t.dataset.pr&&w){const[pid,k]=t.dataset.pr.split(':').map(Number);S.setPrice(w,pid,k,+t.value/100);const p=w.projects.find(x=>x.id===pid);const u=p?.units.find(x=>x.k===k);const o=document.getElementById('pv'+k);if(p&&u&&o)o.innerHTML=priceText(w,p,u);}
  else if(t.id==='mix'&&dz){dz.D.mix=+t.value/100;const o=document.getElementById('dzs');const of=w!.offers.find(x=>x.id===dz!.oid);if(o&&of)o.innerHTML=designSummary(w!,of,dz.D);}

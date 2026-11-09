@@ -1,0 +1,10 @@
+{
+  "appId": "com.serhattutak.soyvebeton",
+  "appName": "Soy ve Beton",
+  "webDir": "www",
+  "backgroundColor": "#14161a",
+  "ios": { "contentInset": "never", "backgroundColor": "#14161a", "scrollEnabled": false, "limitsNavigationsToAppBoundDomains": false, "allowsLinkPreview": false },
+  "plugins": {
+    "SplashScreen": { "launchShowDuration": 700, "launchAutoHide": true, "backgroundColor": "#14161a", "showSpinner": false }
+  }
+}

@@ -16,3 +16,11 @@ Ameleden hanedana 3D inşaat, hayat ve aile simülasyonu. Fikir ve oynanış: Se
 
 ## Dosyalar
 `core/data.ts` 30 aşama, 32 inşaat kalemi, branşlar, malzeme, şehirler · `core/project.ts` daire, piyasa, malzeme hesabı · `core/sim.ts` aylık motor, pazarlık, veraset, test botu · `core/events.ts` olay kartları ve hikâye yayları · `ui/city3d.ts` canlı 3D şehir · `ui/app.ts` arayüz.
+
+## iOS (TestFlight)
+- `app/index.html` — iOS için paket (`node tools/build.mjs --mobile`; yazı tipleri gömülü, internetsiz çalışır)
+- `mobile/` — Capacitor 8 sarmalayıcı, paket kimliği `com.serhattutak.soyvebeton`
+- `.github/workflows/ios.yml` — commit mesajında `[testflight]` varsa TestFlight'a yükler
+- `.github/workflows/appstore.yml` — `hazirlik` adımı paket kimliğini Apple'a kaydeder
+- Gizli anahtarlar: `ASC_KEY_ID`, `ASC_ISSUER_ID`, `ASC_KEY_P8`, `IOS_TEAM_ID`
+- Kayıtlar hem tarayıcı belleğine hem cihaz deposuna (Preferences) yazılır; uygulama arka plana geçince ve her ay otomatik kaydeder.
