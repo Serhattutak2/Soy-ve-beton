@@ -18,7 +18,8 @@ ISS = "".join(c for c in os.environ.get("ISS", "") if c.isalnum() or c == "-")
 P8 = "\n".join(l.strip() for l in os.environ.get("P8", "").replace("\r", "").split("\n") if l.strip()) + "\n"
 BASE = "https://api.appstoreconnect.apple.com"
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-META = json.load(open(os.path.join(ROOT, "store", "metadata.json"), encoding="utf-8"))
+_mp = os.path.join(ROOT, "store", "metadata.json")
+META = json.load(open(_mp, encoding="utf-8")) if os.path.exists(_mp) else {}
 REF_BUNDLE = "com.serhattutak.mirasfc"   # inceleme iletişim bilgisi buradan kopyalanır
 
 def token():
