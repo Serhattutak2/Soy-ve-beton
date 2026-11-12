@@ -111,3 +111,7 @@ input[type=range]{accent-color:var(--sari);width:100%}
 .names label{display:grid;gap:4px;font:600 13px var(--body,system-ui);color:var(--fg,#eee)}
 .names input{font:500 16px var(--body,system-ui);padding:10px 12px;border-radius:10px;border:1px solid rgba(255,255,255,.18);background:rgba(0,0,0,.35);color:inherit;width:100%;box-sizing:border-box}
 .names input:focus{outline:2px solid #f2b90f;outline-offset:1px}
+.card.rep h2{font-size:40px;margin:2px 0 10px}
+.card.rep h4{margin:12px 0 4px;font:700 13px var(--disp,system-ui);text-transform:uppercase;letter-spacing:.08em;color:#f2b90f}
+ul.news{margin:0;padding-left:18px;display:grid;gap:4px;font-size:14px;line-height:1.35}
+.item select,.sec select{max-width:100%}

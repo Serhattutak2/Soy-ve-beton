@@ -1,5 +1,5 @@
 import type {World,Person} from './types';
-import {STAGES,WAGE,MNAMES,FNAMES} from './data';
+import {STAGES,WAGE,MNAMES,FNAMES,SUBS} from './data';
 export function rnd(w:World){let t=(w.rng+=0x6D2B79F5)|0;t=Math.imul(t^(t>>>15),t|1);t^=t+Math.imul(t^(t>>>7),t|61);w.rng|=0;return((t^(t>>>14))>>>0)/4294967296;}
 export const ri=(w:World,a:number,b:number)=>a+Math.floor(rnd(w)*(b-a+1));
 export const pick=<T,>(w:World,l:T[])=>l[Math.floor(rnd(w)*l.length)];
@@ -40,7 +40,7 @@ export function heirCandidates(w:World){const me=w.playerId;return family(w).fil
 export function blood(w:World,p:Person){return p.fa!==undefined||p.mo!==undefined||p.id===w.founderId||!!w.flags['kan'+p.id];}
 export function title(w:World){const f=w.firm;if(!f)return['Amele','Kalfa','Usta','Ustabaşı'][w.rank];const s=f.stage;
  if(s<2)return'Taşeron';if(s<6)return'Mahalle müteahhidi';if(s<12)return'İlçe müteahhidi';if(s<19)return'Şehrin müteahhidi';if(s<25)return'Büyük müteahhit';if(s<29)return'Holding patronu';return'Şehrin kurucusu';}
-export function netWorth(w:World){let t=w.cash-w.debt;for(const k in w.inv)t+=w.inv[k];for(const r of w.rentals||[])t+=r.val;return t;}
+export function netWorth(w:World){let t=w.cash-w.debt;for(const k in w.inv)t+=w.inv[k];for(const r of w.rentals||[])t+=r.val;for(const l of w.lands||[])t+=l.val;for(const k in w.subs||{})if(SUBS[k])t+=STAGES[SUBS[k].st].cost*SUBS[k].k*3*.75;return t;}
 // Türkçe ekler: ünlü uyumu ve ünsüz benzeşmesiyle özel isim ekleri (Leyla'nın, Gaziantep'te, Ali'ye)
 const V='aeıioöuüAEIİOÖUÜ';
 function lastV(s:string){for(let i=s.length-1;i>=0;i--)if(V.includes(s[i]))return s[i].toLocaleLowerCase('tr');return'e';}

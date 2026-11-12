@@ -6,11 +6,11 @@ export interface Unit{k:number;l:string;t:string;m2:number;fl:number;fr:string;n
 export interface PItem{id:string;prog:number;tas:boolean;q:'kis'|'nor'|'sag';paid:boolean;tq:number;mg?:number;fin?:boolean;}
 export interface Project{id:number;stage:number;name:string;city:string;hood:string;locMul:number;m2:number;q:'kis'|'nor'|'sag';prog:number;months:number;gross:number;cost:number;estRev:number;
   sold:number;seal:number;defects:Defect[];struct:number;status:'insa'|'satis';halt:boolean;reason:string;floors:number;slot:number;partner?:boolean;bribe?:boolean;
-  sellOn:boolean;lux:number;items:PItem[];cur:number;tw:number;done:number;units:Unit[];ownerN:number;bought:Record<string,number>;cheap:number;skipEtut:boolean;spent:number;income:number;eng:number;flats:number;shops:number;mix:number;park:boolean;illegal:number;look:Look;merged?:boolean;auto?:boolean;}
+  sellOn:boolean;lux:number;items:PItem[];cur:number;tw:number;done:number;units:Unit[];ownerN:number;bought:Record<string,number>;cheap:number;skipEtut:boolean;spent:number;income:number;eng:number;flats:number;shops:number;mix:number;park:boolean;illegal:number;look:Look;merged?:boolean;auto?:boolean;cons?:number;fx0?:number;}
 export interface Look{col:number;roof:number;bal:number;cumba:boolean;}
 export interface Design{floors:number;mix:number;park:boolean;illegal:number;look:Look;}
 export interface Deal{ownerName:string;trait:string;total:number;ask:number;min:number;patience:number;floors:'adil'|'iyi'|'kotu';cash:number;line:string;rounds:number;ok:boolean;lastYou?:string;need:string;}
-export interface Offer{id:number;stage:number;name:string;city:string;hood:string;locMul:number;expires:number;deal?:Deal;won?:number;bidDone?:boolean;imar?:{floors:number};merged?:boolean;mergeCost?:number;}
+export interface Offer{id:number;stage:number;name:string;city:string;hood:string;locMul:number;expires:number;deal?:Deal;won?:number;bidDone?:boolean;imar?:{floors:number};merged?:boolean;mergeCost?:number;cons?:number;}
 export interface Crew{n:number;sk:number;usta:string;}
 export interface Engineer{id:number;name:string;sk:number;hon:number;pid:number;}
 export interface Master{id:number;name:string;tr:string;by:number;sk:number;loy:number;since:number;app?:string;appSk?:number;}
@@ -32,4 +32,9 @@ export interface World{v:number;seed:number;rng:number;m:number;scen:string;city
   cool:number;comfort:number;stock:Record<string,number>;payables:Payable[];selfWork:string;log:{m:number;t:string;k?:string}[];
   rival:{name:string;stage:number;rel:number;head:string;gen:number};rivals:Rival[];rentals:Rental[];ach:Record<string,number>;furn:Record<string,number>;council:number;
   result:string|null;over:null|{why:string};peakStage:number;stats:{collapse:number;saved:number;accidents:number;bankrupt:number;jail:number;projects:number;dead:number};
-  quakeNow?:number;walk?:boolean;legacy?:string|null;}
+  quakeNow?:number;walk?:boolean;legacy?:string|null;
+  subs?:Record<string,{lv:number;mgr?:number;since:number}>;branches?:Record<string,{mgr?:number;since:number}>;lands?:Land[];landMkt?:Land[];will?:Will;wills?:{id:string;gen:number;ok:boolean}[];staff?:Staff[];diff?:number;report?:YearReport;yr?:{nw:number;proj:number;bld:number;m:number};}
+export interface Land{id:number;name:string;city:string;hood:string;m2:number;paid:number;val:number;since:number;share?:number;zone:number;village?:boolean;tags:string[];}
+export interface Will{id:string;gen:number;start:number;dl:number;arg?:number;done?:boolean;fail?:boolean;}
+export interface Staff{id:number;name:string;role:'mimar'|'statik'|'muhasebe'|'hukuk';sk:number;loy:number;by:number;since:number;}
+export interface YearReport{y:number;nw:number;dnw:number;proj:number;bld:number;news:string[];fam:string[];seen?:boolean;}

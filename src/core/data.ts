@@ -22,9 +22,9 @@ export const ITEM:Record<string,ItemDef>=Object.fromEntries(ITEMS.map(i=>[i.id,i
 const SETS:Record<string,string[]>={full:ITEMS.map(i=>i.id),tad:['siva','seramik','boya'],kat:['kurulum','kalip','demir','beton','duvar','cati','pencere','cephe','elektrik','su','siva','sap','seramik','boya','kapi'],kaba:['kurulum','hafriyat','temel','yalitim','kalip','demir','beton','merdiven','cevre','denetim'],kurum:[]};
 export const setItems=(s:Stage)=>SETS[s.set].filter(id=>!ITEM[id].gate||ITEM[id].gate!(s));
 export function unitCost(ids:string[]){let c=0;for(const id of ids){const d=ITEM[id];c+=d.fee;c+=d.md*(d.tr?CREWS[d.tr].y*1.15:0);for(const m in d.mats)c+=d.mats[m]*MATS[m].p;}return c;}
-export interface Stage{n:string;d:string;tier:number;mo:number;cost:number;net:number;kind:'sat'|'ihale'|'kurum';rep:number;cert:number;req:number;floors:number;flats:number;m2:number;qm:number;mm:number;set:string;shops:number;}
+export interface Stage{yd?:boolean;n:string;d:string;tier:number;mo:number;cost:number;net:number;kind:'sat'|'ihale'|'kurum';rep:number;cert:number;req:number;floors:number;flats:number;m2:number;qm:number;mm:number;set:string;shops:number;}
 const S=(n:string,d:string,tier:number,mo:number,kind:Stage['kind'],m2:number,flats:number,floors:number,rep:number,req:number,set='full',qm=1,mm=1,shops=0,kcost=0):Stage=>{const o:Stage={n,d,tier,mo,cost:kcost,net:0,kind,rep,cert:0,req,floors,flats,m2,qm,mm,set,shops};if(kind!=='kurum'){o.cost=m2*unitCost(setItems(o))*qm;o.net=kind==='sat'?m2*M2_PRICE*.82*mm*.5:o.cost*1.3;}return o;};
-export const TIERS=['Mahalle','İlçe','Şehir','Büyük Oyuncu','Zirve'];
+export const TIERS=['Mahalle','İlçe','Şehir','Büyük Oyuncu','Zirve','Dünya'];
 export const STAGES:Stage[]=[
 S('Sıva, boya, tadilat','Komşunun duvarıyla başlar her şey.',0,2,'ihale',160,0,0,0,3,'tad'),
 S('Gecekondu üstüne kat','Ruhsat soran olursa dua et.',0,5,'ihale',140,0,2,8,2,'kat'),
@@ -55,13 +55,25 @@ S('Holdingleşme, halka arz','Artık bir şirket değil, borsada bir kod.',4,12,
 S('Yurt dışı ihaleleri','Başka ülke, başka kur, başka bela.',4,48,'ihale',180000,0,14,82,1,'full',1.3),
 S('Havalimanı ya da liman ortaklığı','Ortak bulamayan ayakta kalamaz.',4,72,'ihale',400000,0,6,84,1,'full',1.4),
 S('Şehrin en yüksek kulesi','Dedenin sözü burada tutulur.',4,90,'sat',120000,500,64,86,1,'full',3,3.4),
-S('Sıfırdan yeni bir şehir','Bir hanedanın son imzası.',4,120,'sat',300000,2800,30,90,1,'full',1.3,1.3),
+S('Sıfırdan yeni bir şehir','Bir hanedanın son imzası sandın. Değilmiş.',4,120,'sat',300000,2800,30,90,1,'full',1.3,1.3),
+S('Kafkasya\'da toplu konut','Başka dil, başka kur, aynı beton.',5,40,'sat',120000,1000,16,91,1,'full',1.2,1.3),
+S('Afrika\'da hastane ve okullar','Malzeme gemiyle gelir, sıtma uçakla.',5,36,'ihale',60000,0,4,92,1,'full',1.3),
+S('Körfez\'de otel kulesi','Kum fırtınası, 50 derece, cezalı teslim tarihi.',5,54,'ihale',90000,0,55,93,1,'full',2.6),
+S('Şehir hastanesi','Kamu-özel ortaklığı: yirmi beş yıl kira garantisi, yirmi beş yıl tartışma.',5,50,'ihale',250000,0,10,94,1,'full',1.6),
+S('Stadyum','Çatısı açılır, tribünü kapanmaz.',5,42,'ihale',80000,0,6,95,1,'full',1.8),
+S('Otoyol ve tünel','Dağın içinden geçen yol, bütçenin içinden de geçer.',5,60,'ihale',400000,0,0,96,1,'kaba',1.5),
+S('Metro hattı','Şehrin altında, herkesin gözünün önünde.',5,72,'ihale',300000,0,0,97,1,'kaba',2.4),
+S('Asma köprü','İki yakayı bağlarsın. Adın kazığa kazınır.',5,84,'ihale',200000,0,0,98,1,'kaba',4),
+S('Ülkenin en büyük havalimanı','Konsorsiyumsuz düşünülemez, siyasetsiz hiç.',5,96,'ihale',900000,0,5,99,1,'full',1.8),
+S('Hanedan kuleleri','Şehrin siluetinde soyadın. Bu kez gerçekten son imza.',5,120,'sat',500000,3500,80,100,1,'full',3,3.6),
 ];
+for(const i of[26,30,31,32])STAGES[i].yd=true;
+export const LAST=STAGES.length-1;
 STAGES[0].net=STAGES[0].cost*1.8;STAGES[1].net=STAGES[1].cost*1.7;
 for(const[i,r]of[[3,3],[6,3],[7,3],[10,2],[12,3],[16,2],[19,2],[20,2],[22,2]])STAGES[i].req=r;
 export const CERT=['H','G','F','E','D','C','B','A'];
-export const CERT_EXP=[0,4e5,2e6,8e6,3e7,12e7,5e8,16e8];
-export const CERT_M2=[800,2500,6000,15000,45000,130000,400000,1e12];
+export const CERT_EXP=[0,4e5,2e6,8e6,3e7,12e7,3e8,12e8];
+export const CERT_M2=[800,2500,6000,15000,45000,170000,400000,1e12];
 export const SUPPLIERS=[{n:'Ucuzcu Hasan',d:'%12 ucuz, faturası ve kalitesi şüpheli',mul:.88,due:0},{n:'Güven Yapı Market',d:'Piyasa fiyatı, peşin, sağlam',mul:1,due:0},{n:'Vadeci Kemal',d:'%6 pahalı, ödeme 4 ay sonra',mul:1.06,due:4}];
 export const RANKS=['Amele','Kalfa','Usta','Ustabaşı'];
 export const WAGE=[800,1200,1900,2800];
@@ -92,7 +104,7 @@ export const BIZ:Record<string,{n:string;d:string;p:number;inc:number;st:number}
  tv:{n:'Yerel gazete ve TV',d:'İtibarın daha yavaş erir.',p:4e7,inc:2e5,st:21},
 };
 // terrain: sahil=deniz kıyısı, ic=ova, dag=dağ eteği. x,y: haritadaki yer. Deprem riski oyun içindir, kaba değerdir.
-export interface CityDef{n:string;terrain:string;mul:number;dem:number;quake:number;winter:number;labor:number;x:number;y:number;hoods:string[];d:string;}
+export interface CityDef{yd?:boolean;n:string;terrain:string;mul:number;dem:number;quake:number;winter:number;labor:number;x:number;y:number;hoods:string[];d:string;}
 const Ct=(n:string,terrain:string,mul:number,dem:number,quake:number,winter:number,labor:number,lon:number,lat:number,hoods:string[],d:string):CityDef=>({n,terrain,mul,dem,quake,winter,labor,x:(lon-26)*100/19,y:(42-lat)*100/19,hoods,d});
 export const CITIES:Record<string,CityDef>={
  istanbul:Ct('İstanbul','sahil',1.7,1.25,1.2,.2,1.1,29,41,['Fikirtepe','Bağcılar','Kartal','Ümraniye','Avcılar','Esenler','Maltepe','Pendik','Beylikdüzü','Şişli','Gaziosmanpaşa','Kağıthane'],'Arsa çok pahalı, talep hiç bitmez, deprem riski yüksek.'),
@@ -112,7 +124,13 @@ export const CITIES:Record<string,CityDef>={
  erzurum:Ct('Erzurum','dag',.6,.78,1.05,1,1.1,41.27,39.9,['Yakutiye','Palandöken','Aziziye','Dadaşkent','Şükrüpaşa'],'Kışın beton donar, şantiye aylarca yavaşlar. Ucuz başlangıç.'),
  van:Ct('Van','dag',.55,.76,1.2,.9,1.05,43.38,38.5,['İpekyolu','Tuşba','Edremit','Bostaniçi','Erciş Yolu'],'Göl kıyısı, sert kış, fay riski yüksek.'),
  diyarbakir:Ct('Diyarbakır','ic',.6,.82,.85,.45,.85,40.21,37.92,['Kayapınar','Yenişehir','Bağlar','Sur Dışı','Kayaönü'],'Kalabalık aileler, büyük daireler, ucuz işçilik.'),
- denizli:Ct('Denizli','dag',.8,.92,1.1,.25,.95,29.09,37.77,['Pamukkale','Merkezefendi','Bağbaşı','Kınıklı','Servergazi'],'Tekstil parası ve aktif faylar.')};
+ denizli:Ct('Denizli','dag',.8,.92,1.1,.25,.95,29.09,37.77,['Pamukkale','Merkezefendi','Bağbaşı','Kınıklı','Servergazi'],'Tekstil parası ve aktif faylar.'),
+ baku:{...Ct('Bakü','sahil',1.3,1.05,.9,.4,1.15,49.87,40.41,['Nesimi','Yasamal','Hatai','Binegedi','Sabunçu'],'Petrol parası, kardeş dil, sıkı bürokrasi.'),yd:true},
+ askabat:{...Ct('Aşkabat','ic',1.2,.9,.8,.3,1.1,58.38,37.95,['Köşi','Bekrewe','Arçabil','Bagtyýarlyk'],'Mermer kaplama sevdası, ödemeler devletin keyfine bağlı.'),yd:true},
+ erbil:{...Ct('Erbil','ic',1,.95,.6,.35,1.05,44.01,36.19,['Ankawa','Dream City','Şaklava','Gulan'],'Hızlı büyüyen şehir, sınırda belirsizlik.'),yd:true},
+ doha:{...Ct('Doha','sahil',2,1.1,.1,0,1.35,51.53,25.29,['West Bay','Lusail','Al Sadd','The Pearl'],'Para bol, sıcak acımasız, ceza maddeleri daha acımasız.'),yd:true},
+ dakar:{...Ct('Dakar','sahil',.8,.85,.1,0,1.2,-17.44,14.69,['Plateau','Almadies','Ouakam','Médina'],'Türk müteahhidinin yeni durağı: liman, hastane, okul.'),yd:true}};
+export const TR_KEYS=Object.keys(CITIES).filter(k=>!CITIES[k].yd);export const YD_KEYS=Object.keys(CITIES).filter(k=>CITIES[k].yd);
 export const SCENS:Record<string,{n:string;d:string;y:number;age:number;sex:'e'|'k';rank:number;cash:number;debt:number}>={
  koy:{n:'Köyden Gelen',d:'18 yaşındasın, cebinde otobüs biletinin parası kaldı. Şantiyede amelesin.',y:1986,age:18,sex:'e',rank:0,cash:300,debt:0},
  batik:{n:'Batmış Müteahhidin Oğlu',d:'Baban batıp öldü. Soyadın borçla anılıyor, ama beton kokusunu bilirsin.',y:1979,age:22,sex:'e',rank:1,cash:800,debt:8000},
@@ -141,3 +159,24 @@ export const ACH:Record<string,{n:string;d:string}>={
  asama12:{n:'Havuzlu site',d:'12. aşamaya ulaş.'},asama20:{n:'Büyük oyuncu',d:'20. aşamaya ulaş.'},kule:{n:'Şehrin en yükseği',d:'Kuleyi bitir.'},
  kusak3:{n:'Üç kuşak',d:'Şirketi üçüncü kuşağa devret.'},batmadan:{n:'Sağlam kasa',d:'Hiç batmadan 30 yıl geçir.'},kazasiz:{n:'Sıfır kaza',d:'20 yıl iş kazası olmadan çalış.'},
  kiraci:{n:'Kira geliri',d:'Elinde 10 kiralık daire tut.'},meclis:{n:'Meclis üyesi',d:'Belediye meclisine gir.'},sampiyon:{n:'Rakibi geç',d:'Bütün rakip ailelerden yüksek aşamaya çık.'},yali:{n:'Gecekondudan yalıya',d:'Koğuşta başlayıp yalıya taşın.'}};
+/** Zorluk: faiz, başlangıç parası, kötü olay sıklığı, talep, maliyet ve kriz aralığı çarpanları */
+export const DIFF=[
+ {n:'Kolay',d:'Kredi ucuz, kriz seyrek, alıcı bol. Hikâyeyi yaşamak isteyene.',rate:.8,cash:1.5,pain:.7,dem:1.08,cost:.95,crisis:1.4},
+ {n:'Normal',d:'Türkiye işte: inişi de çıkışı da var.',rate:1,cash:1,pain:1,dem:1,cost:1,crisis:1},
+ {n:'Zor',d:'Faiz yüksek, kriz sık, hata affedilmez.',rate:1.2,cash:.8,pain:1.25,dem:.94,cost:1.04,crisis:.8},
+ {n:'Gerçekçi',d:'Pahalı kredi, nazlı alıcı, kapıdan eksik olmayan dert. Uzun ve sert bir oyun.',rate:1.35,cash:.6,pain:1.45,dem:.88,cost:1.08,crisis:.65}];
+export const dif=(w:{diff?:number})=>DIFF[w.diff??1]||DIFF[1];
+/** Holding şirketleri: st = gereken aşama, k = fiyatın o aşamanın maliyetine oranı, r = yıllık getiri */
+export const SUBS:Record<string,{n:string;d:string;st:number;k:number;r:number}>={
+ emlak:{n:'Emlak ofisi',d:'Daireler %12 daha hızlı satılır.',st:4,k:.12,r:.08},
+ nakliye:{n:'Nakliye ve iş makinesi kiralama',d:'Boşta kalan makineler başkasına kiraya gider.',st:9,k:.18,r:.11},
+ tugla:{n:'Tuğla ve briket fabrikası',d:'Tuğla %15 ucuz, fazlası piyasaya satılır.',st:7,k:.22,r:.09},
+ mimarlik:{n:'Mimarlık ofisi',d:'Proje ücreti yarıya iner, daireler %3 değerli.',st:10,k:.1,r:.06},
+ taseron:{n:'Kendi taşeron firman',d:'Taşeron işçilik %15 ucuz.',st:12,k:.15,r:.07},
+ isletme:{n:'Otel ve AVM işletmesi',d:'Düzenli kira ve konaklama geliri; krizde düşer.',st:18,k:.3,r:.12}};
+/** Kadro: isimli uzmanlar */
+export const ROLES:Record<string,{n:string;d:string;st:number}>={
+ mimar:{n:'Mimar',d:'Daireler daha değerli (en çok %4).',st:5},
+ statik:{n:'Statik mühendisi',d:'Gizli hata azalır, bina daha sağlam.',st:6},
+ muhasebe:{n:'Mali müşavir',d:'Vergi cezası seyrek, kredi faizi %5 düşük.',st:5},
+ hukuk:{n:'Avukat',d:'Davalar ucuzlar, uzun davalarda elin güçlü.',st:8}};
