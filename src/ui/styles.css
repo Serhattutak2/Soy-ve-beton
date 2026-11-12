@@ -115,3 +115,11 @@ input[type=range]{accent-color:var(--sari);width:100%}
 .card.rep h4{margin:12px 0 4px;font:700 13px var(--disp,system-ui);text-transform:uppercase;letter-spacing:.08em;color:#f2b90f}
 ul.news{margin:0;padding-left:18px;display:grid;gap:4px;font-size:14px;line-height:1.35}
 .item select,.sec select{max-width:100%}
+.card.rep{padding-top:16px}
+.card.rep .dzg{background:#fff8e8;border:1px solid #d6cdb8;color:#201c15}
+.card.rep .dzg span{color:#5a5345}
+.card.rep .dzg b{color:#201c15}
+.card.rep h4{color:#8a5e00}
+.card.rep ul.news{color:#2a251c}
+.card.rep p.m{color:#5a5345}
+.sec .row button.s{white-space:nowrap;flex-shrink:0}
