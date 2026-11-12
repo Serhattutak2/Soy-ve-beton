@@ -2,7 +2,7 @@
 import type {World,Person} from './types';
 import {STAGES,DREAMS,MNAMES,FNAMES,TRADES,MATS} from './data';
 import {addCrew,loseCrew,sellNow,soldFrac} from './project';
-import {rnd,ri,pick,chance,clamp,year,pl,age,alive,full,money,log,sc,cash,rep,hurt,stress,hatir,bond,kids,spouse,addPerson,family,mon} from './util';
+import {rnd,ri,pick,chance,clamp,year,pl,age,alive,full,money,log,sc,cash,rep,hurt,stress,hatir,bond,kids,spouse,addPerson,family,mon,ek} from './util';
 export interface Opt{t:string;f?:(w:World,a:any)=>string|void;off?:boolean;hint?:string}
 export interface Ev{id:string;kind?:'kotu'|'iyi'|'not';w?:number;gap?:number;c?:(w:World)=>boolean;mk?:(w:World)=>any;title:(w:World,a:any)=>string;text:(w:World,a:any)=>string;o:(w:World,a:any)=>Opt[];glass?:boolean;}
 export const EV:Record<string,Ev>={};
@@ -63,7 +63,7 @@ def({id:'cocuk_okul',c:(w)=>kids(w).some(k=>age(w,k)>=14&&age(w,k)<=18&&!flag(w,
 def({id:'cocuk_hasta',kind:'kotu',c:(w)=>kids(w).length>0,title:()=>'Hastane koridoru',text:(w,a)=>`${w.people[a.k].name} ateşler içinde. Doktor "özel bir tedavi lazım" dedi. Şantiyede de yarın beton var.`,mk:(w)=>({k:pick(w,kids(w)).id}),o:(w,a)=>[
  pay(w,sc(w,.5),'Özel hastaneye yatır, başından ayrılma',(w)=>{bond(w,a.k,12);seal(w,{},1);return'Çocuk iyileşti. Beton sen yokken döküldü, sonucu bilinmez.';}),
  ok('Devlet hastanesi, karın baksın',(w)=>{bond(w,a.k,-6);bond(w,w.people[w.playerId].sp,-8);return'İyileşti. "Babam gelmedi" dediğini sonra duydun.';})]});
-def({id:'mezuniyet',c:(w)=>kids(w).length>0&&hasP(w),title:(w,a)=>w.people[a.k].name+'ın mezuniyeti',text:()=>'Aynı saatte belediyede ruhsat görüşmesi var. İkisi de ertelenmiyor.',mk:(w)=>({k:pick(w,kids(w)).id}),o:(w,a)=>[
+def({id:'mezuniyet',c:(w)=>kids(w).length>0&&hasP(w),title:(w,a)=>ek(w.people[a.k].name,'gen')+' mezuniyeti',text:()=>'Aynı saatte belediyede ruhsat görüşmesi var. İkisi de ertelenmiyor.',mk:(w)=>({k:pick(w,kids(w)).id}),o:(w,a)=>[
  ok('Mezuniyete git',(w)=>{bond(w,a.k,18);seal(w,{},2);rep(w,-1);return'En arka sırada alkışladın. Ruhsat iki ay gecikti.';}),
  ok('Belediyeye git',(w)=>{bond(w,a.k,-16);hatir(w,3);return'Ruhsat çıktı. Fotoğrafta sen yoksun.';})]});
 def({id:'es_kavga',kind:'kotu',c:(w)=>!!spouse(w)&&w.evening!=='aile'&&spouse(w)!.bond<45,title:()=>'Mutfakta gece yarısı',text:(w)=>`${spouse(w)!.name} kapının önünde bekliyor: "Bu evde hayalet gibi dolaşıyorsun. Çocuklar seni şantiye önünden tanıyor."`,o:(w)=>[
@@ -154,7 +154,7 @@ def({id:'rakip_arsa',kind:'kotu',c:(w)=>hasF(w)&&w.offers.length>0,title:(w)=>w.
  pay(w,sc(w,.3),'Üstüne koy',()=>'Arsa sende. Kârın incelir.'),
  ok('Bırak gitsin',(w)=>{w.offers.pop();w.rival.rel-=4;return'Kartını sakladın.';}),
  ok('Hatırla arsa sahibini ikna et',(w)=>{if(w.hatir>=5){hatir(w,-5);w.rival.rel-=8;return'Babasını tanıyordun. Arsa sende kaldı, rakibin küplere bindi.';}w.offers.pop();return'Hatır yetmedi.';})]});
-def({id:'rakip_iftira',kind:'kotu',c:(w)=>st(w,3)&&w.rival.rel<45,title:()=>'Mahallede bir söylenti',text:(w)=>`"${w.surname} binaları çürük" diye bir söz dolanıyor. Kaynağı belli: ${w.rival.name}'in satış ofisi.`,o:(w)=>[
+def({id:'rakip_iftira',kind:'kotu',c:(w)=>st(w,3)&&w.rival.rel<45,title:()=>'Mahallede bir söylenti',text:(w)=>`"${w.surname} binaları çürük" diye bir söz dolanıyor. Kaynağı belli: ${ek(w.rival.name,'gen')} satış ofisi.`,o:(w)=>[
  pay(w,sc(w,.3),'Karot aldır, sonucu ilan et',(w)=>{if(w.buildings.every(b=>b.struct>45)){rep(w,5);return'Sonuçlar iyi çıktı, karşı tarafın yüzü kızardı.';}rep(w,-8);return'Sonuçlar iyi çıkmadı. Bunu sen de biliyordun, değil mi?';}),
  ok('Sen de onlar için söylet',(w)=>{w.rival.rel-=10;rep(w,-1);w.guilt+=1;return'Kahvede herkes birbirinin çürüğünü konuşuyor artık.';}),
  ok('Sus, işine bak',(w)=>{rep(w,-2);return'Söz sönümlendi, yavaş.';})]});
@@ -206,7 +206,7 @@ def({id:'dosya',kind:'not',title:()=>'Kasadaki dosya',text:(w)=>`${w.flags.dosya
 def({id:'efsane',kind:'not',c:(w)=>!!w.legacy,gap:9999,title:()=>'Eski bir tabela',text:(w)=>`Sokakta yıpranmış bir tabela gördün: "${w.legacy} ve Oğulları". Şehirde hikâyesi anlatılan bir aile. Binalarından birinin önündesin.`,o:()=>[ok('Bir süre bak',(w)=>{w.skills.beton+=1;return'Kolonları hâlâ dimdik. Bir gün senin adını da böyle okurlar mı?';})]});
 // Köşe olayları
 def({id:'piyasa_patlama',kind:'iyi',c:(w)=>w.econ.phase==='patlama'&&hasF(w),title:()=>'Herkes daire arıyor',text:()=>'Faiz düştü, satış ofisi kuyruğa döndü. Bu hafta üç arsa sahibi kapını çaldı. Ama herkes dikmeye başlarsa kim alacak?',o:(w)=>[ok('Bol keseden proje aç',(w)=>{for(let i=0;i<2;i++)w.flags.bonusOffer=(w.flags.bonusOffer||0)+1;return'Teklif defteri doldu.';}),ok('Temkinli devam',(w)=>{rep(w,1);return'Üç yıl sonra bu kararı hatırlarsın.';})]});
-def({id:'es_olum',kind:'kotu',w:.8,gap:120,c:(w)=>!!spouse(w)&&age(w,spouse(w)!)>60,title:(w)=>spouse(w)!.name,text:(w)=>`${spouse(w)!.name}'in doktoru seni koridora aldı. Yüzünde o bilindik ifade var.`,o:(w)=>[pay(w,sc(w,.3),'Son aylarını yanında geçir',(w)=>{const s=spouse(w)!;s.dm=w.m;s.cause='hastalık';w.stats.dead++;log(w,`${s.name} öldü.`,'aile');stress(w,18);return'Sabahları kahveyi iki fincan koymaya devam ettin.';}),ok('İşe sarıl',(w)=>{const s=spouse(w)!;s.dm=w.m;s.cause='hastalık';w.stats.dead++;log(w,`${s.name} öldü.`,'aile');stress(w,28);w.guilt+=3;return'Cenazeden çıkıp şantiyeye gittin. Kimse bir şey demedi.';})]});
+def({id:'es_olum',kind:'kotu',w:.8,gap:120,c:(w)=>!!spouse(w)&&age(w,spouse(w)!)>60,title:(w)=>spouse(w)!.name,text:(w)=>`${ek(spouse(w)!.name,'gen')} doktoru seni koridora aldı. Yüzünde o bilindik ifade var.`,o:(w)=>[pay(w,sc(w,.3),'Son aylarını yanında geçir',(w)=>{const s=spouse(w)!;s.dm=w.m;s.cause='hastalık';w.stats.dead++;log(w,`${s.name} öldü.`,'aile');stress(w,18);return'Sabahları kahveyi iki fincan koymaya devam ettin.';}),ok('İşe sarıl',(w)=>{const s=spouse(w)!;s.dm=w.m;s.cause='hastalık';w.stats.dead++;log(w,`${s.name} öldü.`,'aile');stress(w,28);w.guilt+=3;return'Cenazeden çıkıp şantiyeye gittin. Kimse bir şey demedi.';})]});
 def({id:'saglik',kind:'kotu',c:(w)=>age(w,pl(w))>45&&w.stress>55,title:()=>'Kalp doktoru',text:()=>'"Bu tempo böyle sürmez," dedi doktor, kâğıdı önüne koyarken.',o:(w)=>[pay(w,sc(w,.3),'Dinle, işleri devret, kür yap',(w)=>{w.health=clamp(w.health+18,1,100);stress(w,-30);return'Şantiyeden iki ay uzak kaldın. Kimse ölmedi.';}),ok('Doktorlar hep öyle der',(w)=>{hurt(w,12);return'Merdivenleri bu kez durarak çıktın.';})]});
 
 // ------------- DEPO, USTA, MÜŞTERİ -------------

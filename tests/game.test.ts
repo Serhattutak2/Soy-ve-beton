@@ -14,3 +14,13 @@ describe('Soy ve Beton',()=>{
  it('farklı tohum farklı hikâye',()=>{expect(newWorld({seed:1}).arcs.join()).not.toBe(newWorld({seed:2}).arcs.join());});
  it('kuşak değişir',()=>{const w=run(99,'koy','izmir',110);expect(w.gen>=2||!!w.over).toBe(true);},60000);
 });
+
+import * as S2 from '../src/core/sim';
+import {ek} from '../src/core/util';
+describe('v3: isim, işçiliğe dönüş, süre',()=>{
+ it('ad, soyad ve firma adı oyuncuya yazılır',()=>{const w=S2.newWorld({seed:3,scen:'kalfa',name:'Serhat',sur:'Tutak',firm:'Tutak Yapı'});expect(w.people[w.playerId].name).toBe('Serhat');expect(w.surname).toBe('Tutak');w.rank=3;w.cash=50000;expect(S2.openFirm(w)).toBe(true);expect(w.firm!.name).toBe('Tutak Yapı');});
+ it('firma kapanır, işçiliğe dönülür, yeniden açılınca geriden başlar',()=>{const w=S2.newWorld({seed:4,scen:'kalfa'});w.rank=3;w.cash=60000;S2.openFirm(w);w.firm!.stage=8;w.firm!.rep=40;w.projects=[];expect(S2.closeFirm(w)).toBe('');expect(w.firm).toBeNull();for(let i=0;i<6;i++){w.cards=[];S2.advance(w);}w.cards=[];w.cash=Math.max(w.cash,30000);w.rank=Math.max(w.rank,2);expect(S2.openFirm(w)).toBe(true);expect(w.firm!.stage).toBe(5);});
+ it('yevmiyeye çıkınca para gelir',()=>{const w=S2.newWorld({seed:5,scen:'kalfa'});w.rank=3;w.cash=60000;S2.openFirm(w);S2.setOut(w,true);const c0=w.cash;w.cards=[];S2.advance(w);expect(w.flags.gundelik).toBe(1);expect(w.selfWork).not.toBe('');void c0;});
+ it('küçük bina şantiye şefiyle bir yıl civarı sürer',()=>{const ms:number[]=[];for(let sd=1;sd<=4;sd++){const w=S2.newWorld({seed:sd*31,scen:'kalfa'});const y0=year(w);const seen:Record<number,number>={};while(year(w)-y0<20){S2.botTurn(w);(globalThis as any).BOTAUTO=false;S2.advance(w);for(const p of w.projects){if(p.stage>=2&&p.stage<=3){seen[p.id]??=w.m;if(p.status==='satis'&&seen[p.id]>0){ms.push(w.m-seen[p.id]);seen[p.id]=-1;}}}}}(globalThis as any).BOTAUTO=true;ms.sort((a,b)=>a-b);expect(ms.length).toBeGreaterThan(3);expect(ms[ms.length>>1]).toBeLessThanOrEqual(16);});
+ it('Türkçe ekler',()=>{expect(ek('Leyla','gen')).toBe("Leyla'nın");expect(ek('Gaziantep','loc')).toBe("Gaziantep'te");});
+});

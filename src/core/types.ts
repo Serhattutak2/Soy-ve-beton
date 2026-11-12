@@ -3,10 +3,10 @@ export interface Person{id:number;name:string;sur:string;sex:Sex;by:number;dm?:n
   dream:string;tal:number;trait:string;bond:number;edu:number;work:number;kus?:boolean;gen:number;job?:string;}
 export interface Defect{trade:string;sev:number;txt:string;found:boolean;}
 export interface Unit{k:number;l:string;t:string;m2:number;fl:number;fr:string;n:number;sold:number;own:boolean;pr:number;buyer?:string;rent?:boolean;}
-export interface PItem{id:string;prog:number;tas:boolean;q:'kis'|'nor'|'sag';paid:boolean;tq:number;mg?:number;}
+export interface PItem{id:string;prog:number;tas:boolean;q:'kis'|'nor'|'sag';paid:boolean;tq:number;mg?:number;fin?:boolean;}
 export interface Project{id:number;stage:number;name:string;city:string;hood:string;locMul:number;m2:number;q:'kis'|'nor'|'sag';prog:number;months:number;gross:number;cost:number;estRev:number;
   sold:number;seal:number;defects:Defect[];struct:number;status:'insa'|'satis';halt:boolean;reason:string;floors:number;slot:number;partner?:boolean;bribe?:boolean;
-  sellOn:boolean;lux:number;items:PItem[];cur:number;tw:number;done:number;units:Unit[];ownerN:number;bought:Record<string,number>;cheap:number;skipEtut:boolean;spent:number;income:number;eng:number;flats:number;shops:number;mix:number;park:boolean;illegal:number;look:Look;merged?:boolean;}
+  sellOn:boolean;lux:number;items:PItem[];cur:number;tw:number;done:number;units:Unit[];ownerN:number;bought:Record<string,number>;cheap:number;skipEtut:boolean;spent:number;income:number;eng:number;flats:number;shops:number;mix:number;park:boolean;illegal:number;look:Look;merged?:boolean;auto?:boolean;}
 export interface Look{col:number;roof:number;bal:number;cumba:boolean;}
 export interface Design{floors:number;mix:number;park:boolean;illegal:number;look:Look;}
 export interface Deal{ownerName:string;trait:string;total:number;ask:number;min:number;patience:number;floors:'adil'|'iyi'|'kotu';cash:number;line:string;rounds:number;ok:boolean;lastYou?:string;need:string;}

@@ -107,3 +107,7 @@ input[type=range]{accent-color:var(--sari);width:100%}
 .dzg{display:grid;grid-template-columns:1fr auto;gap:3px 12px;background:var(--bet);padding:10px;font-size:14px}.dzg b{font:700 16px var(--disp);text-align:right;font-variant-numeric:tabular-nums}
 .card.dz .ops button{background:var(--bet3);color:var(--ak)}
 .fc{width:100%;height:auto;display:block}
+.names{display:grid;gap:10px;margin:6px 0}
+.names label{display:grid;gap:4px;font:600 13px var(--body,system-ui);color:var(--fg,#eee)}
+.names input{font:500 16px var(--body,system-ui);padding:10px 12px;border-radius:10px;border:1px solid rgba(255,255,255,.18);background:rgba(0,0,0,.35);color:inherit;width:100%;box-sizing:border-box}
+.names input:focus{outline:2px solid #f2b90f;outline-offset:1px}
