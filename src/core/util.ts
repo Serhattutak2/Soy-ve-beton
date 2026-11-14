@@ -35,7 +35,7 @@ export function addPerson(w:World,o:Partial<Person>&{sex:'e'|'k';by:number;sur:s
  let nm=o.name;if(nm===undefined){const used=new Set(Object.values(w.people).filter(x=>x.dm===undefined&&x.sur===o.sur).map(x=>x.name));for(let i=0;i<14;i++){nm=pick(w,o.sex==='e'?MNAMES:FNAMES);if(!used.has(nm))break;}}
  const p:Person={id,name:nm!,sur:o.sur,sex:o.sex,by:o.by,fa:o.fa,mo:o.mo,sp:o.sp,kids:[],dream:o.dream??pick(w,['insaat','insaat','doktor','ogretmen','muzik','mimar','avukat','gurbet']),tal:o.tal??ri(w,25,85),trait:o.trait??pick(w,tr),bond:o.bond??ri(w,45,75),edu:o.edu??0,work:o.work??0,gen:o.gen??w.gen};
  w.people[id]=p;return p;}
-export function heirCandidates(w:World){const me=w.playerId;return family(w).filter(p=>{if(age(w,p)<14)return false;if(p.sp===me)return true;let c:number|undefined=p.fa??p.mo;
+export function heirCandidates(w:World){const me=w.playerId;return family(w).filter(p=>{if(age(w,p)<14)return false;if(p.id===w.flags.danisman)return false;if(p.sp===me)return true;let c:number|undefined=p.fa??p.mo;
   /* soydan gelen herkes: kendi kanımız ya da eş olarak devralan */return blood(w,p)||p.sp===me;});}
 export function blood(w:World,p:Person){return p.fa!==undefined||p.mo!==undefined||p.id===w.founderId||!!w.flags['kan'+p.id];}
 export function title(w:World){const f=w.firm;if(!f)return['Amele','Kalfa','Usta','Ustabaşı'][w.rank];const s=f.stage;

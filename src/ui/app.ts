@@ -42,7 +42,7 @@ function fix(x:World){if(x.firm)while(x.firm.done.length<STAGES.length)x.firm.do
 function tick(t:number){requestAnimationFrame(tick);const dt=Math.min(250,t-lastT);lastT=t;
  sndT-=dt;if(sndT<=0){sndT=500;const i=city.soundInfo();sound.update({...i,menu:!w,winter:w?[11,0,1].includes(mon(w)):false,crisis:w?.econ.phase==='kriz'});}
  if(!w||w.over||w.walk)return;const hold=w.cards.length>0||mgOpen||w.result!==null||!!dz||!!(w.report&&!w.report.seen);
- if(hold||speed===0)return;acc+=dt*SPD[speed];const b=document.getElementById('mb');if(b)b.style.width=Math.min(100,acc/MONTH_MS*100)+'%';if(acc>=MONTH_MS){acc=0;const c0=w.cards.length;S.advance(w);sync();if(w.cards.length>c0){const k=EV[w.cards[0]?.id]?.kind;sound.sfx(k==='kotu'?'knock':'card');}save();render();}}
+ if(hold||speed===0)return;acc+=dt*SPD[speed];const b=document.getElementById('mb');if(b)b.style.width=Math.min(100,acc/MONTH_MS*100)+'%';if(acc>=MONTH_MS){acc=0;const c0=w.cards.length;try{S.advance(w);}catch(err){console.warn('ay hesabı hatası',err);}sync();if(w.cards.length>c0){const k=EV[w.cards[0]?.id]?.kind;sound.sfx(k==='kotu'?'knock':'card');}save();render();}}
 function onClick(ev:Event){const t=(ev.target as HTMLElement).closest('[data-a]') as HTMLElement|null;if(!t||(t as any).disabled)return;sound.sfx('click');act(t.dataset.a!,t.dataset.v??'',t.dataset.x??'');}
 function onInput(ev:Event){const t=ev.target as HTMLInputElement;if(t.id==='nmI'){nameIn.n=t.value;return;}if(t.id==='surI'){nameIn.s=t.value;return;}if(t.id==='frmI'){nameIn.f=t.value;return;}if(!w&&t.id!=='vol')return;if(t.dataset.pr&&w){const[pid,k]=t.dataset.pr.split(':').map(Number);S.setPrice(w,pid,k,+t.value/100);const p=w.projects.find(x=>x.id===pid);const u=p?.units.find(x=>x.k===k);const o=document.getElementById('pv'+k);if(p&&u&&o)o.innerHTML=priceText(w,p,u);}
  else if(t.id==='mix'&&dz){dz.D.mix=+t.value/100;const o=document.getElementById('dzs');const of=w!.offers.find(x=>x.id===dz!.oid);if(o&&of)o.innerHTML=designSummary(w!,of,dz.D);}
@@ -60,7 +60,7 @@ function act(a:string,v:string,x:string){switch(a){
  case'snd':sound.toggle(v as any);render();return;case'q':city.setQuality(+v);render();return;case'tut':store.set(TUT,tutOn()?'0':'1');render();return;}
  if(!w)return;const W=w;switch(a){
  case'tab':tab=tab===v?null:v;if(tab==='santiye')sel=0;pazar=0;confirmK='';break;case'spd':speed=+v;break;case'sub':sub=v;break;case'cam':city.mode=city.mode==='site'?'city':'site';city.shotT=38;city.shot=0;break;
- case'card':S.resolve(W,+v);sync();save();break;case'res':W.result=null;break;
+ case'card':try{S.resolve(W,+v);}catch(err){console.warn('seçenek hatası',err);W.cards.shift();W.result=null;}sync();save();break;case'res':W.result=null;break;
  case'tutok':W.flags['tut_'+v]=1;break;
  case'trade':W.trade=v;break;case'eve':W.evening=v;break;
  case'rank':S.rankUp(W);break;case'firm':if(S.openFirm(W)){toast('Tabelayı astın. Artık yevmiye yok, işin var.');sound.sfx('good');}sync();break;
@@ -142,7 +142,9 @@ function tutBubble(w:World){if(!tutOn()||w.cards.length||w.result)return'';const
  ['usta2',!!f&&f.masters.length>0,'İyi bir ustabaşı altın değerindedir. Ona çırak ver, primini unutma. Kırgın usta ya rakibe gider ya kendi firmasını kurar.']];
  const t=T.find(x=>x[1]&&!w.flags['tut_'+x[0]]);if(!t)return'';return`<div class="tut"><b>Rıza Usta</b><p>${t[2]}</p><button class="s y" data-a="tutok" data-v="${t[0]}">Anladım</button></div>`;}
 function tabs(w:World){const T=[['santiye','Şantiye'],['arsa','Arsa'],['ekip',w.firm?'Ekip':'İş'],['hayat','Hayat'],['aile','Aile'],['para','Para']];return`<div class="tabs">${T.map(([k,n])=>`<button data-a="tab" data-v="${k}" class="${tab===k?'on':''}">${n}</button>`).join('')}</div>`;}
-function cardView(w:World){if(w.result)return`<div class="veil"><div class="card not"><span class="dt">${MONTHS[mon(w)]} ${year(w)}</span><p>${e(w.result)}</p><div class="ops"><button data-a="res">Devam</button></div></div></div>`;
+/** Bir kartın metni hata verirse oyunu kilitlemesin: o kart atlanır */
+function cardView(w:World){try{return cardView0(w);}catch(err){console.warn('kart atlandı',w.cards[0]?.id,err);w.cards.shift();return'';}}
+function cardView0(w:World){if(w.result)return`<div class="veil"><div class="card not"><span class="dt">${MONTHS[mon(w)]} ${year(w)}</span><p>${e(w.result)}</p><div class="ops"><button data-a="res">Devam</button></div></div></div>`;
  S.prune(w);const c=w.cards[0];if(!c)return'';const ev=EV[c.id];const o=buildOpts(w,c);return`<div class="veil ${ev.glass?'g':''}"><div class="card ${ev.kind||''} ${ev.glass?'glass':''}"><span class="dt">${MONTHS[mon(w)]} ${year(w)}</span><h2>${e(ev.title(w,c.a))}</h2><p>${e(ev.text(w,c.a))}</p><div class="ops">${o.map((x,i)=>`<button data-a="card" data-v="${i}" ${x.off?'disabled':''}>${e(x.t)}</button>`).join('')}</div></div></div>`;}
 const meter=(p:number,c='')=>`<div class="meter ${c}"><i style="width:${Math.max(0,Math.min(100,p))}%"></i></div>`;
 function panel(w:World,t:string){return({santiye:pSant,arsa:pArsa,ekip:pEkip,hayat:pHayat,aile:pAile,para:pPara} as any)[t](w);}

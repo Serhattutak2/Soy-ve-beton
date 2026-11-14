@@ -1,7 +1,7 @@
 // Uzun oyun paketi arayüzü: arsa bankası, holding, şubeler, kadro, vasiyet, emeklilik, yıl sonu raporu, zorluk.
 import type {World} from '../core/types';
 import {STAGES,CITIES,TR_KEYS,SUBS,ROLES,DIFF} from '../core/data';
-import {money,age,alive,family,pl,year} from '../core/util';
+import {money,age,alive,family,pl,year,ek} from '../core/util';
 import * as V4 from '../core/v4';
 import * as S from '../core/sim';
 const e=(s:string)=>String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]!));
@@ -36,7 +36,7 @@ export function willSec(w:World){const v=w.will;const hist=w.wills||[];const me=
  const cur=v?(()=>{const d=V4.WILLS[v.id];const left=Math.max(0,Math.round((v.dl-w.m)/12));const c=V4.willCost(w,v.id);return`<div class="item"><div class="row"><span class="nm">"${e(d.t)}"</span><span class="tag ${v.done?'ok':v.fail?'no':''}">${v.done?'Tutuldu':v.fail?'Tutulamadı':`${left} yıl kaldı`}</span></div><p class="m">${e(d.d)}${v.id==='asama'&&v.arg!==undefined?` Hedef: ${e(STAGES[v.arg].n)}.`:''}</p>${!v.done&&!v.fail&&d.act?`<button class="s ${w.cash>=c?'y':''}" data-a="willdo" ${w.cash>=c?'':'disabled'}>Yerine getir (${money(c)})</button>`:''}</div>`;})():'<p class="m">Firma kurunca bir vasiyet yüklenir.</p>';
  const ret=S.canRetire(w);const h=w.heirId>=0?w.people[w.heirId]:undefined;
  return`<div class="sec"><h3>Vasiyet</h3>${cur}${hist.length?`<p class="m">Önceki kuşaklar: ${hist.map(x=>`${x.gen}. kuşak ${x.ok?'tuttu':'tutamadı'}`).join(', ')}.</p>`:''}</div>
- ${w.firm?`<div class="sec"><h3>Emeklilik</h3><p class="m">${ret?`Koltuğu ${e(h!.name)}'e devredip danışman dede olabilirsin. Yaşadıkça akıl verirsin, sen de dinlenirsin.`:`50 yaşından sonra, 20 yaşını geçmiş bir varis yazılıysa emekli olabilirsin.${age(w,me)<50?` Sen ${age(w,me)} yaşındasın.`:''}`}</p>${ret?`<button class="s" data-a="retire">${confirmR==='r'?'Eminim, koltuğu devret':'Emekli ol'}</button>`:''}</div>`:''}`;}
+ ${w.firm?`<div class="sec"><h3>Emeklilik</h3><p class="m">${ret?`Koltuğu ${e(ek(h!.name,'dat'))} devredip danışman dede olabilirsin. Yaşadıkça akıl verirsin, sen de dinlenirsin.`:`50 yaşından sonra, 20 yaşını geçmiş bir varis yazılıysa emekli olabilirsin.${age(w,me)<50?` Sen ${age(w,me)} yaşındasın.`:''}`}</p>${ret?`<button class="s" data-a="retire">${confirmR==='r'?'Eminim, koltuğu devret':'Emekli ol'}</button>`:''}</div>`:''}`;}
 
 /** Yıl sonu raporu: yeni yılın ilk ayında bir kez açılır */
 export function reportView(w:World){const r=w.report;if(!r||r.seen)return'';const up=r.dnw>=0;
