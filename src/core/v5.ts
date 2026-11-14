@@ -15,7 +15,7 @@ const yr=(w:World,a:number,b:number)=>year(w)>=a&&year(w)<=b;
 
 // ================= YENİ BAŞLANGIÇLAR =================
 export function setupScen(w:World){const me=pl(w);
- if(w.scen==='gurbet'){w.flags.gurbet=1;w.skills={demir:14,beton:12,kalip:10,duvar:10,ince:16};w.home=2;const sp=addPerson(w,{sex:'k',by:me.by+12*ri(w,2,6),sur:w.surname,gen:1,bond:70});me.sp=sp.id;sp.sp=me.id;for(let i=0;i<2;i++){const k=addPerson(w,{sex:chance(w,.5)?'e':'k',by:w.m-12*ri(w,9,16),sur:w.surname,fa:me.id,mo:sp.id,gen:2});me.kids.push(k.id);sp.kids.push(k.id);k.dream=chance(w,.5)?'gurbet':k.dream;}later(w,'gurbet_kazik',3,10);later(w,'gurbet_cocuk',30,60);}
+ if(w.scen==='gurbet'){w.flags.gurbet=1;w.inv.doviz+=Math.round(w.cash*.6);w.cash-=Math.round(w.cash*.6);w.skills={demir:14,beton:12,kalip:10,duvar:10,ince:16};w.home=2;const sp=addPerson(w,{sex:'k',by:me.by+12*ri(w,2,6),sur:w.surname,gen:1,bond:70});me.sp=sp.id;sp.sp=me.id;for(let i=0;i<2;i++){const k=addPerson(w,{sex:chance(w,.5)?'e':'k',by:w.m-12*ri(w,9,16),sur:w.surname,fa:me.id,mo:sp.id,gen:2});me.kids.push(k.id);sp.kids.push(k.id);k.dream=chance(w,.5)?'gurbet':k.dream;}later(w,'gurbet_kazik',3,10);later(w,'gurbet_cocuk',30,60);}
  if(w.scen==='cirak'){w.flags.cirak=1;w.flags.usta=1;later(w,'cirak_usta',6,14);}
  if(w.scen==='muhendis'){w.flags.muhendis=1;w.skills={demir:24,beton:26,kalip:18,duvar:10,ince:8};w.xp=40;later(w,'muh_cay',1,3);later(w,'muh_saygi',14,30);}
  if(w.scen==='hapis'){w.flags.hapisGecmis=1;w.guilt=18;w.hatir=-10;w.skills={demir:40,beton:44,kalip:38,duvar:36,ince:30};{const k=addPerson(w,{sex:'e',by:w.m-12*ri(w,19,24),sur:w.surname,fa:me.id,gen:2,bond:15});me.kids.push(k.id);k.dream='insaat';}w.flags.oldFirm={name:w.surname+' Yapı',stage:6,rep:30,cert:2,done:[3,2,4,3,2,1,1,...Array(STAGES.length-7).fill(0)],qual:30,exp:4e6,path:''};later(w,'hapis_aile',4,12);}
@@ -150,5 +150,5 @@ export function documentary(w:World):Doc{const heads=Object.values(w.people).fil
  return{title,score,lines};}
 
 // ================= AYLIK =================
-export function v5Month(w:World){rivalStyles(w);if(hasF(w)&&st(w)>=5&&mon(w)===1&&year(w)%5===4&&w.flags.secimY!==year(w)&&!w.cards.length){w.flags.secimY=year(w);w.cards.push({id:'baskan_secim',a:{}});}if(w.flags.belediye&&w.m>(w.flags.belediyeM||0))w.flags.belediye='';const me=pl(w);(w.flags.heads||(w.flags.heads=[])).includes(me.id)||w.flags.heads.push(me.id);}
+export function v5Month(w:World){rivalStyles(w);{const d=w.flags.danisman!==undefined?w.people[w.flags.danisman]:undefined;if(d&&alive(d)&&w.firm){w.firm.qual=Math.min(90,w.firm.qual+.03);stress(w,-.3);}}if(w.flags.muhendis&&w.firm&&!w.flags.muhQ){w.flags.muhQ=1;w.firm.qual=clamp(w.firm.qual+8,0,100);}if(hasF(w)&&st(w)>=5&&mon(w)===1&&year(w)%5===4&&w.flags.secimY!==year(w)&&!w.cards.length){w.flags.secimY=year(w);w.cards.push({id:'baskan_secim',a:{}});}if(w.flags.belediye&&w.m>(w.flags.belediyeM||0))w.flags.belediye='';const me=pl(w);(w.flags.heads||(w.flags.heads=[])).includes(me.id)||w.flags.heads.push(me.id);}
 void rnd;void FNAMES;void ek;

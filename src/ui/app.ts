@@ -60,7 +60,7 @@ function act(a:string,v:string,x:string){switch(a){
  case'quit':save();store.set('sb_live','0');w=null;tab=null;menuView='home';homeView=false;city.showHome(null);render();return;
  case'snd':sound.toggle(v as any);render();return;case'q':city.setQuality(+v);render();return;case'tut':store.set(TUT,tutOn()?'0':'1');render();return;}
  if(!w)return;const W=w;switch(a){
- case'tab':tab=tab===v?null:v;if(tab==='santiye')sel=0;pazar=0;confirmK='';break;case'spd':speed=+v;break;case'sub':sub=v;break;case'cam':city.mode=city.mode==='site'?'city':'site';city.shotT=38;city.shot=0;break;
+ case'tab':tab=tab===v?null:v;if(tab==='santiye')sel=0;pazar=0;confirmK='';break;case'spd':speed=+v;break;case'sub':sub=v;break;case'cam':city.mode=city.mode==='site'?'map':'site';city.shotT=38;city.shot=0;city.pan.set(0,0,0);city.zoom=1;break;
  case'card':try{S.resolve(W,+v);}catch(err){console.warn('seçenek hatası',err);W.cards.shift();W.result=null;}sync();save();break;case'res':W.result=null;break;
  case'tutok':W.flags['tut_'+v]=1;break;
  case'trade':W.trade=v;break;case'eve':W.evening=v;break;
@@ -100,7 +100,7 @@ function act(a:string,v:string,x:string){switch(a){
  case'walk':W.walk=true;store.set(LEG,W.surname);museum(W);break;case'wend':store.del(SLOT+slot);w=null;tab=null;menuView='home';city.mode='city';homeView=false;city.showHome(null);break;
  }render();}
 function museum(W:World){try{const L=JSON.parse(store.get(MUS)||'[]');const ep=S.epitaph(W);const D=V5.documentary(W);L.unshift({s:W.surname,c:CITIES[W.city].n,g:ep.gen,p:ep.peak,b:ep.live,f:ep.fall,y0:Math.floor((W.flags.startM||W.m)/12),y1:year(W),n:Object.keys(W.ach).length,t:D.title,sc:D.score,im:(W.flags.imzalar||[]).map((x:any)=>x.n)});store.set(MUS,JSON.stringify(L.slice(0,30)));const G=JSON.parse(store.get(ACHG)||'{}');for(const k in W.ach)G[k]=1;store.set(ACHG,JSON.stringify(G));}catch{}}
-function render(){if(!w){ui.innerHTML=menu();return;}if(w.over&&!w.walk){w.walk=true;store.set(LEG,w.surname);museum(w);}if(w.walk){ui.innerHTML=walk(w);return;}
+function render(){if(!w){ui.innerHTML=menu();return;}if(w.over&&!w.walk){w.walk=true;store.set(LEG,w.surname+'|'+V5.documentary(w).title);museum(w);}if(w.walk){ui.innerHTML=walk(w);return;}
  if((document.activeElement as HTMLElement)?.tagName==='INPUT'&&(document.activeElement as HTMLInputElement).type==='range'&&!w.cards.length)return;
  if(w.report&&!w.report.seen&&store.get('sb_rep')==='0')w.report.seen=true;if(w.flags.newAch?.length){const k=w.flags.newAch.shift();toast(`Başarım: ${ACH[k]?.n||k}`);sound.sfx('good');}
  const sh0=document.querySelector('.sheet');const sc=sh0?.scrollTop||0;
@@ -144,6 +144,14 @@ function tutBubble(w:World){if(!tutOn()||w.cards.length||w.result)return'';const
  const t=T.find(x=>x[1]&&!w.flags['tut_'+x[0]]);if(!t)return'';return`<div class="tut"><b>Rıza Usta</b><p>${t[2]}</p><button class="s y" data-a="tutok" data-v="${t[0]}">Anladım</button></div>`;}
 function tabs(w:World){const T=[['santiye','Şantiye'],['arsa','Arsa'],['ekip',w.firm?'Ekip':'İş'],['hayat','Hayat'],['aile','Aile'],['para','Para']];return`<div class="tabs">${T.map(([k,n])=>`<button data-a="tab" data-v="${k}" class="${tab===k?'on':''}">${n}</button>`).join('')}</div>`;}
 /** Bir kartın metni hata verirse oyunu kilitlemesin: o kart atlanır */
+/** Oyunu şu an etkileyen kalıcı durumlar: oyuncu neyin neden olduğunu görsün */
+function effects(w:World){const L:string[]=[];const f=w.flags;const D=f.danisman!==undefined?w.people[f.danisman]:undefined;
+ if(f.belediye==='dost')L.push('Belediye dostun: ruhsatlar hızlı.');if(f.belediye==='kizgin')L.push('Belediye sana kızgın: ruhsatlar %60 yavaş.');if(f.belediye==='planci')L.push('Planlamacı belediye: sağlam işe ruhsat hızlı, kaçağa yavaş.');
+ if(f.meclis)L.push('Meclis üyesisin: imar kat artışları ve ihalelerde avantaj.');if(f.siki)L.push('Sıkı yapı denetimi: gizli hatalar daha çok yakalanıyor.');if(f.robot)L.push('Robotlu şantiye: iş %15 hızlı.');
+ if((f.valMul||1)!==1)L.push(`Dönem etkisi: satış fiyatları %${Math.round(((f.valMul||1)-1)*100)}.`);if((f.costMul||1)!==1)L.push(`Dönem etkisi: malzeme maliyeti %${Math.round(((f.costMul||1)-1)*100)}.`);
+ if(D&&alive(D))L.push(`Danışman dede ${D.name}: kalite yavaş yükselir, ekipler %3 hızlı.`);if(f.muhendis&&w.gen===1)L.push(`Ustaların saygısı: ekip hızı %${Math.round((.9+.05*Math.min(4,f.muhSaygi||0)-1)*100)}.`);
+ if(f.hapisGecmis&&w.gen===1)L.push('Sicilin: ihalelerde şansın %10 düşük.');if(f.kefalet)L.push('Kişisel kefalet: batarsan evin ve araban gider.');if(f.legT)L.push(`Önceki hanedanın mirası: "${f.legT}".`);
+ return L.length?`<div class="sec"><h3>Seni etkileyenler</h3><ul class="news">${L.map(x=>`<li>${e(x)}</li>`).join('')}</ul></div>`:'';}
 function docView(w:World){const D=V5.documentary(w);return`<div class="veil"><div class="card rep"><p class="m" style="letter-spacing:.12em;text-transform:uppercase">Hanedan belgeseli</p><h2>${e(D.title)}</h2><p><b>${D.score}</b> puan</p><ul class="news">${D.lines.map(l=>`<li>${e(l)}</li>`).join('')}</ul><button class="y" data-a="doc">Kapat</button></div></div>`;}
 function cardView(w:World){try{return cardView0(w);}catch(err){console.warn('kart atlandı',w.cards[0]?.id,err);w.cards.shift();return'';}}
 function cardView0(w:World){if(w.result)return`<div class="veil"><div class="card not"><span class="dt">${MONTHS[mon(w)]} ${year(w)}</span><p>${e(w.result)}</p><div class="ops"><button data-a="res">Devam</button></div></div></div>`;
@@ -249,7 +257,7 @@ function pHayat(w:World){const me=pl(w);const lim=S.loanLimit(w);const b=Math.ma
   ${HOMES.map((h,i)=>i===w.home||i===0?'':`<div class="row"><span style="font-size:14px">${h.n} <span class="m">${h.p?money(h.p):'kira '+money(h.r)}</span></span><button class="s" data-a="home" data-v="${i}">${h.p?'Al':'Taşın'}</button></div>`).join('')}</div>
  <div class="sec"><h3>Araba: ${CARS[w.car].n}</h3>${CARS.map((c,i)=>i===w.car||i===0?'':`<div class="row"><span style="font-size:14px">${c.n} <span class="m">${money(c.p)}</span></span><button class="s" data-a="car" data-v="${i}">Al</button></div>`).join('')}</div>
  <div class="sec"><h3>Banka</h3><div class="row"><span>Borç ${money(w.debt)}</span><span class="m">Limit ${money(lim)} · faiz %${Math.round(w.econ.rate*100)}</span></div><div class="btns"><button class="s" data-a="borrow" data-v="${b}">${money(b)} çek</button><button class="s" data-a="repay" data-v="${Math.round(w.debt*.25)||1}" ${w.debt>0?'':'disabled'}>Çeyreğini öde</button><button class="s" data-a="repay" data-v="${Math.ceil(w.debt)||1}" ${w.debt>0?'':'disabled'}>Hepsini öde</button></div></div>
- <div class="sec"><h3>Rakipler</h3>${(w.rivals.length?w.rivals:[{...w.rival,spec:''}]).map(r=>`<div class="row"><span style="font-size:14px">${e(r.name)} <span class="m">başında ${e(r.head)}${(r as any).style?` · ${V5.STYLES[(r as any).style].n}`:''}</span></span><span class="m">${r.stage+1}. aşama · ${r.rel>60?'dost':r.rel>30?'mesafeli':'düşman'}</span></div>`).join('')}</div>
+ ${effects(w)}<div class="sec"><h3>Rakipler</h3><p class="m">Ucuzcu rakip küçük binalarda alıcını %8 azaltır, yabancı sermayeli lüks segmentte %10. Siyasetçi rakip ihale şansını düşürür.</p>${(w.rivals.length?w.rivals:[{...w.rival,spec:''}]).map(r=>`<div class="row"><span style="font-size:14px">${e(r.name)} <span class="m">başında ${e(r.head)}${(r as any).style?` · ${V5.STYLES[(r as any).style].n}`:''}</span></span><span class="m">${r.stage+1}. aşama · ${r.rel>60?'dost':r.rel>30?'mesafeli':'düşman'}</span></div>`).join('')}</div>
  <div class="sec"><h3>Başarımlar (${Object.keys(w.ach).length}/${Object.keys(ACH).length})</h3><div class="achg">${Object.entries(ACH).map(([k,a])=>`<div class="ach ${w.ach[k]?'on':''}"><b>${a.n}</b><span>${a.d}</span></div>`).join('')}</div></div>
  <div class="sec"><h3>Sicil</h3><p class="m">${s.projects} iş · ${w.buildings.length} bina · ${s.accidents} kaza · ${s.bankrupt} batış · ${s.jail} hapis · ${s.collapse} yıkılan · ${s.saved} depremde ayakta kalan</p></div>
  <div class="sec"><h3>Kronik</h3>${w.log.slice(0,50).map(l=>`<div class="row" style="align-items:flex-start"><span class="m" style="flex:none;width:36px">${Math.floor(l.m/12)}</span><span style="flex:1;font-size:14px;${l.k==='kotu'?'color:#ffb39a':l.k==='iyi'?'color:#b4dfa9':''}">${e(l.t)}</span></div>`).join('')}</div>
