@@ -1,6 +1,7 @@
 import type {World,Project,Person,Offer,Deal,PItem,Design} from './types';
 import * as WD from './world';
 import * as V4 from './v4';
+import * as V5 from './v5';
 import {STAGES,CERT,CERT_EXP,RANKS,WAGE,DEFECTS,HOMES,CARS,INV,BIZ,CITIES,SCENS,SURNAMES,RIVALS,MNAMES,FNAMES,ITEM,setItems,CREWS,SUPPLIERS,OWNERS,MATS,priceMul,landShare,EQUIP,LAST,TR_KEYS,YD_KEYS,dif,SUBS,ROLES,DEALK,dealKind} from './data';
 import type {DealKind} from './data';
 import {rnd,ri,pick,chance,clamp,year,mon,pl,age,alive,log,sc,cash,rep,hurt,stress,hatir,bond,kids,spouse,addPerson,family,base,money,netWorth,heirCandidates,full,ek,relTo} from './util';
@@ -27,7 +28,7 @@ export function newWorld(o:{seed?:number;scen?:string;city?:string;legacy?:strin
    const hood=pick(w,CITIES[w.city].hoods);const p=mkProject(w,{id:0,stage:2,name:hood+' Apartmanı',city:w.city,hood,locMul:1,expires:0},'nor',.45,'adil');p.name='Rahmetlinin binası';for(let i=0;i<p.items.length&&ITEM[p.items[i].id].ph==='haz';i++){p.items[i].prog=1;p.items[i].paid=true;p.items[i].tq=60;p.cur=i+1;}p.items.find(i=>i.id==='ruhsat')!.prog=1;w.projects.push(p);genOffers(w,true);}
  const y0=year(w);for(let y=y0+ri(w,5,12);y<y0+130;y+=ri(w,7,15))w.crises.push(y);
  const qm=CITIES[w.city].quake;let qy=y0+ri(w,10,24);while(qy<y0+130){w.quakes.push({y:qy,sev:clamp(.45+rnd(w)*.45*qm,.3,.98)});qy+=Math.round(ri(w,18,42)/Math.max(.3,qm));}
- const arcs=Object.keys(ARC).sort(()=>rnd(w)-.5).slice(0,ri(w,7,10));w.arcs=arcs;
+ const arcs=Object.keys(ARC).sort(()=>rnd(w)-.5).slice(0,ri(w,7,10));w.arcs=arcs;V5.setupScen(w);
  for(const a of arcs){const late=['donus','tapu','ortak','gazeteci','kiz','cirak','muhtar'].includes(a);w.sched.push({m:w.m+(late?ri(w,70,260):ri(w,4,70)),id:ARC[a],a:{}});}
  if(w.legacy)w.sched.push({m:w.m+ri(w,40,120),id:'efsane',a:{}});
  w.sched.push({m:w.m+1,id:'_intro',a:{}});
@@ -146,7 +147,7 @@ export function monthly(w:World){const L:{n:string;v:number}[]=[];const f=w.firm
 
 // ---------- AYLIK ADIM ----------
 export function advance(w:World){if(w.over||w.cards.length)return false;w.m++;w.quakeNow=undefined;
- econMonth(w);if(w.jail>0)w.jail--;lifeMonth(w);workMonth(w);firmMonth(w);invMonth(w);WD.rentalsMonth(w);WD.homeMonth(w);familyMonth(w);rivalMonth(w);WD.rivalsMonth(w);mastersMonth(w);devralma(w);quakeCheck(w);schedule(w);director(w);autoAssignEngs(w);V4.v4Month(w);finance(w);warnCash(w);deathCheck(w);finalize(w);if(mon(w)===0||w.m%3===0)WD.checkAch(w);return true;}
+ econMonth(w);if(w.jail>0)w.jail--;lifeMonth(w);workMonth(w);firmMonth(w);invMonth(w);WD.rentalsMonth(w);WD.homeMonth(w);familyMonth(w);rivalMonth(w);WD.rivalsMonth(w);mastersMonth(w);devralma(w);quakeCheck(w);schedule(w);director(w);autoAssignEngs(w);V4.v4Month(w);V5.v5Month(w);finance(w);warnCash(w);deathCheck(w);finalize(w);if(mon(w)===0||w.m%3===0)WD.checkAch(w);return true;}
 function mastersMonth(w:World){const f=w.firm;if(!f)return;for(const m of f.masters){m.loy=clamp(m.loy-.06+(w.econ.phase==='kriz'?-.1:0),0,100);if(m.sk<95)m.sk+=.02;if(m.app){m.appSk=Math.min(m.sk-5,(m.appSk||15)+.35);}}}
 function devralma(w:World){const d=w.flags.devralinan;if(!d||!w.firm)return;w.flags.devralinan=0;const st=STAGES[d.st];const hood=pick(w,CITIES[w.city].hoods);const o:Offer={id:w.nid++,stage:d.st,name:hood+' (devralınan)',city:w.city,hood,locMul:.95,expires:w.m+1};const p=mkProject(w,o,'nor',0,'adil');for(const it of p.items){if(ITEM[it.id].ph==='haz'||ITEM[it.id].ph==='kaba'){it.prog=1;it.paid=true;it.tq=chance(w,.5)?40:60;p.done+=itemWeight(it.id)/p.tw;p.cur++;}}p.prog=p.done;p.cost*=.55;p.lux*=.5;w.projects.push(p);}
 function warnCash(w:World){if(!w.firm||w.cards.length)return;if(w.m-(w.flags.warnM||-99)<14)return;const L=monthly(w);const f=WD.forecast(w,L.reduce((s,x)=>s+x.v,0));const i=f.findIndex(x=>x<0);if(i>=0&&i<3){w.flags.warnM=w.m;w.flags.cashWarn=w.m;w.cards.push({id:'muhasebeci',a:{mo:i+1,need:Math.round(-Math.min(...f.slice(0,4))*1.15/1000)*1000+1000}});}}
@@ -165,7 +166,7 @@ function lifeMonth(w:World){const me=pl(w),a=age(w,me);
  if(w.selfWork){hurt(w,a>50?.45:.25);stress(w,.2);const sk=CREWS[w.selfWork]?.sk;if(sk)w.skills[sk]=Math.min(100,w.skills[sk]+.35);}
  w.health=clamp(w.health+(.07*(HOMES[w.home].c-1))-(a>45?.05:0)-(a>60?.1:0)-(w.firm?.02:0)-(w.stress>70?.15:0),1,100);
  stress(w,w.projects.length*.08-.25+(w.debt>w.cash*2&&w.debt>0?.3:0));if(w.guilt>18&&chance(w,.03))stress(w,4);}
-function workMonth(w:World){if(w.firm)return;if(w.unemployed>0){w.unemployed--;return;}w.cash+=WAGE[w.rank]*(w.econ.phase==='kriz'?.8:1);w.xp+=1;w.skills[w.trade]=Math.min(100,w.skills[w.trade]+.42);for(const k in w.skills)if(k!==w.trade)w.skills[k]=Math.min(100,w.skills[k]+.09);hurt(w,.05+(w.rank<2?.05:0));}
+function workMonth(w:World){if(w.firm)return;if(w.unemployed>0){w.unemployed--;return;}w.cash+=WAGE[w.rank]*(w.econ.phase==='kriz'?.8:1);w.xp+=w.flags.cirak?1.5:1;w.skills[w.trade]=Math.min(100,w.skills[w.trade]+(w.flags.cirak?.6:.42));for(const k in w.skills)if(k!==w.trade)w.skills[k]=Math.min(100,w.skills[k]+.09);hurt(w,.05+(w.rank<2?.05:0));}
 export function autoRun(w:World,p:Project){const it=p.items[p.cur];if(!it)return;const d=ITEM[it.id];const f=w.firm!;const full=p.eng>0||(globalThis as any).BOTAUTO;const mine=f.crews[d.tr]?.n||0;const fam=(w.selfWork===d.tr?1:0)+family(w).filter(x=>x.job===d.tr).length;if(d.tr&&!it.tas&&(full?mine<siteCap(p.m2)*.4:mine+fam<Math.max(1,siteCap(p.m2)*.25)))it.tas=true;const P=d.ph;if(!p.bought[P]&&phaseList(w,p,P).some(x=>x.miss>0)){buyPhase(w,p.id,1,P)||(full&&buyPhase(w,p.id,2,P));}else if(phaseList(w,p,P).some(x=>x.miss>0&&x.need>0)&&Object.keys(d.mats).some(m=>(w.stock[m]||0)<d.mats[m]*p.m2*(1-it.prog)*qFac(it.q,it.id)*1.02)){buyPhase(w,p.id,1,P)||(full&&buyPhase(w,p.id,2,P));}}
 /** Paralel kalem için malzeme: eksikse o aşamanın malzemesini al */
 function autoMats(w:World,p:Project,it:PItem){const d=ITEM[it.id];if(Object.keys(d.mats).some(m=>(w.stock[m]||0)<d.mats[m]*p.m2*(1-it.prog)*qFac(it.q,it.id)*1.02)){buyPhase(w,p.id,1,d.ph)||((p.eng>0||(globalThis as any).BOTAUTO)&&buyPhase(w,p.id,2,d.ph));}}
@@ -192,7 +193,7 @@ function buildMonth(w:World,p:Project,need:Record<string,number>,extra:Record<st
  const work=(it:PItem,t:number,front:boolean):number=>{const d=ITEM[it.id];
   if(!it.paid&&d.fee){const fee=d.fee*p.m2*(d.id==='proje'&&w.subs?.mimarlik?.5:1);if(!spend(w,fee)){if(front){p.halt=true;p.reason='Para yok: '+d.n;}return -1;}p.spent+=fee;}it.paid=true;
   const W=d.md*p.m2;let dpr=0,tused=0;
-  if(!d.tr||W<=0){const dur=d.wait*(d.id==='ruhsat'&&w.hatir>15?.7:1)*(d.id==='ruhsat'&&w.council>w.m?.6:1)||.1;dpr=Math.min(1-it.prog,t/dur);tused=dpr*dur;}
+  if(!d.tr||W<=0){const dur=d.wait*(d.id==='ruhsat'&&w.hatir>15?.7:1)*(d.id==='ruhsat'&&w.council>w.m?.6:1)*(d.id==='ruhsat'&&w.flags.belediye==='kizgin'?1.6:1)||.1;dpr=Math.min(1-it.prog,t/dur);tused=dpr*dur;}
   else{const cap=siteCap(p.m2);const winter=(mon(w)===11||mon(w)<2)&&['temel','beton','kalip','cati','cephe'].includes(d.id)?1-.6*c.winter:1;let rate=0;
    if(it.tas)rate=cap*26*winter;else{const cr=f.crews[d.tr];const sh=Math.max(1,need[d.tr]||1);const ex=extra[d.tr];const ms=WD.masterSk(w,d.tr);const sk=Math.max(cr.n?cr.sk:ex?ex.sk:40,ms*.92);rate=Math.min(cap*1.5,(cr.n/sh+(ex?ex.n/sh:0)))*26*(.6+sk/100)*winter*(ms?1.1:1);if(rate<=0){if(front){p.halt=true;p.reason=`${CREWS[d.tr].n} yok`;}return -1;}}
    const eq=f.equip||{};const kaba=d.ph==='kaba';rate*=(eq.vinc&&kaba&&p.floors>=5?1.15:1)*(eq.pompa&&(it.id==='beton'||it.id==='temel')?1.25:1)*(eq.tunel&&p.flats>=30&&(it.id==='kalip'||it.id==='beton')?1.6:1);const dur=W*(1-it.prog)/rate;const useT=Math.min(t,dur);let dp=(1-it.prog)*useT/dur;
@@ -223,7 +224,7 @@ function buildMonth(w:World,p:Project,need:Record<string,number>,extra:Record<st
   while(p.cur<p.items.length&&p.items[p.cur].prog>=.9999){if(!p.items[p.cur].fin)complete(p.items[p.cur]);p.cur++;}}
  if(p.reason){p.halt=true;}
  if(p.cur>=p.items.length)finishBuild(w,p);}
-function finishBuild(w:World,p:Project){const f=w.firm!,st=STAGES[p.stage];p.prog=1;let tot=0,wei=0;for(const it of p.items){const d=ITEM[it.id];if(d.st){tot+=(it.tq||60)*d.st;wei+=d.st;}}const b0=wei?tot/wei:60;const hidden=p.defects.reduce((s,d)=>s+d.sev*(d.found?.3:1),0);const qq=b0<45?'kis':b0>=74?'sag':'nor';p.struct=clamp(b0+p.struct-hidden*.55+(f.qual-40)*.12+(w.staff||[]).filter(x=>x.role==='statik').reduce((m,x)=>Math.max(m,x.sk),0)/25-(p.skipEtut?10:0)-Math.min(3,p.cheap)*4,5,100);f.exp+=p.cost;f.done[p.stage]=(f.done[p.stage]||0)+1;w.stats.projects++;
+function finishBuild(w:World,p:Project){V5.imzaDone(w,p);const f=w.firm!,st=STAGES[p.stage];p.prog=1;let tot=0,wei=0;for(const it of p.items){const d=ITEM[it.id];if(d.st){tot+=(it.tq||60)*d.st;wei+=d.st;}}const b0=wei?tot/wei:60;const hidden=p.defects.reduce((s,d)=>s+d.sev*(d.found?.3:1),0);const qq=b0<45?'kis':b0>=74?'sag':'nor';p.struct=clamp(b0+p.struct-hidden*.55+(f.qual-40)*.12+(w.staff||[]).filter(x=>x.role==='statik').reduce((m,x)=>Math.max(m,x.sk),0)/25-(p.skipEtut?10:0)-Math.min(3,p.cheap)*4,5,100);f.exp+=p.cost;f.done[p.stage]=(f.done[p.stage]||0)+1;w.stats.projects++;
  rep(w,({kis:.5,nor:1.3,sag:2.2}[qq]||1)+(f.stage<4?1:0));if(qq==='kis')w.guilt+=2+st.tier;
  if(st.floors>0){const r:string[]=[];for(const u of p.units)if(u.buyer&&r.length<5)r.push(u.buyer.replace(' ve diğerleri',''));w.buildings.push({id:p.id,name:p.name,stage:p.stage,struct:p.struct,year:year(w),floors:p.floors,slot:p.slot,residents:r,state:'ayakta',q:qq,gen:w.gen,owner:w.surname,city:p.city,m2:p.m2,look:p.look,shops:p.shops});w.flags.lastDone=w.m;
  for(const u of p.units)if(u.rent&&u.sold<u.n){const n=u.n-u.sold;w.rentals.push({name:p.name+', '+u.l,city:p.city,val:market(w,p,u)*n/.85,n});}}
@@ -267,7 +268,7 @@ function quakeCheck(w:World){const y=year(w);if(mon(w)!==9)return;const q=w.quak
  for(const b of local){if(b.state==='yikik')continue;if(b.struct<th-10){b.state='yikik';lost++;}else if(b.struct<th){b.state='hasar';}else{saved++;}}
  w.stats.collapse+=lost;w.stats.saved+=saved;w.health=clamp(w.health-5,1,100);stress(w,20);w.econ.demand*=.72;w.econ.phase='durgun';w.econ.left=18;
  if(!local.length){w.cards.unshift({id:'_deprem0',a:{sev:q.sev}});return;}
- const a=lost>0?(pick(w,local.filter(b=>b.state==='yikik')).name):null;w.cards.unshift({id:'_deprem',a:{lost,saved,a,sev:q.sev}});log(w,`${y}: Büyük deprem. ${lost?lost+' binan yıkıldı.':'Binaların ayakta.'}`,lost?'kotu':'iyi');
+ const a=lost>0?(pick(w,local.filter(b=>b.state==='yikik')).name):null;w.cards.unshift({id:'_deprem',a:{lost,saved,a,sev:q.sev}});w.sched.push({m:w.m+1,id:'kriz_deprem',a:{lost,saved}});log(w,`${y}: Büyük deprem. ${lost?lost+' binan yıkıldı.':'Binaların ayakta.'}`,lost?'kotu':'iyi');
  if(lost===0){rep(w,10+saved);if(saved>0)w.flags.achDeprem=1;}else{rep(w,-Math.min(45,12+lost*7));w.firm&&(w.firm.qual=clamp(w.firm.qual-6,10,100));cash(w,-Math.min(sc(w,1+lost*.8),w.cash*.5+sc(w,.5)));w.guilt+=lost*5;}}
 EV._deprem0={id:'_deprem0',kind:'not',title:()=>'Deprem',text:()=>'Gece dört. Yer homurdandı. Şehirde binalar yıkıldı, sen ve bildiğin ustalar sabaha kadar enkazda el ile taş kaldırdınız. O gün neden sağlam yapmak gerektiğini herkes öğrendi.',o:()=>[{t:'Sabaha kadar enkaz',f:(w)=>{for(const k in w.skills)w.skills[k]=Math.min(100,w.skills[k]+4);hatir(w,8);hurt(w,5);w.flags.enkaz=1;return'Ellerin hâlâ titriyor. Betona artık başka bakıyorsun.';}}]};
 EV._deprem={id:'_deprem',kind:'kotu',title:()=>'Deprem',text:(w,a)=>a.lost>0?`Gece dört. ${a.a} ve ${a.lost-1>0?a.lost-1+' binan daha':'başka bina yok'} yıkıldı. Sabah telefonun susmuyor. Savcılar, avukatlar, tanıdığın isimler. Yıllar önce döktüğün betonun faturası bugüne kaldı.`:`Gece dört, şehir sallandı. Komşu binalar yıkılırken ${a.saved} binan ayakta kaldı. Sokakta insanlar elindeki baretle sana bakıyor. Yıllar önce demirden kısmadığın için bugün kimse ölmedi.`,o:(w,a)=>a.lost>0?[{t:'Enkazın başına git, hesabını ver',f:(w)=>{hatir(w,4);w.guilt=Math.max(0,w.guilt-6);cash(w,-sc(w,.5));if(chance(w,.3)){w.jail=ri(w,10,24);w.stats.jail++;return'Teslim oldun. Tutuklandın.';}return'Elindeki taşı bırakmadın. Yüzüne tükürenler de oldu, su verenler de.';}},{t:'Yurt dışına geç, avukatlar konuşsun',f:(w)=>{w.guilt+=8;rep(w,-14);cash(w,-sc(w,1));return'Otel odasından televizyona baktın. Tanıdık bir apartman gösteriyorlardı.';}}]:[{t:'Enkaz için ekip ve kepçeleri gönder',f:(w)=>{rep(w,6);hatir(w,12);cash(w,-sc(w,.4));return'Baretli ustaların sabaha kadar insan çıkardı.';}},{t:'Telefonları aç, sipariş topla',f:(w)=>{rep(w,3);cash(w,sc(w,1));return'Herkes senin dairelerini istiyor. Fiyatını da biliyorsun.';}}]};
@@ -336,7 +337,8 @@ function botV4(w:World){const f=w.firm!;const big=STAGES[f.stage].cost;
  for(const l of (w.lands||[]).slice()){if(l.share&&w.cash>l.val*.3)V4.resolveShare(w,l.id);else if(!l.share&&l.zone>0&&V4.landStage(w,l)>=Math.max(2,f.stage-3)&&chance(w,.3))V4.buildOnLand(w,l.id);else if(l.val>l.paid*1.8&&chance(w,.1))V4.sellLand(w,l.id);}
  if(w.landMkt&&w.landMkt.length&&w.cash>big*1.5&&(w.lands||[]).length<3){const l=w.landMkt[0];if(w.cash>l.val*3)V4.buyLand(w,l.id);}
  if(f.stage>=8&&Object.keys(w.branches||{}).length<2&&w.cash>big*2)V4.openBranch(w,pick(w,TR_KEYS.filter(c=>c!==w.city)));
- if(canRetire(w)&&age(w,pl(w))>=66&&chance(w,.1))retire(w);}
+ if(canRetire(w)&&age(w,pl(w))>=66&&chance(w,.1))retire(w);
+ {const p=w.projects.filter(p=>V5.canImza(w,p)).sort((a,b)=>b.cost-a.cost)[0];if(p&&w.cash>p.cost*.3&&chance(w,.2))V5.setImza(w,p.id,'');}}
 function canStartKeys(w:World,o:Offer){return stageKeys(w,o.stage).filter(k=>k.n!=='Nakit').every(k=>k.ok);}
 void crewTotal;void base;void stress;void kids;void hurt;void netWorth;void curPhase;void INV;
 WD.setLoanRef(loanLimit);

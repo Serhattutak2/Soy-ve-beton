@@ -4,7 +4,7 @@ import {STAGES,DREAMS,MNAMES,FNAMES,TRADES,MATS} from './data';
 import {addCrew,loseCrew,sellNow,soldFrac} from './project';
 import {rnd,ri,pick,chance,clamp,year,pl,age,alive,full,money,log,sc,cash,rep,hurt,stress,hatir,bond,kids,spouse,addPerson,family,mon,ek} from './util';
 export interface Opt{t:string;f?:(w:World,a:any)=>string|void;off?:boolean;hint?:string}
-export interface Ev{id:string;kind?:'kotu'|'iyi'|'not';w?:number;gap?:number;c?:(w:World)=>boolean;mk?:(w:World)=>any;title:(w:World,a:any)=>string;text:(w:World,a:any)=>string;o:(w:World,a:any)=>Opt[];glass?:boolean;}
+export interface Ev{id:string;kind?:'kotu'|'iyi'|'not'|'kriz';w?:number;gap?:number;c?:(w:World)=>boolean;mk?:(w:World)=>any;title:(w:World,a:any)=>string;text:(w:World,a:any)=>string;o:(w:World,a:any)=>Opt[];glass?:boolean;}
 export const EV:Record<string,Ev>={};
 const def=(e:Ev)=>{EV[e.id]=e;};
 const hasF=(w:World)=>!!w.firm;const noF=(w:World)=>!w.firm;

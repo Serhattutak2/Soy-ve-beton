@@ -159,7 +159,11 @@ export const SCENS:Record<string,{n:string;d:string;y:number;age:number;sex:'e'|
  koy:{n:'Köyden Gelen',d:'18 yaşındasın, cebinde otobüs biletinin parası kaldı. Şantiyede amelesin.',y:1986,age:18,sex:'e',rank:0,cash:300,debt:0},
  batik:{n:'Batmış Müteahhidin Oğlu',d:'Baban batıp öldü. Soyadın borçla anılıyor, ama beton kokusunu bilirsin.',y:1979,age:22,sex:'e',rank:1,cash:800,debt:8000},
  kalfa:{n:'Enkazdan Çıkan Kalfa',d:'Depremde evini kaybettin. Bir daha kötü bina dikilmesin diye yemin ettin.',y:1992,age:27,sex:'e',rank:1,cash:500,debt:0},
- dul:{n:'Kocasının Şantiyesi',d:'Kocan kalıptan düştü. İki çocuk, yarım bir bina ve sana güvenmeyen ustalar kaldı.',y:1984,age:31,sex:'k',rank:2,cash:40000,debt:12000}};
+ dul:{n:'Kocasının Şantiyesi',d:'Kocan kalıptan düştü. İki çocuk, yarım bir bina ve sana güvenmeyen ustalar kaldı.',y:1984,age:31,sex:'k',rank:2,cash:40000,debt:12000},
+ gurbet:{n:'Almanya\'dan Dönen',d:'Yirmi yıl Köln\'de fabrikada çalıştın. Cebinde Mark var, ama burada herkes seni enayi sanıyor.',y:1983,age:41,sex:'e',rank:1,cash:26000,debt:0},
+ cirak:{n:'Okulu Bırakan Çırak',d:'17 yaşındasın, babanın yanında çırağsın. Elin hızlı, aklın daha hızlı. Ustalık sende çabuk açılır.',y:1976,age:17,sex:'e',rank:0,cash:80,debt:0},
+ muhendis:{n:'Şantiyedeki Mühendis Kız',d:'İnşaat mühendisisin, ilk iş gününde usta "kızım çay demle" dedi. Saygıyı betonla kazanacaksın.',y:1996,age:24,sex:'k',rank:2,cash:9000,debt:0},
+ hapis:{n:'Hapisten Çıkan Müteahhit',d:'Yıllar önce diktiğin bir bina çöktü. Cezanı çektin. Şimdi kimse sana iş vermiyor, ama zanaatı unutmadın.',y:1988,age:47,sex:'e',rank:3,cash:3000,debt:0}};
 export const MNAMES=['Ali','Veli','Hasan','Hüseyin','Mustafa','Mehmet','Ahmet','İsmail','Yusuf','Kemal','Rıza','Cemal','Salih','Osman','Murat','Serkan','Emre','Burak','Tolga','Kerem','Arda','Can','Deniz','Barış','Eren','Yiğit','Sinan','Tahsin','Nuri','Hamza'];
 export const FNAMES=['Ayşe','Fatma','Hatice','Zeynep','Emine','Elif','Meryem','Sultan','Gülay','Nurten','Songül','Esra','Derya','Pınar','Selin','Ece','Defne','Nazlı','Asiye','Hacer','Leyla','Sevgi','Ceren','Melis','Gamze','Nihal','Şule','Yasemin','Havva','Dilek'];
 export const SURNAMES=['Yıldırım','Karaca','Demirtaş','Taşkın','Kalkan','Bozkurt','Çetin','Toprak','Akbulut','Sağlam','Korkmaz','Duman','Altıntaş','Güneş','Tekin','Kaplan','Ateş','Kılıç','Özdemir','Taşçı'];

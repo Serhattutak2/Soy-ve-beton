@@ -123,3 +123,8 @@ ul.news{margin:0;padding-left:18px;display:grid;gap:4px;font-size:14px;line-heig
 .card.rep ul.news{color:#2a251c}
 .card.rep p.m{color:#5a5345}
 .sec .row button.s{white-space:nowrap;flex-shrink:0}
+.card.kriz{background:#1a0d0b;color:#f3e6dd;border-top:4px solid #d6532f;min-height:60vh;justify-content:center}
+.card.kriz h2,.card.kriz .tt{color:#ff9a7a;font-size:30px}
+.card.kriz p{font-size:16px;line-height:1.5}
+.card.kriz .ops button{background:#2a1714;color:#f3e6dd;border:1px solid #6b2a1e}
+.card.kriz .dt{color:#ff9a7a}

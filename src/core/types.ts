@@ -1,12 +1,12 @@
 export type Sex='e'|'k';
 export interface Person{id:number;name:string;sur:string;sex:Sex;by:number;dm?:number;cause?:string;fa?:number;mo?:number;sp?:number;kids:number[];
-  dream:string;tal:number;trait:string;bond:number;edu:number;work:number;kus?:boolean;gen:number;job?:string;}
+  dream:string;tal:number;trait:string;bond:number;edu:number;work:number;kus?:boolean;gen:number;job?:string;prof?:string;}
 export interface Defect{trade:string;sev:number;txt:string;found:boolean;}
 export interface Unit{k:number;l:string;t:string;m2:number;fl:number;fr:string;n:number;sold:number;own:boolean;pr:number;buyer?:string;rent?:boolean;}
 export interface PItem{id:string;prog:number;tas:boolean;q:'kis'|'nor'|'sag';paid:boolean;tq:number;mg?:number;fin?:boolean;}
 export interface Project{id:number;stage:number;name:string;city:string;hood:string;locMul:number;m2:number;q:'kis'|'nor'|'sag';prog:number;months:number;gross:number;cost:number;estRev:number;
   sold:number;seal:number;defects:Defect[];struct:number;status:'insa'|'satis';halt:boolean;reason:string;floors:number;slot:number;partner?:boolean;bribe?:boolean;
-  sellOn:boolean;lux:number;items:PItem[];cur:number;tw:number;done:number;units:Unit[];ownerN:number;bought:Record<string,number>;cheap:number;skipEtut:boolean;spent:number;income:number;eng:number;flats:number;shops:number;mix:number;park:boolean;illegal:number;look:Look;merged?:boolean;auto?:boolean;cons?:number;fx0?:number;}
+  sellOn:boolean;lux:number;items:PItem[];cur:number;tw:number;done:number;units:Unit[];ownerN:number;bought:Record<string,number>;cheap:number;skipEtut:boolean;spent:number;income:number;eng:number;flats:number;shops:number;mix:number;park:boolean;illegal:number;look:Look;merged?:boolean;auto?:boolean;cons?:number;fx0?:number;imza?:string;}
 export interface Look{col:number;roof:number;bal:number;cumba:boolean;}
 export interface Design{floors:number;mix:number;park:boolean;illegal:number;look:Look;}
 export interface Deal{kind?:string;ownerName:string;trait:string;total:number;ask:number;min:number;patience:number;floors:'adil'|'iyi'|'kotu';cash:number;line:string;rounds:number;ok:boolean;lastYou?:string;need:string;}
@@ -14,7 +14,7 @@ export interface Offer{id:number;stage:number;name:string;city:string;hood:strin
 export interface Crew{n:number;sk:number;usta:string;}
 export interface Engineer{id:number;name:string;sk:number;hon:number;pid:number;}
 export interface Master{id:number;name:string;tr:string;by:number;sk:number;loy:number;since:number;app?:string;appSk?:number;}
-export interface Rival{name:string;stage:number;rel:number;head:string;spec:string;}
+export interface Rival{name:string;stage:number;rel:number;head:string;spec:string;style?:string;}
 export interface Rental{name:string;city:string;val:number;n:number;}
 export interface Payable{m:number;amt:number;note:string;}
 export interface Building{id:number;name:string;stage:number;struct:number;year:number;floors:number;slot:number;residents:string[];look?:Look;shops?:number;state:'ayakta'|'hasar'|'yikik'|'donusum';q:string;gen:number;owner:string;kin?:number;city:string;m2:number;}
