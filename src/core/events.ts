@@ -125,7 +125,7 @@ def({id:'malzeme',kind:'kotu',c:hasP,title:()=>'Malzeme gelmedi',text:()=>'Depoc
 def({id:'ceza_vergi',kind:'kotu',w:1.3,c:hasF,title:()=>'Vergi incelemesi',text:(w)=>`Müfettiş ofise geldi. Masada iki deftere bakıyor, hangisi gerçek diye sormadı ama soracak.${w.car>=4?' Aşağıdaki arabana da baktı.':''}`,o:(w)=>[
  pay(w,sc(w,.8),'Uzlaş, öde',()=>'Masa temizlendi. Bu yıl kâr dediğin şey buraya gitti.'),
  ok('Muhasebeciyle çarpış',(w)=>{if(chance(w,.45)){return'Evrakı sağlam çıktı. Muhasebeciye bir maaş ikramiye.';}cash(w,-sc(w,1.5));rep(w,-4);return'Yakalandın. Ceza üç katı.';})]});
-def({id:'davasi',kind:'kotu',w:1.2,c:(w)=>w.buildings.length>2,mk:(w)=>({b:pick(w,w.buildings).name}),title:()=>'Daire sahibi dava açtı',text:(w,a)=>`${a.b} sakinleri: kaçak su, çatlak balkon, eksik iskân. Mahkeme bilirkişi atadı.`,o:(w)=>[
+def({id:'davasi',kind:'kotu',w:1.2,c:(w)=>w.buildings.length>2,mk:(w)=>({b:pick(w,w.buildings).name}),title:()=>'Daire sahibi dava açtı',text:(w,a)=>`${(typeof a.b==='number'?w.buildings.find(x=>x.id===a.b)?.name:a.b)||'Eski binanın'} sakinleri: kaçak su, çatlak balkon, eksik iskân. Mahkeme bilirkişi atadı.`,o:(w)=>[
  pay(w,sc(w,.4),'Onar, uzlaş',(w)=>{rep(w,2);return'Onarım ekibi gitti, sakinler kek yaptı.';}),
  ok('Mahkemeye bırak',(w)=>{if(chance(w,.5)){cash(w,-sc(w,.2));return'Yıllarca sürdü, az ödedin.';}cash(w,-sc(w,.8));rep(w,-5);return'Kaybettin, gazeteye de çıktı.';})]});
 def({id:'hapis',kind:'kotu',w:.5,gap:200,c:(w)=>hasF(w)&&(flag(w,'rusvetDos')||w.guilt>30),title:()=>'Soruşturma',text:()=>'Sabah altıda kapı çalındı. Eski bir dosya açılmış: ruhsat, zarf, tanıklar. Avukatın "bir süre içeride kalabilirsin" diyor.',o:(w)=>[

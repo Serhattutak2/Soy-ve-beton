@@ -9,7 +9,7 @@ export interface Project{id:number;stage:number;name:string;city:string;hood:str
   sellOn:boolean;lux:number;items:PItem[];cur:number;tw:number;done:number;units:Unit[];ownerN:number;bought:Record<string,number>;cheap:number;skipEtut:boolean;spent:number;income:number;eng:number;flats:number;shops:number;mix:number;park:boolean;illegal:number;look:Look;merged?:boolean;auto?:boolean;cons?:number;fx0?:number;}
 export interface Look{col:number;roof:number;bal:number;cumba:boolean;}
 export interface Design{floors:number;mix:number;park:boolean;illegal:number;look:Look;}
-export interface Deal{ownerName:string;trait:string;total:number;ask:number;min:number;patience:number;floors:'adil'|'iyi'|'kotu';cash:number;line:string;rounds:number;ok:boolean;lastYou?:string;need:string;}
+export interface Deal{kind?:string;ownerName:string;trait:string;total:number;ask:number;min:number;patience:number;floors:'adil'|'iyi'|'kotu';cash:number;line:string;rounds:number;ok:boolean;lastYou?:string;need:string;}
 export interface Offer{id:number;stage:number;name:string;city:string;hood:string;locMul:number;expires:number;deal?:Deal;won?:number;bidDone?:boolean;imar?:{floors:number};merged?:boolean;mergeCost?:number;cons?:number;}
 export interface Crew{n:number;sk:number;usta:string;}
 export interface Engineer{id:number;name:string;sk:number;hon:number;pid:number;}
