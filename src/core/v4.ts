@@ -2,7 +2,7 @@
 // aile dramı, holding şirketleri ve şubeler, arsa bankası, uzun hikâye zincirleri, isimli kadro, zorluk ve yıl sonu raporu.
 import type {World,Person,Offer,Land,Staff,Building,Deal} from './types';
 import {STAGES,CITIES,TR_KEYS,MNAMES,FNAMES,LAST,M2_PRICE,priceMul,landShare,SUBS,ROLES,DIFF,dif} from './data';
-import {rnd,ri,pick,chance,clamp,year,mon,pl,age,alive,log,cash,rep,stress,hatir,bond,kids,spouse,family,money,ek,netWorth} from './util';
+import {rnd,ri,pick,chance,clamp,year,mon,pl,age,alive,log,cash,rep,stress,hatir,bond,kids,spouse,family,money,ek,netWorth,relTo} from './util';
 import {EV} from './events';
 import type {Ev} from './events';
 const def=(e:Ev)=>{EV[e.id]=e;};
@@ -83,9 +83,9 @@ def({id:'kardes_ortak2',kind:'kotu',title:(w,a)=>`${w.people[a.p]?.name||'Karde�
 def({id:'damat',kind:'not',gap:150,c:(w)=>hasF(w)&&st(w)>=6&&kids(w).some(k=>k.sex==='k'&&k.sp!==undefined&&alive(w.people[k.sp])),mk:(w)=>{const k=kids(w).find(k=>k.sex==='k'&&k.sp!==undefined)!;return{k:k.id,d:k.sp};},
  title:(w,a)=>`Damadın ${w.people[a.d].name} iş istiyor`,text:(w,a)=>`${w.people[a.k].name} akşam yemeğinde lafı dolandırdı: kocası ${w.people[a.d].name} mühendis, ama işi yok. "Babam yanına alır" demiş.`,
  o:(w,a)=>[{t:'Şantiye müdürü yap',f:(w)=>{const d=w.people[a.d];w.firm!.engs.push({id:w.nid++,name:d.name+' (damat)',sk:ri(w,35,85),hon:ri(w,25,95),pid:-1});bond(w,a.k,12);return'Kızın sana sarıldı. Damadın kalitesini zaman gösterecek.';}},{t:'İş başka, aile başka',f:(w)=>{bond(w,a.k,-14);return'Kızın bir hafta aramadı. Damat başka bir firmada iş buldu, rakibinde.';}}]});
-const grandkids=(w:World)=>{const me=pl(w);return Object.values(w.people).filter(p=>alive(p)&&age(w,p)>=17&&age(w,p)<=19&&p.edu<60&&[p.fa,p.mo].some(x=>x!==undefined&&[w.people[x]?.fa,w.people[x]?.mo].includes(me.id)));};
-def({id:'torun_okul',kind:'not',gap:90,c:(w)=>grandkids(w).length>0,mk:(w)=>({p:grandkids(w)[0].id}),title:(w,a)=>`Torunun ${w.people[a.p].name} yurt dışında okumak istiyor`,
- text:(w,a)=>`${w.people[a.p].name} burs sınavını kazanmış, ama yurt ve yol masrafı sende. "Mimar olup döneceğim" diyor. Bu yaşta herkes dönecek diyor.`,
+const grandkids=(w:World)=>Object.values(w.people).filter(p=>alive(p)&&age(w,p)>=17&&age(w,p)<=20&&p.edu<60&&['Torunun','Yeğenin'].includes(relTo(w,p)));
+def({id:'torun_okul',kind:'not',gap:90,c:(w)=>grandkids(w).length>0,mk:(w)=>({p:grandkids(w)[0].id}),title:(w,a)=>`${relTo(w,w.people[a.p])} ${w.people[a.p].name} yurt dışında okumak istiyor`,
+ text:(w,a)=>`${w.people[a.p].name} burs sınavını kazanmış, ama yurt ve yol masrafını ailede bir tek sen karşılayabilirsin. "Mimar olup döneceğim" diyor. Bu yaşta herkes dönecek diyor.`,
  o:(w,a)=>{const c=Math.round(scale(w)*.06);return[{t:`Gönder (${money(c)})`,off:w.cash<c,f:(w)=>{cash(w,-c);const p=w.people[a.p];p.edu+=40;p.dream=chance(w,.3)?'gurbet':'mimar';bond(w,a.p,15);return p.dream==='mimar'?'Havaalanında sarıldı. Mektupları çizimlerle dolu geliyor.':'Gitti. Telefonları seyreldi; orada kalacak gibi.';}},{t:'Burada da okunur',f:(w)=>{bond(w,a.p,-8);w.people[a.p].edu+=15;return'Buradaki üniversiteye yazıldı. Arada bir sitem ediyor.';}}];}});
 def({id:'dede_akil',kind:'iyi',gap:36,c:(w)=>{const d=w.flags.danisman;return !!d&&!!w.people[d]&&alive(w.people[d])&&hasF(w);},title:(w)=>`${w.people[w.flags.danisman].name} dedenin akşam ziyareti`,
  text:(w)=>`${w.people[w.flags.danisman].name} artık şantiyeye gelmiyor ama her akşam telefon ediyor. Bu akşam bastonuyla ofise geldi, defterlere baktı.`,

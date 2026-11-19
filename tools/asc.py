@@ -124,8 +124,10 @@ def set_app_info(app_id):
     if not info: step("Uygulama bilgisi bulunamadı", False, r); return
     st, r = api("PATCH", f"/v1/appInfos/{info['id']}", {"data": {"type": "appInfos", "id": info["id"], "relationships": {
         "primaryCategory": {"data": {"type": "appCategories", "id": META["primaryCategory"]}},
-        "secondaryCategory": {"data": {"type": "appCategories", "id": META["secondaryCategory"]}}}}})
-    step("Kategori (Verimlilik + Yaşam Tarzı)", st == 200, r)
+        "secondaryCategory": {"data": {"type": "appCategories", "id": META["secondaryCategory"]}},
+        **({"primarySubcategoryOne": {"data": {"type": "appCategories", "id": META["primarySub1"]}}} if META.get("primarySub1") else {}),
+        **({"primarySubcategoryTwo": {"data": {"type": "appCategories", "id": META["primarySub2"]}}} if META.get("primarySub2") else {})}}})
+    step(f"Kategori ({META['primaryCategory']} / {META.get('primarySub1','')})", st == 200, r)
     st, r = api("GET", f"/v1/appInfos/{info['id']}/appInfoLocalizations?limit=50")
     for l in r.get("data", []):
         loc = l["attributes"]["locale"]
@@ -143,6 +145,8 @@ def set_app_info(app_id):
                 "isUserGeneratedContent", "isUnrestrictedWebAccess", "isGambling"}
         SKIP = {"kidsAgeBand", "ageRatingOverride", "ageRatingOverrideV2", "koreaAgeRatingOverride", "developerAgeRatingInfoUrl", "gracRatingClassificationNumber"}
         attrs = {k: (False if k in BOOL or isinstance(v, bool) else "NONE") for k, v in ad["attributes"].items() if k not in SKIP and "korea" not in k.lower() and "grac" not in k.lower()}
+        for k, v in META.get("age", {}).items():
+            if k in attrs: attrs[k] = v
         import re
         tried = {}
         for _ in range(15):

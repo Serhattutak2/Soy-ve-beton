@@ -39,7 +39,7 @@ export function loseCrew(w:World,fr:number){const f=w.firm!;for(const k in f.cre
 export const activeM2=(w:World)=>w.projects.filter(p=>p.status==='insa').reduce((s,p)=>s+p.m2,0);
 export const certLimit=(w:World)=>w.firm?CERT_M2[w.firm.cert]:0;
 export const crewWage=(c:{n:number;sk:number},t:string)=>c.n*CREWS[t].y*26*(.7+c.sk/140);
-export const siteCap=(m2:number)=>.2*Math.pow(m2,.55);
+export const siteCap=(m2:number)=>.2*Math.pow(m2,.55)*(1+Math.max(0,Math.log10(m2/10000))*.4);// büyük şantiyede çok cephe (blok) aynı anda yürür
 void ri;void setItems;
 
 /** İsimli kadrodaki en iyi uzmanın becerisi (yoksa 0) */

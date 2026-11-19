@@ -1,0 +1,29 @@
+{
+ "supportUrl": "https://github.com/Serhattutak2/Soy-ve-beton/blob/main/docs/destek.md",
+ "marketingUrl": "https://github.com/Serhattutak2/Soy-ve-beton",
+ "privacyUrl": "https://github.com/Serhattutak2/Soy-ve-beton/blob/main/docs/gizlilik.md",
+ "copyright": "2026 Sardur Technologies",
+ "primaryCategory": "GAMES",
+ "primarySub1": "GAMES_SIMULATION",
+ "primarySub2": "GAMES_STRATEGY",
+ "secondaryCategory": "GAMES_STRATEGY",
+ "age": {
+  "matureOrSuggestiveThemes": "INFREQUENT_OR_MILD",
+  "alcoholTobaccoOrDrugUseOrReferences": "INFREQUENT_OR_MILD",
+  "violenceRealistic": "INFREQUENT_OR_MILD"
+ },
+ "reviewNotes": "Soy ve Beton tek oyunculu, çevrimdışı bir hayat ve inşaat simülasyonudur. Hesap/giriş gerekmez, reklam ve uygulama içi satın alma yoktur, ağ isteği yapılmaz; kayıtlar cihazda tutulur. Başlamak için 'Yeni oyun'a dokunun, bir başlangıç hikâyesi ve şehir seçip 'Başla'ya dokunun. Oyundaki depremler, kişiler, şirketler ve olaylar kurgusaldır.\n\nSoy ve Beton is a single-player, offline life and construction simulation. No login, no ads, no in-app purchases, no network requests; saves stay on device. Tap 'Yeni oyun', pick a starting story and a city, then tap 'Başla'. All earthquakes, people, companies and events in the game are fictional.",
+ "tr": {
+  "subtitle": "İşçilikten inşaat hanedanına",
+  "keywords": "inşaat,müteahhit,simülasyon,şantiye,hanedan,aile,miras,bina,gökdelen,strateji,yaşam,tycoon,emlak",
+  "promotionalText": "Bir şantiyede yevmiyeyle başla; kat karşılığı pazarlık yap, ihaleye gir, gökdelen dik. Koltuğu çocuklarına bırak, adını kuşaklar boyu yaşat.",
+  "description": "Şantiyede yevmiyeyle çalışan bir işçi olarak başla. Ustalık öğren, ilk küçük binanı yap, firmanı kur. Yıllar geçsin, çocukların büyüsün, koltuğu onlara bırak. Senin soyadın şehrin silüetine yazılsın.\n\nBİR ÖMÜR, BİRÇOK KUŞAK\n• 8 farklı başlangıç: Köyden Gelen, Batmış Müteahhidin Oğlu, Almanya'dan dönen gurbetçi, Hapisten Çıkan Müteahhit ve dahası.\n• Evlen, çocuk sahibi ol, mirasçını yetiştir. Vasiyetler, aile kavgaları, kardeş ortaklıkları.\n• Yaşlanınca danışman dede ol; firmayı bir sonraki kuşak yönetsin.\n\nGERÇEKÇİ ŞANTİYE\n• Hafriyattan çatıya her iş kalemi: kalıp, demir, beton, duvar, tesisat, ince işler.\n• Ekiplerini kur, ustalarını tut, malzemeyi zamanında al, denetime hazır ol.\n• Ucuz malzeme kâr getirir ama binanın kaderini belirler.\n• Elle oynanan mini oyunlar: demir bağla, beton dök, duvar ör, seramik döşe, elektrik çek, denetim yap.\n\nKÜÇÜK APARTMANDAN GÖKDELENE\n• 40 aşama: 3-4 daireli ilk binadan sitelere, otellere, AVM'lere, rezidanslara, şehrin en yüksek kulesine ve yurt dışı projelerine.\n• Her bina tipinin kendine özgü iş kalemleri, fiyatları ve pazarlığı var.\n• Kat karşılığı pazarlık, kamu ihaleleri, konsorsiyumlar, arsa bankası, şirket satın alma ve şube açma.\n\nYAŞAYAN BİR TÜRKİYE\n• 18 şehir, her birinin kendi semtleri ve zemini.\n• Ekonomi dalgalanır: kriz, patlama, durgunluk. Dönemler değişir: imar affı, kentsel dönüşüm, denetimin sıkılaşması.\n• Belediye seçimleri, meclis, gazeteciler, davalar, rakip müteahhit aileleri.\n• 200'den fazla olay ve hikâye kartı; her kararın bir bedeli var.\n\nŞEHRİN 3B GÖRÜNÜMÜ\nYaptığın her bina şehirde yerini alır. Şantiyeyi yakından izle ya da şehri kuş bakışı haritada gez.\n\nOyundaki depremler, kişiler, şirketler ve olaylar tamamen kurgusaldır.\n\nHesap yok, reklam yok, uygulama içi satın alma yok. Kayıtların yalnızca senin cihazında tutulur.\n\nYapımcı: Serhat Tutak · Sardur Technologies",
+  "whatsNew": "İlk sürüm."
+ },
+ "en": {
+  "subtitle": "From laborer to building dynasty",
+  "keywords": "construction,builder,simulation,dynasty,family,tycoon,skyscraper,strategy,life,real estate,contractor",
+  "promotionalText": "Start as a day laborer on a building site, bargain for land, win tenders and raise skyscrapers. Pass the firm to your children and build a dynasty.",
+  "description": "Start as a day laborer on a Turkish building site. Learn the trade, build your first small apartment block and found your own firm. Years pass, your children grow up, and one day the chair is theirs.\n\n• 8 starting stories and multi-generation family life: marriage, heirs, wills and family feuds\n• Realistic construction: every work item from excavation to roof, crews, masters, materials and inspections\n• Hands-on mini games: tie rebar, pour concrete, lay bricks and tiles, wire a flat, inspect a site\n• 40 stages from a 4-flat building to malls, hotels, residences, the city's tallest tower and projects abroad\n• Land-for-flats deals, public tenders, consortiums, a land bank, subsidiaries and branches\n• 18 cities, a shifting economy, eras, elections and rival builder families\n• 200+ story events, each decision has a price\n• A 3D city that grows with every building you finish, plus a top-down map\n\nAll earthquakes, people, companies and events are fictional. The game is in Turkish.\nNo account, no ads, no in-app purchases. Saves stay on your device."
+ }
+}

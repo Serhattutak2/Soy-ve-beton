@@ -182,7 +182,7 @@ export const FURN:Record<string,{n:string;lv:string[]}>={salon:{n:'Salon',lv:['M
 export const furnCost=(lv:number,home:number)=>[0,2500,9000,32000][lv]*(1+home*.55);
 // Başarımlar
 export const ACH:Record<string,{n:string;d:string}>={
- ilkbina:{n:'İlk tapu',d:'Adını taşıyan ilk binayı bitir.'},usta:{n:'Usta eli',d:'Bir mini oyunda kusursuza yakın iş çıkar.'},gozu:{n:'Usta gözü',d:'Denetimde bütün hataları bul.'},
+ ilkbina:{n:'İlk tapu',d:'Adını taşıyan ilk binayı bitir.'},vasiyet:{n:'Sözünü tutan evlat',d:'Bir önceki kuşağın vasiyetini yerine getir.'},usta:{n:'Usta eli',d:'Bir mini oyunda kusursuza yakın iş çıkar.'},gozu:{n:'Usta gözü',d:'Denetimde bütün hataları bul.'},
  depremAyakta:{n:'Ayakta kalan',d:'Büyük depremde tek binan bile yıkılmasın.'},onbina:{n:'Mahallenin müteahhidi',d:'10 bina bitir.'},ellibina:{n:'Şehrin silüeti',d:'50 bina bitir.'},
  asama12:{n:'Havuzlu site',d:'12. aşamaya ulaş.'},asama20:{n:'Büyük oyuncu',d:'20. aşamaya ulaş.'},kule:{n:'Şehrin en yükseği',d:'Kuleyi bitir.'},
  kusak3:{n:'Üç kuşak',d:'Şirketi üçüncü kuşağa devret.'},batmadan:{n:'Sağlam kasa',d:'Hiç batmadan 30 yıl geçir.'},kazasiz:{n:'Sıfır kaza',d:'20 yıl iş kazası olmadan çalış.'},
