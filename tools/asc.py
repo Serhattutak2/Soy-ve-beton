@@ -174,7 +174,7 @@ def set_app_info(app_id):
                         if n in attrs: attrs.pop(n); changed = True
             print("    yaş formu denemesi:", err(r)[:160])
             if not changed: break
-        step("Yaş sınırı (4+)", st == 200, r)
+        step("Yaş sınırı formu (" + ", ".join(f"{k}={v}" for k, v in META.get("age", {}).items()) + ")", st == 200, r)
     else:
         step("Yaş sınırı formu bulunamadı", False, r)
 
