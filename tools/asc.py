@@ -340,7 +340,7 @@ def kesif():
         print("appInfo", i["id"], json.dumps(i["attributes"])[:600])
         for rel in ("ageRatingDeclaration", "primaryCategory"):
             st2, r2 = api("GET", f"/v1/appInfos/{i['id']}/{rel}")
-            print(" ", rel, st2, json.dumps(r2)[:300])
+            print(" ", rel, st2, json.dumps(r2.get("data", {}).get("attributes", r2))[:3000])
 
 if __name__ == "__main__":
     if not KID or not ISS or "PRIVATE KEY" not in P8:
