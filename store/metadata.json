@@ -10,7 +10,9 @@
  "age": {
   "matureOrSuggestiveThemes": "INFREQUENT_OR_MILD",
   "alcoholTobaccoOrDrugUseOrReferences": "INFREQUENT_OR_MILD",
-  "violenceRealistic": "INFREQUENT_OR_MILD"
+  "violenceRealistic": "INFREQUENT_OR_MILD",
+  "datingAndRelationships": "NONE",
+  "sharedLocation": false
  },
  "reviewNotes": "Soy ve Beton tek oyunculu, çevrimdışı bir hayat ve inşaat simülasyonudur. Hesap/giriş gerekmez, reklam ve uygulama içi satın alma yoktur, ağ isteği yapılmaz; kayıtlar cihazda tutulur. Başlamak için 'Yeni oyun'a dokunun, bir başlangıç hikâyesi ve şehir seçip 'Başla'ya dokunun. Oyundaki depremler, kişiler, şirketler ve olaylar kurgusaldır.\n\nSoy ve Beton is a single-player, offline life and construction simulation. No login, no ads, no in-app purchases, no network requests; saves stay on device. Tap 'Yeni oyun', pick a starting story and a city, then tap 'Başla'. All earthquakes, people, companies and events in the game are fictional.",
  "tr": {

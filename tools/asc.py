@@ -146,7 +146,7 @@ def set_app_info(app_id):
         SKIP = {"kidsAgeBand", "ageRatingOverride", "ageRatingOverrideV2", "koreaAgeRatingOverride", "developerAgeRatingInfoUrl", "gracRatingClassificationNumber"}
         attrs = {k: (False if k in BOOL or isinstance(v, bool) else "NONE") for k, v in ad["attributes"].items() if k not in SKIP and "korea" not in k.lower() and "grac" not in k.lower()}
         for k, v in META.get("age", {}).items():
-            if k in attrs: attrs[k] = v
+            attrs[k] = v
         import re
         tried = {}
         for _ in range(15):
