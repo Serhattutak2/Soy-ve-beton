@@ -328,10 +328,24 @@ def durum():
     st, r = api("GET", f"/v1/builds?filter[app]={a['id']}&sort=-uploadedDate&limit=5")
     for b in r.get("data", []): print("Build", b["attributes"].get("version"), b["attributes"].get("processingState"))
 
+def kesif():
+    a = need_app(); aid = a if isinstance(a, str) else a["id"]
+    for path in [f"/v1/apps/{aid}/appInfos", f"/v1/apps/{aid}/appDataUsages", f"/v1/apps/{aid}/dataUsages",
+                 f"/v1/apps/{aid}/appDataUsagesPublishState", f"/v1/apps/{aid}?include=appInfos",
+                 f"/v1/apps/{aid}/appStoreVersionExperimentsV2", f"/v1/appDataUsageCategories?limit=5", f"/v1/appDataUsagePurposes?limit=5"]:
+        st, r = api("GET", path)
+        print("GET", path, st, json.dumps(r)[:700])
+    st, r = api("GET", f"/v1/apps/{aid}/appInfos")
+    for i in r.get("data", []):
+        print("appInfo", i["id"], json.dumps(i["attributes"])[:600])
+        for rel in ("ageRatingDeclaration", "primaryCategory"):
+            st2, r2 = api("GET", f"/v1/appInfos/{i['id']}/{rel}")
+            print(" ", rel, st2, json.dumps(r2)[:300])
+
 if __name__ == "__main__":
     if not KID or not ISS or "PRIVATE KEY" not in P8:
         print("HATA: Gizli anahtarlar eksik. Depo > Settings > Secrets and variables > Actions altına")
         print("      ASC_KEY_ID, ASC_ISSUER_ID, ASC_KEY_P8 ve IOS_TEAM_ID ekle (Miras FC'deki değerlerin aynısı).")
         sys.exit(1)
     cmd = sys.argv[1] if len(sys.argv) > 1 else "durum"
-    {"hazirlik": hazirlik, "bilgiler": bilgiler, "gonder": gonder, "durum": durum}[cmd]()
+    {"hazirlik": hazirlik, "bilgiler": bilgiler, "gonder": gonder, "durum": durum, "kesif": kesif}[cmd]()
