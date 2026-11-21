@@ -8,7 +8,7 @@ async function tap(sel:string,wait=1100):Promise<boolean>{const el=document.quer
 async function tapAt(x:number,y:number,target:Element){await moveTo(x,y);const o={clientX:x,clientY:y,bubbles:true,pointerId:1,isPrimary:true,pointerType:'touch'} as any;for(const t of ['pointerdown','mousedown']) target.dispatchEvent(new (t.startsWith('p')?PointerEvent:MouseEvent)(t,o));await sleep(90);for(const t of ['pointerup','mouseup','click']) target.dispatchEvent(new (t.startsWith('p')?PointerEvent:MouseEvent)(t,o));await sleep(450);}
 async function cards(n:number){for(let i=0;i<n;i++){if(!await tap('.veil .card:not(.dz) button:not([disabled])',1500))break;}}
 async function scrollSheet(){const s=document.querySelector('.sheet') as HTMLElement|null;if(!s)return;for(let i=0;i<3;i++){s.scrollBy({top:220,behavior:'smooth'});await sleep(700);}s.scrollTo({top:0,behavior:'smooth'});await sleep(500);}
-export async function runDemo(){ring();await sleep(3500);
+export async function runDemo(){ring();await sleep(6000);
  await tap('[data-a=newin][data-v="1"]',1400);
  await tap('[data-a=pickS][data-v=koy]',900);await tap('[data-a=pickC][data-v=istanbul]',900);
  await tap('[data-a=start]',2500);

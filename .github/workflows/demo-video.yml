@@ -44,6 +44,10 @@ jobs:
           BID=com.serhattutak.soyvebeton
           xcrun simctl spawn "$UDID" defaults write $BID CapacitorStorage.sb_demo -string 1
           xcrun simctl spawn "$UDID" defaults write $BID CapacitorStorage.sb_q -string 1
+          # ısınma: ilk açılışta WebView ve 3B gölgelendiriciler hazırlanır, sonra kapatılır
+          xcrun simctl spawn "$UDID" defaults write $BID CapacitorStorage.sb_demo -string 0
+          xcrun simctl launch "$UDID" $BID; sleep 60; xcrun simctl terminate "$UDID" $BID || true; sleep 3
+          xcrun simctl spawn "$UDID" defaults write $BID CapacitorStorage.sb_demo -string 1
           sleep 3
           xcrun simctl io "$UDID" recordVideo --codec=h264 --force demo.mov & REC=$!
           sleep 3
