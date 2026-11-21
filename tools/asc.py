@@ -204,13 +204,25 @@ def set_price_free(app_id):
                       "relationships": {"appPricePoint": {"data": {"type": "appPricePoints", "id": pp}}}}]})
     step("Fiyat: Ücretsiz", st in (200, 201), r)
 
+EXCLUDE = {"CHN", "VNM"}
+
 def set_availability(app_id):
     st, r = api("GET", f"/v1/apps/{app_id}/appAvailabilityV2")
     if st == 200 and r.get("data"):
-        print("  ✓ Ülkeler zaten ayarlı"); return
+        av = r["data"]["id"]; url = f"/v2/appAvailabilities/{av}/territoryAvailabilities?include=territory&limit=200"
+        while url:
+            st, r = api("GET", url)
+            for ta in r.get("data", []):
+                tid = ta.get("relationships", {}).get("territory", {}).get("data", {}).get("id")
+                if tid in EXCLUDE and ta["attributes"].get("available"):
+                    st2, r2 = api("PATCH", f"/v1/territoryAvailabilities/{ta['id']}", {"data": {"type": "territoryAvailabilities", "id": ta["id"], "attributes": {"available": False}}})
+                    step(f"Satıştan çıkarıldı: {tid}", st2 == 200, r2)
+            url = r.get("links", {}).get("next")
+        print("  ✓ Ülkeler ayarlı (Çin ve Vietnam hariç: oyun lisansı istiyorlar)"); return
     terrs, url = [], "/v1/territories?limit=200"
     while url:
         st, r = api("GET", url); terrs += [t["id"] for t in r.get("data", [])]; url = r.get("links", {}).get("next")
+    terrs = [t for t in terrs if t not in EXCLUDE]
     inc = [{"type": "territoryAvailabilities", "id": f"${{t{i}}}", "attributes": {"available": True},
             "relationships": {"territory": {"data": {"type": "territories", "id": t}}}} for i, t in enumerate(terrs)]
     st, r = api("POST", "/v2/appAvailabilities", {"data": {"type": "appAvailabilities", "attributes": {"availableInNewTerritories": True},
