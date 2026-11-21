@@ -1,0 +1,15 @@
+{
+  "name": "ocak-mobile",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Ocak iOS sarmalayıcı (Capacitor)",
+  "dependencies": {
+    "@capacitor/cli": "8.5.3",
+    "@capacitor/core": "8.5.3",
+    "@capacitor/haptics": "8.0.2",
+    "@capacitor/ios": "8.5.3",
+    "@capacitor/preferences": "8.0.1",
+    "@capacitor/splash-screen": "8.0.2",
+    "@capacitor/status-bar": "8.0.4"
+  }
+}

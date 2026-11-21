@@ -1,0 +1,10 @@
+{
+  "appId": "com.serhattutak.ocak",
+  "appName": "Ocak",
+  "webDir": "www",
+  "backgroundColor": "#120d0a",
+  "ios": { "contentInset": "never", "backgroundColor": "#120d0a", "scrollEnabled": false, "limitsNavigationsToAppBoundDomains": false, "allowsLinkPreview": false },
+  "plugins": {
+    "SplashScreen": { "launchShowDuration": 700, "launchAutoHide": true, "backgroundColor": "#120d0a", "showSpinner": false }
+  }
+}

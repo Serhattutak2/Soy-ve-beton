@@ -1,0 +1,32 @@
+{
+ "supportUrl": "https://github.com/Serhattutak2/Soy-ve-beton/tree/ocak",
+ "marketingUrl": "https://github.com/Serhattutak2/Soy-ve-beton/tree/ocak",
+ "privacyUrl": "https://github.com/Serhattutak2/Soy-ve-beton/blob/ocak/docs/gizlilik.md",
+ "copyright": "2026 Sardur Technologies",
+ "primaryCategory": "GAMES",
+ "primarySub1": "GAMES_STRATEGY",
+ "primarySub2": "GAMES_SIMULATION",
+ "secondaryCategory": "EDUCATION",
+ "age": {
+  "matureOrSuggestiveThemes": "INFREQUENT_OR_MILD",
+  "alcoholTobaccoOrDrugUseOrReferences": "INFREQUENT_OR_MILD",
+  "violenceRealistic": "INFREQUENT_OR_MILD",
+  "datingAndRelationships": false,
+  "sharedLocation": false
+ },
+ "reviewNotes": "Ocak: Soyun Çağları tek oyunculu, çevrimdışı bir tarihî hanedan simülasyonudur. Hesap/giriş gerekmez, reklam ve uygulama içi satın alma yoktur, ağ isteği yapılmaz; kayıtlar cihazda tutulur. Başlamak için bir senaryo seçip 'Başla'ya dokunun.\n\nOcak is a single-player, offline historical dynasty simulation. No login, no ads, no in-app purchases, no network requests; saves stay on device. Pick a scenario and tap 'Başla' to start.",
+ "tr": {
+  "subtitle": "Buzul Çağından taht kavgasına",
+  "keywords": "tarih,hanedan,aile,soy,strateji,simülasyon,köy,kral,taht,hitit,truva,göbeklitepe,çatalhöyük",
+  "promotionalText": "Bir avcı-toplayıcı ailesinden krallara: soyunu yaşat, köyünü büyüt, tahtı savaşla, siyasetle ya da entrikayla al.",
+  "description": "Ocak: Soyun Çağları, bir ailenin kuşaklar boyu hikâyesini yönettiğin tarihî bir hanedan oyunudur.\n\nBuzul Çağı'nın mamut avcılarından Göbeklitepe'ye, Çatalhöyük'ten Kaniş'e ve Truva'ya (Wilusa) uzanan gerçek tarihî senaryolardan birini seç. Her yıl ne iş yapacağına sen karar ver; evlen, çocuk büyüt, ölünce soyunu varisinle sürdür.\n\n• Stres, öfke, sevgi, sağlık: her kararın karakterine iz bırakır\n• Üvey anne, amca, yeğen: gerçekçi aile bağları, kavgalar, hak talepleri\n• Önce hane reisi ol, sonra köyün başına geç ya da kendi köyünü kur\n• Köy yönetimi: işler, binalar, yasalar, inanç, ticaret kervanları\n• 36'dan fazla buluşla taş devrinden tunca ilerle\n• Komşularla savaş, ittifak, haraç ve fetih\n• Saray: soylu haneler, kralın lütfu, evlilik ittifakları, rüşvet, zehir, isyan ve darbe. Tahta çık, hanedanını kur\n• 3D köy görünümü, mevsimler ve hava durumu\n• Sürgün, salgın, deprem, kıtlık... ve başarımlar",
+  "whatsNew": "İlk sürüm."
+ },
+ "en": {
+  "subtitle": "From the Ice Age to the throne",
+  "keywords": "history,dynasty,family,strategy,simulation,village,king,throne,hittite,troy,bronze age",
+  "promotionalText": "From a hunter-gatherer family to kings: keep your bloodline alive and seize the throne by war, politics or intrigue.",
+  "description": "Ocak is a historical dynasty game where you guide one family across generations, from Ice Age mammoth hunters to the Bronze Age kingdoms of Anatolia. Manage your household, lead your village, research new technologies, wage wars and climb to the throne through war, diplomacy or intrigue. (The game is in Turkish.)",
+  "whatsNew": "First release."
+ }
+}
