@@ -1,0 +1,62 @@
+# App Review ekran kaydı: uygulamayı iPhone simülatöründe açar, tanıtım modunu çalıştırır, videoyu kaydeder.
+name: Demo video
+on:
+  workflow_dispatch:
+permissions:
+  contents: write
+jobs:
+  video:
+    runs-on: macos-26
+    timeout-minutes: 45
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with: { node-version: 22 }
+      - name: Xcode seç
+        run: |
+          X=$(ls -d /Applications/Xcode_26*.app 2>/dev/null | grep -v -i beta | sort -V | tail -1); [ -n "$X" ] || X=$(ls -d /Applications/Xcode_*.app | sort -V | tail -1)
+          sudo xcode-select -s "$X"; xcodebuild -version
+      - name: Uygulama dosyaları
+        run: rm -rf mobile/www && mkdir -p mobile/www && cp -R app/. mobile/www/
+      - name: Capacitor
+        working-directory: mobile
+        run: npm ci && npx cap sync ios
+      - name: Simülatör için derle
+        working-directory: mobile/ios/App
+        run: |
+          set -o pipefail
+          for i in 1 2 3 4; do xcodebuild -resolvePackageDependencies -project App.xcodeproj -scheme App -derivedDataPath build >/dev/null 2>&1 && break; sleep 30; done
+          xcodebuild -project App.xcodeproj -scheme App -configuration Release -sdk iphonesimulator \
+            -destination 'generic/platform=iOS Simulator' -derivedDataPath build CODE_SIGNING_ALLOWED=NO build | tail -15
+          ls build/Build/Products/Release-iphonesimulator/
+      - name: Kaydet
+        run: |
+          set -x
+          UDID=$(xcrun simctl list devices available -j | python3 -c "
+          import json,sys;d=json.load(sys.stdin)['devices']
+          c=[(r,x) for r,l in d.items() if 'iOS' in r for x in l if x['name'].startswith('iPhone') and 'Pro' in x['name'] and 'Max' not in x['name']]
+          c.sort(key=lambda t:t[0]);print(c[-1][1]['udid'])")
+          xcrun simctl boot "$UDID"; xcrun simctl bootstatus "$UDID" -b
+          xcrun simctl ui "$UDID" appearance dark || true
+          xcrun simctl status_bar "$UDID" override --time "9:41" --batteryState charged --batteryLevel 100 --cellularBars 4 --wifiBars 3 || true
+          APP=mobile/ios/App/build/Build/Products/Release-iphonesimulator/App.app
+          xcrun simctl install "$UDID" "$APP"
+          BID=com.serhattutak.soyvebeton
+          xcrun simctl spawn "$UDID" defaults write $BID CapacitorStorage.sb_demo -string 1
+          xcrun simctl spawn "$UDID" defaults write $BID CapacitorStorage.sb_q -string 1
+          sleep 3
+          xcrun simctl io "$UDID" recordVideo --codec=h264 --force demo.mov & REC=$!
+          sleep 3
+          xcrun simctl launch "$UDID" $BID
+          sleep 150
+          kill -INT $REC; wait $REC || true
+          xcrun simctl io "$UDID" screenshot son.png || true
+          ls -la demo.mov
+          ffmpeg -version >/dev/null 2>&1 && ffmpeg -y -i demo.mov -vf "scale=-2:1280" -c:v libx264 -preset veryfast -crf 26 -an demo.mp4 || cp demo.mov demo.mp4
+          ls -la demo.mp4
+      - uses: actions/upload-artifact@v4
+        with:
+          name: demo-video
+          path: |
+            demo.mp4
+            son.png
