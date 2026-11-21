@@ -1,4 +1,4 @@
-# Ocak iOS derlemesi (Soy ve Beton / Miras FC düzeninin aynısı).
+# Ocak iOS derlemesi (Soy ve Beton / Miras FC düzeninin aynısı) — ocak dalı.
 # - Her push'ta imzasız derleme yapar (hata var mı diye kontrol).
 # - Commit mesajında [testflight] varsa ya da elle "testflight: evet" seçilirse
 #   App Store Connect API anahtarıyla imzalayıp TestFlight'a yükler.
