@@ -340,6 +340,29 @@ def durum():
     st, r = api("GET", f"/v1/builds?filter[app]={a['id']}&sort=-uploadedDate&limit=5")
     for b in r.get("data", []): print("Build", b["attributes"].get("version"), b["attributes"].get("processingState"))
 
+def ekle():
+    """App Review bilgisine ekran kaydını (store/demo.mp4) ekler; eski ekleri siler."""
+    app_id = need_app(); ver_id, state = editable_version(app_id)
+    st, r = api("GET", f"/v1/appStoreVersions/{ver_id}/appStoreReviewDetail")
+    if st != 200 or not r.get("data"): die("İnceleme bilgisi bulunamadı", r)
+    rd = r["data"]["id"]
+    st, r = api("GET", f"/v1/appStoreReviewDetails/{rd}/appStoreReviewAttachments?limit=20")
+    for a in r.get("data", []):
+        api("DELETE", f"/v1/appStoreReviewAttachments/{a['id']}"); print("  eski ek silindi:", a["attributes"].get("fileName"))
+    path = "store/demo.mp4"; data = open(path, "rb").read()
+    st, r = api("POST", "/v1/appStoreReviewAttachments", {"data": {"type": "appStoreReviewAttachments",
+        "attributes": {"fileName": "soyvebeton-demo.mp4", "fileSize": len(data)},
+        "relationships": {"appStoreReviewDetail": {"data": {"type": "appStoreReviewDetails", "id": rd}}}}})
+    if st not in (200, 201): die("Ek oluşturulamadı", r)
+    att = r["data"]
+    for op in att["attributes"]["uploadOperations"]:
+        req = urllib.request.Request(op["url"], data=data[op["offset"]:op["offset"] + op["length"]], method=op["method"])
+        for h in op.get("requestHeaders", []): req.add_header(h["name"], h["value"])
+        urllib.request.urlopen(req, timeout=300).read()
+    st, r = api("PATCH", f"/v1/appStoreReviewAttachments/{att['id']}", {"data": {"type": "appStoreReviewAttachments", "id": att["id"],
+        "attributes": {"uploaded": True, "sourceFileChecksum": hashlib.md5(data).hexdigest()}}})
+    step(f"Ekran kaydı eklendi ({len(data)//1024} KB)", st == 200, r)
+
 def kesif():
     a = need_app(); aid = a if isinstance(a, str) else a["id"]
     for path in [f"/v1/apps/{aid}/appInfos", f"/v1/apps/{aid}/appDataUsages", f"/v1/apps/{aid}/dataUsages",
@@ -360,4 +383,4 @@ if __name__ == "__main__":
         print("      ASC_KEY_ID, ASC_ISSUER_ID, ASC_KEY_P8 ve IOS_TEAM_ID ekle (Miras FC'deki değerlerin aynısı).")
         sys.exit(1)
     cmd = sys.argv[1] if len(sys.argv) > 1 else "durum"
-    {"hazirlik": hazirlik, "bilgiler": bilgiler, "gonder": gonder, "durum": durum, "kesif": kesif}[cmd]()
+    {"hazirlik": hazirlik, "bilgiler": bilgiler, "gonder": gonder, "durum": durum, "kesif": kesif, "ekle": ekle}[cmd]()

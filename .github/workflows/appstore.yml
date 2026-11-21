@@ -10,7 +10,7 @@ on:
       adim:
         description: "Adım"
         type: choice
-        options: [hazirlik, bilgiler, gonder, durum, kesif]
+        options: [hazirlik, bilgiler, gonder, durum, kesif, ekle]
         default: durum
   push:
     branches: [main]
