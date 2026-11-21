@@ -60,3 +60,9 @@ jobs:
           path: |
             demo.mp4
             son.png
+      - name: Videoyu depoya koy (demo-video dalı)
+        run: |
+          mkdir -p out; cp demo.mp4 out/demo.mp4; cp son.png out/son.png || true
+          for t in 4 12 24 36 48 60 72 84 96 110 125 140; do ffmpeg -v error -y -ss $t -i demo.mp4 -frames:v 1 -vf scale=240:-2 out/f$(printf %03d $t).png || true; done
+          git config user.name "ci"; git config user.email "ci@users.noreply.github.com"
+          git checkout --orphan demo-video; git rm -rfq . ; cp out/* .; git add *.mp4 *.png; git commit -qm "demo video"; git push -f origin demo-video
