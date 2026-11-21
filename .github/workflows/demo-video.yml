@@ -52,7 +52,8 @@ jobs:
           kill -INT $REC; wait $REC || true
           xcrun simctl io "$UDID" screenshot son.png || true
           ls -la demo.mov
-          ffmpeg -version >/dev/null 2>&1 && ffmpeg -y -i demo.mov -vf "scale=-2:1280" -c:v libx264 -preset veryfast -crf 26 -an demo.mp4 || cp demo.mov demo.mp4
+          brew install ffmpeg >/dev/null 2>&1 || HOMEBREW_NO_AUTO_UPDATE=1 brew install ffmpeg
+          ffmpeg -v error -y -i demo.mov -vf "scale=-2:1280,fps=30" -c:v libx264 -preset veryfast -crf 27 -pix_fmt yuv420p -movflags +faststart -an demo.mp4
           ls -la demo.mp4
       - uses: actions/upload-artifact@v4
         with:
