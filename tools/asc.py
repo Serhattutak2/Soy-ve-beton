@@ -317,7 +317,8 @@ def gonder():
     if subs and subs[0]["attributes"]["state"] == "UNRESOLVED_ISSUES":
         print("Reddedilen gönderim yeniden gönderiliyor:", sub)
         st, r = api("PATCH", f"/v1/reviewSubmissions/{sub}", {"data": {"type": "reviewSubmissions", "id": sub, "attributes": {"submitted": True}}})
-        if st != 200: die("Yeniden gönderilemedi", r)
+        if st != 200:
+            print(json.dumps(r)[:4000]); die("Yeniden gönderilemedi", r)
         print("APPLE İNCELEMESİNE GÖNDERİLDİ ✓  Durum:", r["data"]["attributes"].get("state")); return
     if not sub:
         st, r = api("POST", "/v1/reviewSubmissions", {"data": {"type": "reviewSubmissions", "attributes": {"platform": "IOS"},
