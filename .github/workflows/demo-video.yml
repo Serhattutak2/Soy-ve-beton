@@ -42,10 +42,8 @@ jobs:
           APP=mobile/ios/App/build/Build/Products/Release-iphonesimulator/App.app
           xcrun simctl install "$UDID" "$APP"
           BID=com.serhattutak.soyvebeton
-          xcrun simctl spawn "$UDID" defaults write $BID CapacitorStorage.sb_demo -string 1
           xcrun simctl spawn "$UDID" defaults write $BID CapacitorStorage.sb_q -string 1
           # ısınma: ilk açılışta WebView ve 3B gölgelendiriciler hazırlanır, sonra kapatılır
-          xcrun simctl spawn "$UDID" defaults write $BID CapacitorStorage.sb_demo -string 0
           xcrun simctl launch "$UDID" $BID; sleep 60; xcrun simctl terminate "$UDID" $BID || true; sleep 3
           xcrun simctl spawn "$UDID" defaults write $BID CapacitorStorage.sb_demo -string 1
           sleep 3
