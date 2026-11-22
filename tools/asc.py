@@ -316,6 +316,7 @@ def gonder():
     sub = subs[0]["id"] if subs else None
     if subs and subs[0]["attributes"]["state"] == "UNRESOLVED_ISSUES":
         print("Reddedilen gönderim bulundu:", sub)
+        sub_keep = sub
         st, r = api("GET", f"/v1/reviewSubmissions/{sub}/items?limit=50")
         for it in r.get("data", []):
             if it["attributes"].get("state") in ("REJECTED", "READY_FOR_REVIEW"):
@@ -326,9 +327,17 @@ def gonder():
             "appStoreVersion": {"data": {"type": "appStoreVersions", "id": ver_id}}}}})
         print("  sürüm yeniden eklendi" if st in (200, 201) else "  sürüm eklenemedi: " + err(r) + " " + json.dumps(r)[:1500])
         st, r = api("PATCH", f"/v1/reviewSubmissions/{sub}", {"data": {"type": "reviewSubmissions", "id": sub, "attributes": {"submitted": True}}})
-        if st != 200:
-            print(json.dumps(r)[:3000]); die("Yeniden gönderilemedi", r)
-        print("APPLE İNCELEMESİNE GÖNDERİLDİ ✓  Durum:", r["data"]["attributes"].get("state")); return
+        if st == 200:
+            print("APPLE İNCELEMESİNE GÖNDERİLDİ ✓  Durum:", r["data"]["attributes"].get("state")); return
+        print("  yeniden gönderilemedi; eski gönderim iptal edilip yenisi açılıyor")
+        st, r = api("PATCH", f"/v1/reviewSubmissions/{sub}", {"data": {"type": "reviewSubmissions", "id": sub, "attributes": {"canceled": True}}})
+        print("  iptal:", st, r.get("data", {}).get("attributes", {}).get("state") if st == 200 else err(r))
+        for _ in range(12):
+            st, r = api("GET", f"/v1/reviewSubmissions/{sub}")
+            stt = r.get("data", {}).get("attributes", {}).get("state"); print("  eski gönderim durumu:", stt)
+            if stt not in ("CANCELING",): break
+            time.sleep(10)
+        sub = None
     if not sub:
         st, r = api("POST", "/v1/reviewSubmissions", {"data": {"type": "reviewSubmissions", "attributes": {"platform": "IOS"},
             "relationships": {"app": {"data": {"type": "apps", "id": app_id}}}}})
@@ -345,7 +354,8 @@ def gonder():
                     for x in v: print("  EKSİK:", k.split("/")[-2] if "/" in k else k, "->", x.get("title", ""), "|", x.get("detail", ""))
             die("Sürüm gönderime eklenemedi", r)
     st, r = api("PATCH", f"/v1/reviewSubmissions/{sub}", {"data": {"type": "reviewSubmissions", "id": sub, "attributes": {"submitted": True}}})
-    if st != 200: die("Gönderim onaylanamadı", r)
+    if st != 200:
+        print(json.dumps(r)[:3000]); die("Gönderim onaylanamadı", r)
     print("APPLE İNCELEMESİNE GÖNDERİLDİ ✓  Durum:", r["data"]["attributes"].get("state"))
 
 def durum():
