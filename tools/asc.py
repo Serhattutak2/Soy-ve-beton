@@ -312,7 +312,13 @@ def gonder():
     if st not in (200, 204): die("Build sürüme bağlanamadı", r)
     print("Build bağlandı:", builds[0]["attributes"].get("version"))
     st, r = api("GET", f"/v1/reviewSubmissions?filter[app]={app_id}&limit=20")
-    sub = next((s["id"] for s in r.get("data", []) if s["attributes"].get("state") in ("READY_FOR_REVIEW", "UNRESOLVED_ISSUES")), None)
+    subs = [s for s in r.get("data", []) if s["attributes"].get("state") in ("READY_FOR_REVIEW", "UNRESOLVED_ISSUES")]
+    sub = subs[0]["id"] if subs else None
+    if subs and subs[0]["attributes"]["state"] == "UNRESOLVED_ISSUES":
+        print("Reddedilen gönderim yeniden gönderiliyor:", sub)
+        st, r = api("PATCH", f"/v1/reviewSubmissions/{sub}", {"data": {"type": "reviewSubmissions", "id": sub, "attributes": {"submitted": True}}})
+        if st != 200: die("Yeniden gönderilemedi", r)
+        print("APPLE İNCELEMESİNE GÖNDERİLDİ ✓  Durum:", r["data"]["attributes"].get("state")); return
     if not sub:
         st, r = api("POST", "/v1/reviewSubmissions", {"data": {"type": "reviewSubmissions", "attributes": {"platform": "IOS"},
             "relationships": {"app": {"data": {"type": "apps", "id": app_id}}}}})
