@@ -345,7 +345,16 @@ def durum():
     st, r = api("GET", f"/v1/apps/{a['id']}/appStoreVersions?limit=5")
     for v in r.get("data", []): print("Sürüm", v["attributes"]["versionString"], v["attributes"]["appStoreState"])
     st, r = api("GET", f"/v1/builds?filter[app]={a['id']}&sort=-uploadedDate&limit=5")
-    for b in r.get("data", []): print("Build", b["attributes"].get("version"), b["attributes"].get("processingState"))
+    for b in r.get("data", []): print("Build", b["attributes"].get("version"), b["attributes"].get("processingState"), "şifreleme:", b["attributes"].get("usesNonExemptEncryption"))
+    st, r = api("GET", f"/v1/apps/{a['id']}/appStoreVersions?limit=1")
+    for v in r.get("data", []):
+        st2, r2 = api("GET", f"/v1/appStoreVersions/{v['id']}/appStoreReviewDetail")
+        if r2.get("data"):
+            st3, r3 = api("GET", f"/v1/appStoreReviewDetails/{r2['data']['id']}/appStoreReviewAttachments")
+            for x in r3.get("data", []): print("Ek", x["attributes"].get("fileName"), json.dumps(x["attributes"].get("assetDeliveryState")))
+    st, r = api("GET", f"/v1/reviewSubmissions?filter[app]={a['id']}&limit=5&include=items")
+    for x in r.get("data", []): print("Gönderim", x["id"], x["attributes"].get("state"))
+    for x in r.get("included", []): print("  öğe", x["id"], json.dumps(x.get("attributes"))[:300])
 
 def ekle():
     """App Review bilgisine ekran kaydını (store/demo.mp4) ekler; eski ekleri siler."""
