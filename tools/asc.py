@@ -354,10 +354,43 @@ def kesif():
             st2, r2 = api("GET", f"/v1/appInfos/{i['id']}/{rel}")
             print(" ", rel, st2, json.dumps(r2.get("data", {}).get("attributes", r2))[:3000])
 
+def tf():
+    """TestFlight: son build'in durumu + dahili test grubu ve ekip üyelerini test kullanıcısı yap."""
+    a = find_app()
+    if not a: print("Uygulama App Store Connect'te yok."); return
+    aid = a["id"]
+    st, r = api("GET", f"/v1/builds?filter[app]={aid}&sort=-uploadedDate&limit=5")
+    builds = r.get("data", [])
+    for b in builds: print("Build", b["attributes"].get("version"), b["attributes"].get("processingState"), "süresi dolmuş" if b["attributes"].get("expired") else "")
+    st, r = api("GET", f"/v1/apps/{aid}/betaGroups?limit=50")
+    groups = r.get("data", [])
+    for g in groups: print("Grup", g["attributes"].get("name"), "dahili" if g["attributes"].get("isInternalGroup") else "harici", g["id"])
+    gi = next((g for g in groups if g["attributes"].get("isInternalGroup")), None)
+    if not gi:
+        st, r = api("POST", "/v1/betaGroups", {"data": {"type": "betaGroups", "attributes": {"name": "Ekip", "isInternalGroup": True, "hasAccessToAllBuilds": True},
+              "relationships": {"app": {"data": {"type": "apps", "id": aid}}}}})
+        print("Dahili grup oluşturma:", st, json.dumps(r)[:400])
+        gi = r.get("data")
+    if not gi: return
+    st, r = api("GET", f"/v1/betaGroups/{gi['id']}/betaTesters?limit=50")
+    have = {t["attributes"].get("email", "").lower() for t in r.get("data", [])}
+    print("Gruptaki test kullanıcıları:", sorted(have))
+    st, r = api("GET", "/v1/users?limit=50")
+    for u in r.get("data", []):
+        em = (u["attributes"].get("username") or "").lower()
+        if not em or em in have: continue
+        st2, r2 = api("POST", "/v1/betaTesters", {"data": {"type": "betaTesters", "attributes": {"email": em,
+              "firstName": u["attributes"].get("firstName") or "Serhat", "lastName": u["attributes"].get("lastName") or "Tutak"},
+              "relationships": {"betaGroups": {"data": [{"type": "betaGroups", "id": gi["id"]}]}}}})
+        print("Test kullanıcısı eklendi:" if st2 in (200, 201) else "Eklenemedi:", em, st2, "" if st2 in (200, 201) else json.dumps(r2)[:300])
+    if builds and builds[0]["attributes"].get("processingState") == "VALID":
+        st, r = api("POST", f"/v1/betaGroups/{gi['id']}/relationships/builds", {"data": [{"type": "builds", "id": builds[0]["id"]}]})
+        print("Son build gruba bağlandı:", st)
+
 if __name__ == "__main__":
     if not KID or not ISS or "PRIVATE KEY" not in P8:
         print("HATA: Gizli anahtarlar eksik. Depo > Settings > Secrets and variables > Actions altına")
         print("      ASC_KEY_ID, ASC_ISSUER_ID, ASC_KEY_P8 ve IOS_TEAM_ID ekle (Miras FC'deki değerlerin aynısı).")
         sys.exit(1)
     cmd = sys.argv[1] if len(sys.argv) > 1 else "durum"
-    {"hazirlik": hazirlik, "bilgiler": bilgiler, "gonder": gonder, "durum": durum, "kesif": kesif}[cmd]()
+    {"hazirlik": hazirlik, "bilgiler": bilgiler, "gonder": gonder, "durum": durum, "kesif": kesif, "tf": tf}[cmd]()

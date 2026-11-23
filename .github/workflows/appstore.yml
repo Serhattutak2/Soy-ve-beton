@@ -10,7 +10,7 @@ on:
       adim:
         description: "Adım"
         type: choice
-        options: [hazirlik, bilgiler, gonder, durum, kesif]
+        options: [hazirlik, bilgiler, gonder, durum, kesif, tf]
         default: durum
   push:
     branches: [ocak]
@@ -25,7 +25,7 @@ jobs:
       KID: ${{ secrets.ASC_KEY_ID }}
       ISS: ${{ secrets.ASC_ISSUER_ID }}
       P8: ${{ secrets.ASC_KEY_P8 }}
-      ADIM: ${{ github.event.inputs.adim || 'hazirlik' }}
+      ADIM: ${{ github.event.inputs.adim || 'tf' }}
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-python@v5
