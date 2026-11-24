@@ -387,10 +387,25 @@ def tf():
         st, r = api("POST", f"/v1/betaGroups/{gi['id']}/relationships/builds", {"data": [{"type": "builds", "id": builds[0]["id"]}]})
         print("Son build gruba bağlandı:", st)
 
+def davet():
+    """Test kullanıcılarına TestFlight davetini yeniden gönderir."""
+    a = find_app()
+    if not a: print("Uygulama yok."); return
+    aid = a["id"]
+    st, r = api("GET", f"/v1/betaTesters?filter[apps]={aid}&limit=50")
+    ts = r.get("data", [])
+    if not ts: print("Test kullanıcısı yok."); return
+    for t in ts:
+        at = t["attributes"]
+        print("Test kullanıcısı:", at.get("email"), "| durum:", at.get("state"), "| davet türü:", at.get("inviteType"))
+        st2, r2 = api("POST", "/v1/betaTesterInvitations", {"data": {"type": "betaTesterInvitations", "relationships": {
+            "app": {"data": {"type": "apps", "id": aid}}, "betaTester": {"data": {"type": "betaTesters", "id": t["id"]}}}}})
+        print("  Davet e-postası:", "GÖNDERİLDİ" if st2 in (200, 201) else f"gönderilemedi ({st2})", "" if st2 in (200, 201) else json.dumps(r2)[:400])
+
 if __name__ == "__main__":
     if not KID or not ISS or "PRIVATE KEY" not in P8:
         print("HATA: Gizli anahtarlar eksik. Depo > Settings > Secrets and variables > Actions altına")
         print("      ASC_KEY_ID, ASC_ISSUER_ID, ASC_KEY_P8 ve IOS_TEAM_ID ekle (Miras FC'deki değerlerin aynısı).")
         sys.exit(1)
     cmd = sys.argv[1] if len(sys.argv) > 1 else "durum"
-    {"hazirlik": hazirlik, "bilgiler": bilgiler, "gonder": gonder, "durum": durum, "kesif": kesif, "tf": tf}[cmd]()
+    {"hazirlik": hazirlik, "bilgiler": bilgiler, "gonder": gonder, "durum": durum, "kesif": kesif, "tf": tf, "davet": davet}[cmd]()
