@@ -312,6 +312,16 @@ details.stats .mini{display:flex;gap:4px;flex-wrap:wrap;justify-content:flex-end
 .cpath.savas{background:linear-gradient(160deg,#2c1814,#170d0b)}
 .cpath.kral{background:linear-gradient(160deg,#2e2410,#17120a);border-color:#a87c45}
 .tabs button{min-width:0;padding-left:2px;padding-right:2px}
+/* v0.8 */
+input,textarea,select{-webkit-user-select:text;user-select:text}
+.mrow{display:flex;align-items:center;gap:8px;padding:8px 0;border-bottom:1px solid rgba(217,168,91,.1)}
+.mrow:last-of-type{border-bottom:0}.mrow .mi{width:28px;height:28px;flex:none;display:grid;place-items:center}.mrow .mi svg{width:24px;height:24px}
+.mrow .mn{flex:1;min-width:0;display:flex;flex-direction:column}.mrow .mn small{color:var(--m);font-size:11px}
+.mb{flex:none;min-width:70px;padding:7px 8px;border-radius:10px;border:1px solid rgba(217,168,91,.3);background:rgba(255,255,255,.04);color:var(--t);font:inherit;font-size:13px;font-weight:700;display:flex;flex-direction:column;align-items:center;line-height:1.15}
+.mb small{font-weight:500;font-size:10.5px;color:var(--m)}.mb.sell{border-color:rgba(122,196,122,.4)}.mb.buy{border-color:rgba(232,176,74,.45)}
+.mb:disabled{opacity:.35}
+.setb{display:flex;flex-direction:column;gap:8px}.setb .s{padding:11px;border-radius:12px;border:1px solid rgba(217,168,91,.25);background:rgba(255,255,255,.03);color:var(--m);font:inherit;text-align:left}
+.setb .s.on{color:var(--t);border-color:#d9a85b;background:rgba(217,168,91,.12)}
 </style>
 </head>
 <body>
@@ -2255,7 +2265,7 @@ function startHtml(){const sv=load();
  <div class="field"><label>Cinsiyet</label><div class="seg" id="sx"><button data-v="m" class="${setup.sex==='m'?'on':''}">Erkek</button><button data-v="f" class="${setup.sex==='f'?'on':''}">Kadın</button></div></div>
  <div class="field"><label>Doğuştan yetenek</label><div class="seg" id="ar"><button data-v="avci" class="${setup.arch==='avci'?'on':''}">💪 Güçlü</button><button data-v="zeki" class="${setup.arch==='zeki'?'on':''}">🧠 Zeki</button><button data-v="sozcu" class="${setup.arch==='sozcu'?'on':''}">🗣️ Sözü dinlenir</button></div></div>
  <button class="big" id="go">OCAĞI YAK</button></div>
- <div class="note">Sürüm 0.7 · Tek kayıt, kararlar geri alınamaz.</div></div>`;}
+ <div class="note">Sürüm 0.8 · Tek kayıt, kararlar geri alınamaz.</div></div>`;}
 function bindStart(){
  document.querySelectorAll('[data-sc]').forEach(b=>b.onclick=()=>{setup.sc=b.dataset.sc;document.querySelectorAll('[data-sc]').forEach(x=>x.classList.toggle('on',x===b));});
  document.querySelectorAll('#sx button').forEach(b=>b.onclick=()=>{setup.sex=b.dataset.v;document.querySelectorAll('#sx button').forEach(x=>x.classList.toggle('on',x===b));});
@@ -2267,6 +2277,105 @@ function overHtml(){return `<div class="start"><div class="titleart">${art('end'
  <div class="card" style="text-align:left"><h3>Atalar</h3>${S.ancestors.map(a=>`<div class="anc">${a.face||''}<div class="x"><div class="nm">${esc(a.name)}${a.lakap?` <span class="lakap">“${esc(a.lakap)}”</span>`:''}</div><div class="sub">${a.title} · ${a.age} yaşında · ${esc(a.cause)}</div></div></div>`).join('')}</div>
  <div class="card" style="text-align:left"><h3>Soy Kitabı</h3><div class="tl">${S.book.map(e=>`<div class="e"><small>${yr(e.y)} · Nesil ${e.g}</small><br>${e.t}</div>`).join('')}</div></div>
  <button class="big" id="newsoy">YENİ BİR SOY BAŞLAT</button></div>`;}
+
+/* ========= v0.8: Urartu, pazar, ses ve titreşim, kayıt yedeği ========= */
+/* ---- Urartu (Biainili) senaryosu ---- */
+const NAMES_UR={m:['Sarduri','İşpuini','Menua','Argişti','Rusa','İnuşpua','Erimena','Arame','Lutipri','Ursa','Dadani','Abiliani','Kuzine','Teriuşa','Melartua','Diaduni','Uedipri','Arşuni','Haldini','Tarhui','Sardurihini','Argiştihi'],f:['Tariria','Arsini','Siluqa','Tiara','Qilbani','Hutuni','Erşa','Melia','Uaşti','Ardini','Ainsa','Qaruni','Bauri','Sinia','Tuşpani','Ulina']};
+{const NP=NAMES[5];Object.defineProperty(NAMES,5,{get(){return S&&S.sc==='urartu'?NAMES_UR:NP;},configurable:true});}
+SCEN.urartu={n:'Tuşpa (Urartu)',y:-840,place:'Van Gölü kıyısı, Van Kalesi',d:'Demir Çağı. Dağların arasında yeni bir krallık doğuyor: Biainili, yani Urartu. Güneyde Asur’un korkunç orduları, kayalarda Tanrı Haldi’nin kapıları. Kale kentinin dibindeki bir hane olarak başla.',pop:260,
+ tech:['ates','mizrak','atlatl','yay','ag','kopek','ogutme','atalar','tarim','hayvan','kerpic','canak','dokuma','sulama','bakir','sur','tekerlek','ticaret','tunc','yazi','araba','saban','at','hukuk','sal','muhur','antlasma','kale','demir'],home:'tas',nb:'urartu',art:'war',diff:'Çok zor',
+ res:{food:460,deri:45,alet:60,mal:140,hazine:45,bilgi:30,itibar:25},bld:{konut:28,tarla:20,agil:10,ambar:3,atolye:3,tapinak:2,sur:2,ocak:2,pazar:1,kuyu:2,kisla:1}};
+NBN.urartu=['Asur','Mannai','Etiuni','Diauehi','Kummuh','Melid'];
+RDEF.urartu={n:'Biainili (Urartu) Krallığı',rh:'Sarduri Hanedanı',hs:['Arzaşkun Hanesi','Haldi Rahipleri','Upumu Hanesi','Arsita Hanesi','Hubuşkia Hanesi','Zuaini Hanesi'],hall:'Tuşpa Sarayı',cn:'Büyükler Meclisi',king:'Sarduri'};
+{const _rT=rTitle;rTitle=function(f){if(S&&S.sc==='urartu'&&S.era>=5)return f?'Biainili Kraliçesi':'Biainili Kralı';return _rT(f);};}
+TLS.urartu=[{y:-835,id:'sarduri'},{y:-830,id:'asurseferi'},{y:-800,id:'menua'},{y:-735,id:'tusbakusatma'},{y:-714,id:'musasir'}];
+function EV_sarduri(){return {icon:'🏰',art:'build',title:`${yr()} · Van Kayası’nda kale`,text:'Kral Sarduri, gölün kıyısındaki dev kayanın üzerine bir kale yaptırıyor. Her taşı bir öküz ağırlığında. Bütün hanelerden işçi istiyor.<br><i>Sarduri’nin Van Kalesi dibindeki “Madır Burç” yazıtı, Urartu’nun bilinen en eski yazıtıdır; Asur dilinde yazılmıştır.</i>',choices:[
+ {t:'Güçlü adamlarını gönder',sub:'Yiyecek −30 · itibar +6 · saray lütfu +10',f:()=>{vrs('food',-30);rs('itibar',6);if(S.realm)adj(S.realm,'favor',10);return {text:'Kayanın üstünde surlar yükseldi. Taşlardan birinde senin hanenin işareti var.'};}},
+ {t:'Taş ustası olarak kendin git',sub:'Güç ve itibar · yaralanma riski',pct:70,f:()=>{rs('itibar',9);S.pc.sk.guc=Math.min(10,S.pc.sk.guc+1);if(S.realm)adj(S.realm,'favor',14);let t='Kralın mimarları adını öğrendi.';if(!chance(70))t+='<br>'+injure(.8);return {text:t};}},
+ {t:'İşçi verme',sub:'Saray lütfu −15',f:()=>{if(S.realm)adj(S.realm,'favor',-15);rs('itibar',-4);return {text:'Kralın adamları kapına bir işaret çizip gitti.'};}}]};}
+function EV_asurseferi(){const n=S.nb.find(x=>x.name==='Asur');const ap=n?nbPower(n)*1.6:80;return {icon:'⚔️',art:'war',title:`${yr()} · Asur geliyor`,text:'Asur Kralı III. Şalmaneser’in komutanı Dayyan-Aşur, demir zırhlı bir orduyla Nairi dağlarını aştı. Köyler yanıyor, kuyular zehirleniyor.<br><i>Asur yıllıkları, MÖ 832’de Urartu’ya karşı yapılan bu seferi kaydeder.</i>',choices:[
+ {t:'Dağlara kaç',sub:'Can kurtulur, ambar yağmalanır',f:()=>{vrs('food',-Math.ceil(TRS().food*.4));S.vil.bld.konut=Math.max(2,S.vil.bld.konut-3);return {text:'Asurlular boş evleri yaktı. Ama insanların hayatta.'};}},
+ {t:'Geçitte pusu kur',pct:winPct(myPower(true)*1.3,ap),f:()=>{if(chance(winPct(myPower(true)*1.3,ap))){rs('itibar',14);setLakap('Geçit Bekçisi');if(S.realm)adj(S.realm,'favor',20);return {text:'Asur öncü birliği dar geçitte kılıçtan geçti. Dağlarda adın türkü oldu.'};}const l=Math.ceil(S.vil.pop*.08);S.vil.pop-=l;return {text:`Pusu bozuldu. ${l} kişi öldü ya da sürgüne götürüldü.<br>`+injure(1)};}},
+ {t:'Haraç öde',sub:'−15 hazine, −40 yiyecek',dis:TRS().hazine<15,why:'Hazine yetersiz',f:()=>{vrs('hazine',-15);vrs('food',-40);return {text:'Asur kâtipleri adını bir kil tablete yazdı: “haraç veren”.'};}}]};}
+function EV_menua(){return {icon:'💧',art:'river',title:`${yr()} · Menua Kanalı`,text:'Kral Menua, dağlardaki pınarlardan Van ovasına kadar uzanan dev bir kanal kazdırıyor. Kurak ova bahçeye dönecek.<br><i>Bugün “Şamram Kanalı” denen bu su yolu, 2800 yıldır hâlâ su taşıyor.</i>',choices:[
+ {t:'Kanal işine katıl',sub:'Yiyecek −25 · bundan sonra çiftçiler +%15',f:()=>{vrs('food',-25);S.flags.kanal=true;S.vil.huzur=clamp(S.vil.huzur+6,0,100);if(S.realm)adj(S.realm,'favor',8);return {text:'Su ovaya ulaştı. Tarlaların hiç olmadığı kadar yeşil.'};}},
+ {t:'Kanaldan kendi tarlana gizlice su çevir',sub:'Hile: yiyecek +60 · yakalanma riski',pct:60,f:()=>{if(chance(60)){vrs('food',60);ch('vicdan',-6);return {text:'Bekçiler fark etmedi. Ambarın doldu.'};}rs('itibar',-12);if(S.realm)adj(S.realm,'favor',-20);return {text:'Kralın su bekçileri seni yakaladı. Utanç büyük.'};}},
+ {t:'Uzak dur',f:()=>({text:'Kanal senin olmadan da yapıldı.'})}]};}
+function EV_tusbakusatma(){return {icon:'🏹',art:'war',title:`${yr()} · Tuşpa kuşatması`,text:'Asur kralı III. Tiglat-Pileser bütün gücüyle geldi ve Tuşpa kalesini kuşattı. Kale yüksek kayanın üstünde; ova ise savunmasız.<br><i>Asur kaynaklarına göre Tiglat-Pileser kaleyi alamadı ve kral heykelini kale önüne dikip döndü.</i>',choices:[
+ {t:'Kaleye sığın, direnin',sub:'Kıtlık çekersiniz ama kale düşmez',f:()=>{vrs('food',-Math.ceil(TRS().food*.35));rs('itibar',6);return {text:'Aylar sonra Asur ordusu çekildi. Kale ayakta, ova yanık.'};}},
+ {t:'Gece çıkış yap',pct:clamp(40+eff('guc')*3,10,80),f:()=>{if(chance(40+eff('guc')*3)){rs('itibar',15);if(S.realm)adj(S.realm,'favor',20);vrs('alet',12);return {text:'Asur kuşatma rampasını ateşe verdin. Ganimet olarak demir kılıçlar aldın.'};}return {text:'Çıkış kanlı bitti.<br>'+injure(1.1)};}}]};}
+function EV_musasir(){const G=S.realm;const kingTxt=G&&!G.you?` Haber geldi: ${kT(G.king)} ${esc(G.king.name)} bu acıya dayanamadı.`:'';return {icon:'🔥',art:'blaze',title:`${yr()} · Haldi’nin tapınağı düştü`,text:`Asur Kralı II. Sargon, Urmiye Gölü yakınında Urartu ordusunu yendi ve kutsal Muşaşir şehrine girdi. Tanrı Haldi’nin tapınağı yağmalandı, heykeli Asur’a götürüldü.${kingTxt}<br><i>Sargon’un 8. seferi (MÖ 714), bir mektup-yazıtta en ince ayrıntısıyla anlatılır.</i>`,choices:[
+ {t:'Kalan kutsal eşyaları dağlara kaçır',sub:'Rahipler ve halk seni unutmaz · risk',pct:55,f:()=>{if(chance(55)){rs('itibar',18);S.vil.huzur=clamp(S.vil.huzur+10,0,100);setLakap('Haldi’nin Koruyucusu');if(G&&!G.you)kingDeath([],'Muşaşir yasından');return {text:'Haldi’nin kalkanı ve kutsal mızrağı senin ellerinde kurtuldu.'};}return {text:'Asur atlıları peşindeydi.<br>'+injure(1)};}},
+ {t:'Yas tut, kurban kes',sub:'Yiyecek −20 · huzur +',f:()=>{vrs('food',-20);S.vil.huzur=clamp(S.vil.huzur+5,0,100);if(G&&!G.you){kingDeath([], 'Muşaşir yasından');}return {text:'Bütün ülke karalar bağladı.'};}}]};}
+Object.assign(TLF2,{sarduri:EV_sarduri,asurseferi:EV_asurseferi,menua:EV_menua,tusbakusatma:EV_tusbakusatma,musasir:EV_musasir});
+{const _jy=jobYield;jobYield=function(j){const r=_jy(j);if(j==='ciftci'&&S.flags&&S.flags.kanal&&r&&r.food)r.food*=1.15;return r;};}
+
+/* ---- Pazar ---- */
+const MKT={food:{v:.1,lot:20},deri:{v:.4,lot:5},alet:{v:.6,lot:5},mal:{v:.25,lot:10}};
+function mktInit(){if(!S.mkt){S.mkt={m:{food:1,deri:1,alet:1,mal:1},pm:{food:1,deri:1,alet:1,mal:1},n:0,news:''};}return S.mkt;}
+function mktSpread(){const a=(S.vil.bld.pazar||0)>0,b=!!S.tech.ticaret;return a&&b?.85:a||b?.7:.55;}
+function mktMax(){return 3+(S.vil.bld.pazar||0)*2+(S.tech.ticaret?2:0);}
+function mktYear(L){const M=mktInit();M.pm=Object.assign({},M.m);M.n=0;M.news='';
+ Object.keys(MKT).forEach(k=>{M.m[k]=clamp(+(M.m[k]*(.85+R()*.3)+(1-M.m[k])*.25).toFixed(2),.5,2.2);});
+ if(S.drought){M.m.food=clamp(M.m.food*1.7,.5,2.6);M.news='Kuraklık: yiyecek fiyatları uçtu.';}
+ else if(chance(14)){const k=pick(Object.keys(MKT));const up=chance(50);M.m[k]=clamp(M.m[k]*(up?1.6:.6),.4,2.6);M.news=`${LB[k]} ${up?'kıtlığı: fiyatlar yükseldi':'bolluğu: fiyatlar düştü'}.`;}
+ if(M.news&&L)L.push('Pazar: '+M.news);}
+function mktPrice(k,buy){const M=mktInit(),d=MKT[k];const base=d.v*M.m[k]*d.lot;return buy?Math.max(1,Math.ceil(base*1.12)):Math.max(1,Math.floor(base*mktSpread()));}
+function mktTrade(k,buy){const M=mktInit(),d=MKT[k],r=S.res;if(M.n>=mktMax())return;const p=mktPrice(k,buy);
+ if(buy){if(r.hazine<p)return;rs('hazine',-p);rs(k,d.lot);}else{if((r[k]||0)<d.lot)return;rs(k,-d.lot);rs('hazine',p);}
+ M.n++;M.m[k]=clamp(+(M.m[k]*(buy?1.04:.96)).toFixed(2),.4,2.6);sfx(buy?'coin':'coin2');buzz('light');render();}
+function mktCard(){const M=mktInit(),r=S.res;const left=mktMax()-M.n;const sp=mktSpread();
+ let h=`<div class="card mkt"><h3>⚖️ Pazar</h3><div class="sub" style="margin:-4px 0 8px">${S.lead?'Köyün ambarıyla':'Hanenin malıyla'} takas yap. Bu yıl ${left} alışveriş hakkın kaldı.${sp<.7?' <span class="warnc">Pazar yeri ve ticaret bilgisi yok: tüccarlar seni kazıklıyor.</span>':''}</div>${M.news?`<div class="chip" style="margin-bottom:8px">📣 ${esc(M.news)}</div>`:''}`;
+ Object.keys(MKT).forEach(k=>{const d=MKT[k],b=mktPrice(k,true),s=mktPrice(k,false),tr=M.m[k]>M.pm[k]*1.05?'<span class="bad">▲</span>':M.m[k]<M.pm[k]*.95?'<span class="good">▼</span>':'<span class="sub">•</span>';
+  h+=`<div class="mrow"><span class="mi">${actIcon(k)}</span><span class="mn"><b>${LB[k]}</b><small>${d.lot} birim · elinde ${Math.floor(r[k]||0)} ${tr}</small></span>
+  <button class="mb sell" data-mkt="${k}" data-b="0" ${left<=0||(r[k]||0)<d.lot?'disabled':''}>Sat<small>+${s} hazine</small></button><button class="mb buy" data-mkt="${k}" data-b="1" ${left<=0||r.hazine<b?'disabled':''}>Al<small>−${b} hazine</small></button></div>`;});
+ return h+`<div class="legend">Elindeki hazine: <b>${Math.floor(r.hazine)}</b>. Fiyatlar her yıl değişir; çok satılan ucuzlar, çok alınan pahalanır.</div></div>`;}
+
+/* ---- ses ve titreşim ---- */
+const SET=(()=>{try{return Object.assign({snd:true,amb:true,hap:true},JSON.parse(localStorage.getItem('ocak_set')||'{}'));}catch(e){return {snd:true,amb:true,hap:true};}})();
+function setSave(){try{localStorage.setItem('ocak_set',JSON.stringify(SET));}catch(e){}}
+const AU={ctx:null,master:null,amb:null,ambOn:false};
+function auInit(){if(AU.ctx)return AU.ctx;try{const C=window.AudioContext||window.webkitAudioContext;if(!C)return null;AU.ctx=new C();AU.master=AU.ctx.createGain();AU.master.gain.value=.55;AU.master.connect(AU.ctx.destination);}catch(e){AU.ctx=null;}return AU.ctx;}
+function noiseBuf(sec){const c=AU.ctx,n=Math.floor(c.sampleRate*sec),b=c.createBuffer(1,n,c.sampleRate),d=b.getChannelData(0);for(let i=0;i<n;i++)d[i]=Math.random()*2-1;return b;}
+function tone(f,t0,dur,type,vol,f2){const c=AU.ctx;const o=c.createOscillator(),g=c.createGain();o.type=type||'sine';o.frequency.setValueAtTime(f,t0);if(f2)o.frequency.exponentialRampToValueAtTime(f2,t0+dur);g.gain.setValueAtTime(.0001,t0);g.gain.exponentialRampToValueAtTime(vol||.2,t0+.012);g.gain.exponentialRampToValueAtTime(.0001,t0+dur);o.connect(g);g.connect(AU.master);o.start(t0);o.stop(t0+dur+.05);}
+function thump(t0,f,vol){const c=AU.ctx;const o=c.createOscillator(),g=c.createGain();o.frequency.setValueAtTime(f||110,t0);o.frequency.exponentialRampToValueAtTime(40,t0+.35);g.gain.setValueAtTime(vol||.6,t0);g.gain.exponentialRampToValueAtTime(.001,t0+.4);o.connect(g);g.connect(AU.master);o.start(t0);o.stop(t0+.45);}
+function sfx(k){if(!SET.snd)return;const c=auInit();if(!c||c.state!=='running')return;const t=c.currentTime;try{
+ if(k==='tap')tone(880,t,.06,'triangle',.06,660);
+ else if(k==='coin'){tone(1320,t,.09,'square',.05);tone(1760,t+.07,.14,'square',.05);}
+ else if(k==='coin2'){tone(990,t,.1,'triangle',.08);tone(1480,t+.06,.16,'triangle',.07);}
+ else if(k==='good'){[523,659,784].forEach((f,i)=>tone(f,t+i*.09,.35,'triangle',.12));}
+ else if(k==='bad'){tone(220,t,.5,'sawtooth',.06,140);thump(t,90,.5);}
+ else if(k==='drum'){thump(t,120,.7);thump(t+.28,100,.5);thump(t+.5,120,.7);}
+ else if(k==='crown'){[392,523,659,784,1046].forEach((f,i)=>tone(f,t+i*.13,.6,'sawtooth',.07));thump(t,90,.6);thump(t+.52,90,.6);}
+ else if(k==='war'){for(let i=0;i<6;i++)thump(t+i*.18,i%2?90:130,.55);tone(196,t+.2,1.1,'sawtooth',.05,185);}
+}catch(e){}}
+function ambStart(){if(!SET.snd||!SET.amb||AU.ambOn)return;const c=auInit();if(!c||c.state!=='running')return;AU.ambOn=true;
+ const src=c.createBufferSource();src.buffer=noiseBuf(4);src.loop=true;const lp=c.createBiquadFilter();lp.type='lowpass';lp.frequency.value=420;const g=c.createGain();g.gain.value=.05;
+ const lfo=c.createOscillator(),lg=c.createGain();lfo.frequency.value=.09;lg.gain.value=.03;lfo.connect(lg);lg.connect(g.gain);lfo.start();src.connect(lp);lp.connect(g);g.connect(AU.master);src.start();
+ AU.amb={src,lfo,g};AU.crk=setInterval(()=>{if(!AU.ambOn||document.hidden)return;const t=c.currentTime;for(let i=0;i<ri(1,4);i++){const b=c.createBufferSource();b.buffer=noiseBuf(.03);const hp=c.createBiquadFilter();hp.type='highpass';hp.frequency.value=1800+Math.random()*2500;const gg=c.createGain();const tt=t+Math.random()*.6;gg.gain.setValueAtTime(.0001,tt);gg.gain.exponentialRampToValueAtTime(.05+Math.random()*.08,tt+.004);gg.gain.exponentialRampToValueAtTime(.0001,tt+.05);b.connect(hp);hp.connect(gg);gg.connect(AU.master);b.start(tt);}},700);}
+function ambStop(){if(!AU.ambOn)return;AU.ambOn=false;try{AU.amb.src.stop();AU.amb.lfo.stop();}catch(e){}clearInterval(AU.crk);}
+function buzz(kind){if(!SET.hap)return;try{const H=window.Capacitor&&window.Capacitor.Plugins&&window.Capacitor.Plugins.Haptics;if(!H)return;if(kind==='light')H.impact({style:'LIGHT'});else if(kind==='heavy')H.impact({style:'HEAVY'});else if(kind==='ok')H.notification({type:'SUCCESS'});else if(kind==='err')H.notification({type:'ERROR'});}catch(e){}}
+document.addEventListener('pointerdown',e=>{const c=auInit();if(c&&c.state!=='running'){try{c.resume().then(()=>{if(S)ambStart();});}catch(er){}}
+ const b=e.target.closest&&e.target.closest('button,.choice,[data-sc]');if(b&&!b.disabled){sfx('tap');buzz('light');}},{capture:true,passive:true});
+document.addEventListener('visibilitychange',()=>{if(!AU.ctx)return;try{document.hidden?AU.ctx.suspend():AU.ctx.resume();}catch(e){}});
+{const _ly=liveYear;liveYear=function(n){sfx('drum');return _ly.apply(this,arguments);};}
+{const _cr=crown;crown=function(h){const r=_cr.apply(this,arguments);sfx('crown');buzz('ok');return r;};}
+{const _ng=newGame;newGame=function(){const r=_ng.apply(this,arguments);mktInit();setTimeout(ambStart,300);return r;};}
+function setCard(){const b=(k,l)=>`<button class="s ${SET[k]?'on':''}" data-set="${k}">${l}: ${SET[k]?'açık':'kapalı'}</button>`;return `<div class="card"><h3>⚙️ Ayarlar</h3><div class="setb">${b('snd','Ses efektleri')}${b('amb','Ateş ve rüzgâr sesi')}${b('hap','Titreşim')}</div><div class="legend">Telefonun sessiz modundaysa ses gelmez.</div></div>`;}
+
+/* ---- kayıt yedeği (iOS uygulamasında kalıcı depo) ---- */
+const PREF=()=>window.Capacitor&&window.Capacitor.Plugins&&window.Capacitor.Plugins.Preferences;
+let _pfT=null;{const _sv=save;save=function(){_sv();if(!PREF())return;clearTimeout(_pfT);_pfT=setTimeout(()=>{try{const P=PREF();if(P&&S)P.set({key:KEY,value:JSON.stringify(S)});}catch(e){}},1500);};}
+document.addEventListener('visibilitychange',()=>{if(document.hidden&&S){try{const P=PREF();if(P)P.set({key:KEY,value:JSON.stringify(S)});}catch(e){}}});
+(async()=>{try{const P=PREF();if(!P)return;let has0=null;try{has0=localStorage.getItem(KEY);}catch(e){}if(has0)return;const r=await P.get({key:KEY});if(r&&r.value){try{localStorage.setItem(KEY,r.value);}catch(e){}if(!S)render();}}catch(e){}})();
+
+/* ---- yıllık kanca ---- */
+{const _ry=realmYear;realmYear=function(L){_ry(L);try{mktYear(L);}catch(e){}};}
+
+/* ---- arayüz kancaları ---- */
+{const _th=tabHtml;tabHtml=function(){let h=_th.apply(this,arguments);if(tab==='koy'&&S&&!S.over)h+=mktCard();if(tab==='kitap')h+=setCard();return h;};}
+document.addEventListener('click',e=>{const m=e.target.closest&&e.target.closest('[data-mkt]');if(m&&!m.disabled){if(cur)return;mktTrade(m.dataset.mkt,m.dataset.b==='1');return;}
+ const s=e.target.closest&&e.target.closest('[data-set]');if(s){const k=s.dataset.set;SET[k]=!SET[k];setSave();if(k==='snd'||k==='amb'){if(SET.snd&&SET.amb)ambStart();else ambStop();}render();}});
 
 render();
 </script>
