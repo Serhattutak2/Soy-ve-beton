@@ -1,0 +1,53 @@
+# iOS simülatöründe açılış testi: ekran görüntüleri + günlük (TestFlight kotası harcamaz).
+name: Simulator
+on:
+  push:
+    branches: [ocak]
+    paths: ['app/**', '.github/workflows/sim.yml', 'tools/inject_test.py']
+permissions:
+  contents: write
+jobs:
+  sim:
+    runs-on: macos-26
+    timeout-minutes: 45
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with: { node-version: 22 }
+      - name: Xcode seç
+        run: |
+          X=$(ls -d /Applications/Xcode_26*.app 2>/dev/null | grep -v -i beta | sort -V | tail -1); [ -n "$X" ] || X=$(ls -d /Applications/Xcode_*.app | sort -V | tail -1)
+          sudo xcode-select -s "$X"; xcodebuild -version
+      - name: Uygulama dosyaları (test kancalı)
+        run: |
+          rm -rf mobile/www && mkdir -p mobile/www && cp -R app/. mobile/www/
+          python3 tools/inject_test.py mobile/www/index.html
+      - name: Capacitor
+        working-directory: mobile
+        run: npm ci && npx cap sync ios
+      - name: Simülatör için derle
+        working-directory: mobile/ios/App
+        run: |
+          for i in 1 2 3 4; do xcodebuild -resolvePackageDependencies -project App.xcodeproj -scheme App -derivedDataPath build > /dev/null 2>&1 && break; sleep $((i*20)); done
+          set -o pipefail
+          xcodebuild -project App.xcodeproj -scheme App -configuration Release -sdk iphonesimulator \
+            -destination 'generic/platform=iOS Simulator' -derivedDataPath build CODE_SIGNING_ALLOWED=NO build | tail -5
+      - name: Çalıştır, ekran görüntüsü al
+        run: |
+          mkdir -p shots
+          UDID=$(xcrun simctl list devices available -j | python3 -c "import json,sys;d=json.load(sys.stdin)['devices'];c=[x for k,v in d.items() if 'iOS' in k for x in v if x['name'].startswith('iPhone')];print(c[-1]['udid']);print(c[-1]['name'],file=sys.stderr)")
+          xcrun simctl boot "$UDID"; xcrun simctl bootstatus "$UDID" -b > /dev/null
+          APP=$(find mobile/ios/App/build/Build/Products -maxdepth 3 -name 'App.app' | head -1); echo "$APP"
+          xcrun simctl install "$UDID" "$APP"
+          (xcrun simctl spawn "$UDID" log stream --style compact --predicate 'process == "App" OR process CONTAINS "WebContent" OR process CONTAINS "GPU"' > shots/log.txt 2>&1 &)
+          xcrun simctl launch "$UDID" com.serhattutak.ocak
+          T=0; for t in 3 8 14 19 24 30 45; do sleep $((t-T)); T=$t; xcrun simctl io "$UDID" screenshot "shots/ocak-sim-$t.png"; done
+          tail -c 400000 shots/log.txt | grep -i -E "error|crash|terminat|jetsam|webprocess|exception|fault|memory" | tail -200 > shots/ocak-sim-log.txt || true
+          wc -l shots/log.txt
+      - name: Yayınla
+        if: always()
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          gh release view ci-logs >/dev/null 2>&1 || gh release create ci-logs --prerelease --title "CI günlükleri" --notes "Derleme günlükleri"
+          for f in shots/ocak-sim-*; do gh release upload ci-logs "$f" --clobber; done
