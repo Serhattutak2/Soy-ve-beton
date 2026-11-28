@@ -346,6 +346,71 @@ input,textarea,select{-webkit-user-select:text;user-select:text}
 .props .plist{display:flex;flex-direction:column;gap:6px;margin-top:10px}
 .pbtn{display:flex;gap:10px;align-items:center;text-align:left;padding:9px 10px;border-radius:12px;border:1px solid rgba(217,168,91,.25);background:rgba(255,255,255,.03);color:var(--t);font:inherit}
 .pbtn:disabled{opacity:.45}.pbtn .pi{font-size:22px;width:30px;text-align:center}.pbtn .px{display:flex;flex-direction:column;gap:2px}.pbtn b{font-size:14px}.pbtn small{font-size:11px;color:var(--m)}.pbtn small.why{color:#e0a070}
+/* ===================== v1.2 TEMA: Çini ve gece mavisi ===================== */
+:root{--bg:#0b1520;--t:#eef4f6;--m:#9db4c2;--a:#2bb5a5;--a2:#7fe3d6;--gold:#e0b75e;--g:#86d99a;--r:#ff8a7a;--y:#f2cf6a;--card:#13243a;--card2:#0f1d2e;--line:rgba(127,227,214,.16)}
+html{background:#08111b}
+body{background:
+ url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='96' height='96' viewBox='0 0 96 96'%3E%3Cg fill='none' stroke='%237fe3d6' stroke-opacity='.06' stroke-width='1.2'%3E%3Cpath d='M48 6l12 30 30 12-30 12-12 30-12-30-30-12 30-12z'/%3E%3Cpath d='M48 26l7 15 15 7-15 7-7 15-7-15-15-7 15-7z'/%3E%3Ccircle cx='0' cy='0' r='14'/%3E%3Ccircle cx='96' cy='0' r='14'/%3E%3Ccircle cx='0' cy='96' r='14'/%3E%3Ccircle cx='96' cy='96' r='14'/%3E%3C/g%3E%3C/svg%3E"),
+ radial-gradient(ellipse 120% 60% at 50% 0%,#17324a 0%,#0d1b2b 55%,#08111b 100%);background-attachment:fixed}
+#app{padding:8px 12px 150px}
+.card{background:linear-gradient(180deg,rgba(21,39,60,.94),rgba(13,26,41,.96));border:1px solid var(--line);border-radius:18px;box-shadow:0 10px 26px rgba(0,0,0,.35)}
+.card::before{border-color:rgba(224,183,94,.08)}
+.card h3{color:var(--gold)}
+.dio{border:1px solid rgba(127,227,214,.22);box-shadow:0 14px 34px rgba(0,0,0,.5)}
+.badge{background:rgba(8,17,27,.6);border-color:rgba(127,227,214,.3)}
+.chip{background:#172c43;border-color:#2a4866;color:#e2eef4}
+.chip.good{background:#123326;border-color:#2f6e52;color:#a8ecc4}
+.chip.bad,.chip.inj{background:#3a1c22;border-color:#7a3340;color:#ffb3b0}
+.ico{background:radial-gradient(circle at 35% 30%,#1f3a56,#0c1928);border-color:#2a4866}
+.tr,.durbar,.heart .hb{background:#08121d;border-color:#1f3550}
+.r{background:linear-gradient(180deg,#16304a,#0e1f31);border-color:#24425f}
+.pframe{background:conic-gradient(from 210deg,#1d6f6a,#e0b75e,#1d6f6a,#0c2a3a,#1d6f6a)}
+.pframe .tb{background:linear-gradient(#173450,#0c1d2e);border-color:#e0b75e;color:#f6dfa0}
+.act,.bld,.scen{background:linear-gradient(160deg,#173250,#0f2034);border-color:#264766}
+.act::after{background:radial-gradient(circle,rgba(43,181,165,.14),transparent 70%)}
+.act .am,.ji{background:radial-gradient(circle at 32% 28%,#1f5a66,#0c2232);border-color:#2bb5a5;color:#bdf3ec}
+.endbtn,.step button{background:linear-gradient(#183754,#0e2236);border-color:#2bb5a5;color:var(--a2)}
+.sheet{background:linear-gradient(#132840,#0b1828);border-color:rgba(127,227,214,.25)}
+.sc-art::after{background:linear-gradient(transparent,#122740 92%)}
+.sheet h2::after{background:linear-gradient(90deg,transparent,#e0b75e,transparent)}
+.choice{background:linear-gradient(180deg,#1a3756,#112640);border-color:#2a4f74}
+.choice:hover{border-color:#2bb5a5}
+.choice.cont,.big{background:linear-gradient(180deg,#f3d27a,#c9932f);border-color:#ffe6a6;color:#1a1204}
+.ghost{border-color:#2a4f74}
+.seg button{background:linear-gradient(#173250,#0f2034);border-color:#264766}
+.seg button.on{background:linear-gradient(#155a5a,#0d3a40);border-color:var(--a);color:var(--a2);box-shadow:0 0 14px rgba(43,181,165,.3)}
+.field input{background:#08121d;border-color:#264766}
+.scen.on{border-color:var(--gold);box-shadow:0 0 18px rgba(224,183,94,.35)}
+.titleart{border-color:rgba(127,227,214,.25)}
+.titleart::after{background:linear-gradient(transparent,rgba(8,17,27,.94))}
+.fam .ring{background:linear-gradient(#2bb5a5,#0c2a3a)}
+.foodline{background:#102b24;border-color:#2a6150}
+.jobrow,.fam,.anc,.nbrow,.hrow,.mrow,.quests .qrow{border-color:rgba(127,227,214,.09)}
+.tl::before{background:linear-gradient(#e0b75e,rgba(224,183,94,.1))}
+.wbtn button,.wleg{background:rgba(8,17,27,.85);border-color:#2a4866}
+.mb,.pbtn,.setb .s{background:rgba(255,255,255,.04);border-color:#264766}
+.cpath.hile{background:linear-gradient(160deg,#241a3a,#130f22)}
+.cpath.savas{background:linear-gradient(160deg,#3a1c22,#1d0f12)}
+.cpath.kral{background:linear-gradient(160deg,#3a3014,#1d180a);border-color:#e0b75e}
+/* sade üst kısım */
+.top{padding:4px 2px 8px}
+.logo{font-size:22px}
+.hero .pframe .face{width:70px;height:70px}
+.hero{padding:11px}
+.res{grid-template-columns:repeat(4,1fr);gap:6px}
+.res .r{padding:6px 2px 5px;font-size:10px}
+/* alt menü */
+.bottombar{flex-direction:column;gap:6px;padding:8px 10px calc(6px + env(safe-area-inset-bottom));background:linear-gradient(transparent,rgba(8,17,27,.96) 22%)}
+.bottombar .acts2{display:flex;gap:8px}
+.bottombar .acts2 .big{margin-top:0;flex:1}
+.bottombar .acts2 .sm{background:linear-gradient(#183754,#0e2236);border:1px solid #2bb5a5;border-radius:14px;color:var(--a2);font-weight:800;padding:0 16px;font-size:18px}
+.nav{display:flex;background:rgba(12,26,41,.97);border:1px solid #24425f;border-radius:18px;padding:4px;box-shadow:0 -4px 20px rgba(0,0,0,.4)}
+.nav button{position:relative;flex:1;background:none;border:0;border-radius:13px;padding:6px 0 5px;color:var(--m);font-size:10.5px;font-weight:600;display:flex;flex-direction:column;align-items:center;gap:2px}
+.nav button svg{width:21px;height:21px}
+.nav button.on{background:linear-gradient(180deg,#1c4a5a,#12303e);color:#f6dfa0;box-shadow:inset 0 0 0 1px rgba(224,183,94,.45)}
+.nav .dot{position:absolute;top:4px;right:22%;width:7px;height:7px;border-radius:50%;background:#ff8a7a;box-shadow:0 0 6px #ff8a7a}
+.tabs{display:none}
+.sectitle{font-family:Cinzel,serif;color:var(--gold);margin:6px 4px 10px;font-size:15px}
 </style>
 </head>
 <body><div id="sbar"></div>
@@ -375,7 +440,7 @@ const chance=p=>R()*100<p;
 const $=s=>document.querySelector(s);
 const esc=s=>String(s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
 function wpick(arr){let t=arr.reduce((a,x)=>a+x[2],0),r=R()*t;for(const x of arr){r-=x[2];if(r<=0)return x;}return arr[0];}
-let S=null,D=[],Q=[],cur=null,prevSnap=null,tab='yil',deathRunning=false,pendBreak=false,pendRage=false;
+let S=null,D=[],Q=[],cur=null,prevSnap=null,tab='reis',deathRunning=false,pendBreak=false,pendRage=false;
 const KEY='ocak_proto_v4';
 
 /* ========= Veri ========= */
@@ -1323,7 +1388,7 @@ function newGame(sc,lineage,sex,arch,name){const C=SCEN[sc];
  const tt=ERA[S.era].titles[sc==='tunc'?2:2];
  S.ancestors.push({id:father.id,name:father.name,lakap:'',sex:'m',age:44,died:C.y,title:sc==='tunc'?'Şehir Beyi':tt,cause:'Geçen kış ateşli bir hastalıktan',gen:0,face:face(father,40)});
  log(`Baban ${father.name} öldü. Ağabeyin ${bro.name} yerine hanenin başına sen geçtin. ${S.vil.name} ise ${leaderTitle().toLowerCase()} ${S.chief.name} tarafından yönetiliyor.`);
- tab='koy';prevSnap=null;genOpps();save();render();
+ tab='reis';prevSnap=null;genOpps();save();render();
  const intro={truva:`Geç Tunç Çağı. Hisarlık tepesindeki Wilusa, Çanakkale Boğazı’nın kıyısında zengin ve surlu bir şehir. Hititler doğuda, Akhalar denizin öbür yakasında.`,buzul:`Buzul Çağı. Karadeniz’in kuzeyindeki uçsuz bucaksız bozkırda mamut sürüleri dolaşıyor. Ağaç yok denecek kadar az; evler mamut kemiğinden.`,gobekli:`Buzul Çağı yeni bitti. Dicle ve Fırat’ın yukarısında avcı klanlar ceylan ve urus sürülerinin peşinde. Yabani buğday her yerde.`,catal:`Konya Ovası. Binlerce insan kerpiç evlerde, yan yana yaşıyor. Evlere damdan giriliyor, duvarlarda boğa boynuzları var.`,tunc:`Tunç Çağı. Kaniş, Asurlu tüccarların uğrak yeri, zengin bir şehir. Komşu şehir beyleri ise birbirini fethetmek için fırsat kolluyor.`}[sc]||C.intro||'';
  scene({icon:'🔥',art:C.art,title:`${yr()} · ${C.n}`,text:`${intro}<br><br>Baban <b>${father.name}</b> geçen kış öldü ve <b>hanenin başına sen geçtin</b>. Ağabeyin <b>${bro.name}</b> buna içerledi. Annen, kız kardeşin, amcan ve ailesi ocağında yaşıyor.<br><br>${S.vil.pop} kişilik <b>${esc(S.vil.name)}</b> ise senin değil: onu ${leaderTitle().toLowerCase()} <b>${S.chief.name}</b> yönetiyor.<br><br><b>Hedefin:</b> hanenin itibarını ve sana bağlı aileleri büyütmek. Sonra iki yol var:<br>• <b>Reis ol:</b> reis ölünce seçime gir, ya da meclisle, düelloyla, gece baskınıyla asayı al.<br>• <b>Kendi köyünü kur:</b> hanen 15 kişiye ulaşınca göç edip kendi yerleşimini kur.<br><br>Reis olduğunda köyü yönetir, komşularla savaşıp fethedersin. <b>Reis</b> sekmesinden yıllık işini ve fırsatlarını seç, sonra <b>Yılı yaşa</b>.`,choices:[{t:'Başla',f:()=>null}]});
  pump();}
@@ -2224,10 +2289,12 @@ function render(){const app=$('#app');
  const res=[['food','Yiyecek',S.res.food,'#e89a6a'],['mal','Malzeme',S.res.mal,'#b59a7a'],['alet','Alet',S.res.alet,'#a9b4c4'],['deri','Deri',S.res.deri,'#c9925a'],['fildisi','Hazine',S.res.hazine,'#f0c860'],['book','Bilgi',S.res.bilgi,'#8fc2ff'],['itibar','İtibar',S.res.itibar,'#ffd27a'],S.lead?['kilic','Güç',myPower(),'#ff8a6a']:['hane','Hane',hane(),'#e0a3c0']];
  h+=`<div class="res">${res.map(r=>`<div class="r">${ico(r[0],r[3])}<b>${fmt(r[2])}</b>${r[1]}</div>`).join('')}</div>`;
  const noRes=!S.research&&TECH.some(techAvail);
- h+=`<div class="tabs">${[['koy','Köy','ev'],['harita','Harita','harita'],['saray','Saray','tac'],['bilgi','Bilgi','book'],['reis','Reis','spear'],['ocak','Ocak','aile'],['kitap','Kitap','kitap']].map(([k,l,i])=>`<button data-tab="${k}" class="${tab===k?'on':''}">${ico(i)}${l}${(k==='bilgi'&&noRes)||(k==='saray'&&S.lead&&S.realm&&S.realm.ap>0&&p.age>=16)?'<i class="dot"></i>':''}</button>`).join('')}</div>`;
- h+=`<div id="tabc">${tabHtml()}</div>`;
+ if(tab==='bilgi')tab='kitap';
+ let tc;if(tab==='kitap'){tab='bilgi';const b=tabHtml();tab='kitap';tc=`<div class="sectitle">Buluşlar</div>${b}<div class="sectitle">Soy Kitabı</div>${tabHtml()}`;}else tc=tabHtml();
+ h+=`<div id="tabc">${tc}</div>`;
+ const NAV=`<div class="nav">${[['reis','Yıl','spear'],['koy','Köy','ev'],['harita','Dünya','harita'],['saray','Saray','tac'],['ocak','Aile','aile'],['kitap','Kitap','kitap']].map(([k,l,i])=>`<button data-tab="${k}" class="${tab===k?'on':''}">${ico(i)}${l}${(k==='kitap'&&noRes)||(k==='saray'&&S.lead&&S.realm&&S.realm.ap>0&&p.age>=16)?'<i class="dot"></i>':''}</button>`).join('')}</div>`;
  const child=p.age<14;
- h+=`<div class="bottombar">${child?`<button class="big" data-live="1">1 YIL BÜYÜ ›</button><button class="sm" data-live="${14-p.age}">14’e kadar</button>`:`<button class="big" data-live="1">YILI YAŞA ›</button><button class="sm" data-live="5">5 yıl</button><button class="sm" data-live="10">10 yıl</button>`}</div>`;
+ h+=`<div class="bottombar"><div class="acts2">${child?`<button class="big" data-live="1">1 YIL BÜYÜ ›</button><button class="sm" data-live="${14-p.age}" title="14’e kadar">»</button>`:`<button class="big" data-live="1">YILI YAŞA ›</button><button class="sm" id="fastbtn">⏩</button>`}</div>${NAV}</div>`;
  app.innerHTML=h;mount3D();
  const st=app.querySelector('details.stats');if(st)st.ontoggle=()=>{S.ui=S.ui||{};S.ui.st=st.open;};
  app.querySelectorAll('[data-tab]').forEach(b=>b.onclick=()=>{tab=b.dataset.tab;prevSnap=sn;render();});
@@ -2947,7 +3014,7 @@ function skipTo(ep){const p0=S.pc,G0=S.realm,W0=worldInit();const dy=ep.y-S.year
  sfx('crown');save();render();pump();}
 const CITY={kanis:['Kaniş','Mazaka','Kaisareia','Kayseri','Kayseri'],konya:['Çatalhöyük','Ikonion','Ikonion','Konya','Konya'],hatti:['Hattuşa','Ankyra','Ankyra','Ankara','Ankara'],wilusa:['Wilusa','İlion','Abydos','Kale-i Sultaniye','Çanakkale'],urartu:['Tuşpa','Tuşpa','Van','Van','Van'],harran:['Harran','Edessa','Ruha','Urfa','Şanlıurfa'],dinyeper:['Mezhyriç','Olbia','Kiev ucu','Kaniv','Kaniv'],arzawa:['Apaşa','Sardes','Sardes','Manisa','Manisa'],bitinya:['Masa','Nikomedeia','Nikomedeia','İzmit','İzmit']};
 function cityName(reg,era){const c=CITY[reg];if(!c)return `${RG[reg].n}`;return c[era<=4?0:era===5?1:era===6?2:era<=8?3:4];}
-{const _rn2=render;render=function(){const r=_rn2.apply(this,arguments);try{const bb=document.querySelector('.bottombar');if(bb&&S&&!S.over&&!bb.querySelector('[data-skip]')){const b=document.createElement('button');b.className='sm skipb';b.dataset.skip='1';b.innerHTML='⏳<small>Çağ</small>';b.onclick=()=>{if(cur)return;scene(skipScene);pump();};bb.appendChild(b);}if(tab==='bilgi'){const o=document.querySelector('.eras button.on');if(o&&o.parentNode)o.parentNode.scrollLeft=o.offsetLeft-20;}}catch(e){}return r;};}
+{const _rn2=render;render=function(){const r=_rn2.apply(this,arguments);try{const fb=document.getElementById('fastbtn');if(fb)fb.onclick=()=>{if(cur)return;scene({icon:'⏩',art:'title',title:'Zamanı hızlandır',text:'Yılları toplu geçir ya da bir sonraki tarihî döneme atla.',choices:[{t:'5 yıl yaşa',sub:'Önemli olaylarda durur',f:()=>{setTimeout(()=>liveYear(5),30);return null;}},{t:'10 yıl yaşa',sub:'Önemli olaylarda durur',f:()=>{setTimeout(()=>liveYear(10),30);return null;}},{t:'⏳ Çağ atla',sub:'Yüzyıllar geçer, soyun bir torunla devam eder',f:()=>({go:skipScene})},{t:'Vazgeç',f:()=>null}]});pump();};if(tab==='bilgi'){const o=document.querySelector('.eras button.on');if(o&&o.parentNode)o.parentNode.scrollLeft=o.offsetLeft-20;}}catch(e){}return r;};}
 
 /* ---- tarihî olaylar (yıl geldiğinde, yurduna yakınsa) ---- */
 const ANA=[...AW,...AC,...AE,'trakya'];
