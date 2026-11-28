@@ -342,6 +342,10 @@ input,textarea,select{-webkit-user-select:text;user-select:text}
 /* v1.0 */
 .bottombar .skipb{flex:0 0 auto;min-width:54px;display:flex;flex-direction:column;align-items:center;justify-content:center;font-size:18px;line-height:1}
 .bottombar .skipb small{font-size:10px;margin-top:2px}
+/* v1.1 mülkler */
+.props .plist{display:flex;flex-direction:column;gap:6px;margin-top:10px}
+.pbtn{display:flex;gap:10px;align-items:center;text-align:left;padding:9px 10px;border-radius:12px;border:1px solid rgba(217,168,91,.25);background:rgba(255,255,255,.03);color:var(--t);font:inherit}
+.pbtn:disabled{opacity:.45}.pbtn .pi{font-size:22px;width:30px;text-align:center}.pbtn .px{display:flex;flex-direction:column;gap:2px}.pbtn b{font-size:14px}.pbtn small{font-size:11px;color:var(--m)}.pbtn small.why{color:#e0a070}
 </style>
 </head>
 <body><div id="sbar"></div>
@@ -1680,7 +1684,7 @@ function makeHeir(k){const old=S.pc;
  const p=Object.assign(k,{st:{saglik:85,enerji:85,stres:12,mutluluk:45,ofke:10,korku:k.age<14?35:20,vicdan:75},injuries:[],title:S.lead?3:Math.max(0,(old.title||0)-1),lakap:'',breaks:0,crimes:0,kills:0,hunts:0,big:0,fled:0,dead:false,xp:{}});
  S.pc=p;reg(p);S.gen++;S.res.itibar=Math.round(S.res.itibar*.7);S.flags.rival=null;
  S.fam.forEach(m=>{const r=relOf(m);if(['Ağabey','Abla','Amca','Üvey kardeş'].includes(r)&&m.age>p.age&&chance(45)){m.kuskun=true;m.sevgi=clamp(m.sevgi-15,0,100);}});
- if(!FOCI[S.focus]||(FOCI[S.focus].need&&FOCI[S.focus].need()))S.focus='av';
+ if(typeof fociOk==='function'?!fociOk(S.focus):(!FOCI[S.focus]||(FOCI[S.focus].need&&FOCI[S.focus].need())))S.focus=(typeof fociOk==='function'?Object.keys(FOCI).find(fociOk):null)||'av';
  log(`Nesil ${S.gen}: ${p.name} (${p.age}) ocağın reisi oldu.${p.age<14?' Vasi: '+guardianName()+'.':''}`);deathRunning=false;pendBreak=false;pendRage=false;prevSnap=null;genOpps();}
 function gameOverScene(){return {icon:'🥀',title:'Soy kurudu',text:`${S.lineage} soyu <b>${S.gen}</b> nesil ve <b>${S.yearN}</b> yıl sürdü. Ocağı yaşatacak kan kalmadı.`,choices:[{t:'Soy Kitabını aç',f:()=>{S.over=true;log('Soy kurudu.');return null;}}]};}
 
@@ -2310,7 +2314,7 @@ function startHtml(){const sv=load();
  <div class="field"><label>Cinsiyet</label><div class="seg" id="sx"><button data-v="m" class="${setup.sex==='m'?'on':''}">Erkek</button><button data-v="f" class="${setup.sex==='f'?'on':''}">Kadın</button></div></div>
  <div class="field"><label>Doğuştan yetenek</label><div class="seg" id="ar"><button data-v="avci" class="${setup.arch==='avci'?'on':''}">💪 Güçlü</button><button data-v="zeki" class="${setup.arch==='zeki'?'on':''}">🧠 Zeki</button><button data-v="sozcu" class="${setup.arch==='sozcu'?'on':''}">🗣️ Sözü dinlenir</button></div></div>
  <button class="big" id="go">OCAĞI YAK</button></div>
- <div class="note">Sürüm 1.0 · Tek kayıt, kararlar geri alınamaz.</div></div>`;}
+ <div class="note">Sürüm 1.1 · Tek kayıt, kararlar geri alınamaz.</div></div>`;}
 function bindStart(){
  document.querySelectorAll('[data-sc]').forEach(b=>b.onclick=()=>{setup.sc=b.dataset.sc;document.querySelectorAll('[data-sc]').forEach(x=>x.classList.toggle('on',x===b));});
  document.querySelectorAll('#sx button').forEach(b=>b.onclick=()=>{setup.sex=b.dataset.v;document.querySelectorAll('#sx button').forEach(x=>x.classList.toggle('on',x===b));});
@@ -3030,6 +3034,130 @@ ACH.push(['klasik','Klasik çağ','Klasik Çağ’a ulaş',()=>S.era>=6],['ortac
 Object.defineProperty(RDEF,'cag',{get(){const W=S&&S.world;const reg=W&&RG[W.home]?RG[W.home]:RG.kanis;const e=S?S.era:4;const suf=e<=1?'Boyları Birliği':e===2?'Köyleri Birliği':e===3?'Kasabalar Birliği':'Krallığı';
  const hs=e<=2?['Kurt Boyu','Kartal Boyu','Geyik Boyu','Ayı Boyu','Turna Boyu']:e<=5?[`${reg.n} Hanesi`,'Dağ Beyleri','Ova Hanesi','Irmak Hanesi','Tapınak Rahipleri']:['Eski Aileler','Tüccarlar','Rahipler','Toprak Beyleri','Ayanlar'];
  return {n:`${reg.n} ${suf}`,rh:`${reg.n} hanedanı`,hs,hall:e<=2?'Büyük Ev':'Saray',cn:e<=2?'Yaşlılar Kurultayı':'Büyükler Meclisi'};},configurable:true});
+
+/* ========= v1.1 DETAY: çağa göre meslekler, fırsatlar, mülkler, saray kademeleri ========= */
+/* ---- meslekler ---- */
+['av','topla','alet','takas','sifa'].forEach(k=>FOCI[k].era=[1,5]);FOCI.balik.era=[1,10];FOCI.reis.era=[1,10];FOCI.aile.era=[1,10];FOCI.ciftci.era=[2,10];FOCI.coban.era=[2,10];
+{const d=Object.getOwnPropertyDescriptor(FOCI.reis,'n');const n0=FOCI.reis.n;Object.defineProperty(FOCI.reis,'n',{get(){return S&&S.era>=9?'Mahalle ve köy işleri':S&&S.era>=6?'Toplum işleri':n0;},configurable:true});}
+Object.assign(FOCI,{
+ zanaat:{n:'Zanaatkârlık',ic:'alet',d:'Demirci, çömlekçi, dokumacı. Alet ve hazine getirir',sk:'zeka',era:[3,8]},
+ tuccar:{n:'Tüccarlık',ic:'takas',d:'Kervanlar, pazarlar, uzak şehirler. Kazançlı ama yolda tehlike',sk:'karizma',era:[4,10]},
+ asker:{n:'Askerlik',ic:'kilic',d:'Sefer, nöbet, rütbe. İtibar ve ganimet; yara ve ölüm riski',sk:'guc',era:[4,9]},
+ katip:{n:'Kâtiplik ve ilim',ic:'kitap',d:'Yazı, hesap, hukuk. Bilgi ve itibar getirir',sk:'zeka',era:[4,9],need:()=>S.tech.yazi?null:'Gerekli bilgi: Yazı'},
+ din:{n:'Din hizmeti',ic:'adak',d:'Tapınak, kilise ya da cami. Huzur, itibar, vicdan',sk:'karizma',era:[5,10]},
+ hekim:{n:'Hekimlik',ic:'sifa',d:'Hasta bakar, ilaç yaparsın. Aile sağlığı, itibar, hazine',sk:'zeka',era:[6,10]},
+ memur:{n:'Devlet memuriyeti',ic:'meclis',d:'Düzenli maaş, devlet yanında itibar',sk:'zeka',era:[9,10]},
+ ogretmen:{n:'Öğretmenlik',ic:'kitap',d:'Köyün çocuklarını okutursun. Bilgi, itibar, çocuklarına fayda',sk:'karizma',era:[9,10]},
+ isci:{n:'Fabrika işçiliği',ic:'alet',d:'Düzenli yevmiye, ağır iş, kaza riski',sk:'guc',era:[9,10],need:()=>S.tech.fabrika?null:'Gerekli bilgi: Fabrika'},
+ muhendis:{n:'Mühendislik',ic:'insa',d:'Yol, köprü, fabrika. Yüksek kazanç ve bilgi',sk:'zeka',era:[10,10],need:()=>S.tech.elektrik?null:'Gerekli bilgi: Elektrik'},
+ siyaset:{n:'Siyaset',ic:'meclis',d:'Meclisler, partiler, seçimler. İtibar ve taht hakkı',sk:'karizma',era:[9,10]}});
+function fociOk(k){const F=FOCI[k];if(!F)return false;if(F.era&&(S.era<F.era[0]||S.era>F.era[1]))return false;return !(F.need&&F.need());}
+{const _fy=focusYear;focusYear=function(L){const p=S.pc,f=S.focus,F=FOCI[f];if(p.age<14||!F||!['zanaat','tuccar','asker','katip','din','hekim','memur','ogretmen','isci','muhendis','siyaset'].includes(f))return _fy(L);
+ p.xp=p.xp||{};p.xp[f]=(p.xp[f]||0)+1;const yrs=p.xp[f];if(yrs%3===0){sk(F.sk,1);L.push(`<span class="good">${F.n} ustalığın arttı.</span>`);}
+ const lvl=Math.min(5,Math.floor(yrs/4)),e=S.era,fast=S.fast>0,tired=p.st.enerji<30;const rank=RANKS[f]?RANKS[f][Math.min(RANKS[f].length-1,lvl)]:'';
+ if(rank&&p.rank!==rank){p.rank=rank;L.push(`<b class="good">Yeni rütbe: ${rank}</b>`);rs('itibar',2+lvl);}
+ if(f==='zanaat'){const n=2+Math.floor(eff('zeka')/3)+lvl;rs('alet',n);rs('hazine',1+Math.floor(lvl/2));L.push(`Zanaat: ${n} alet ürettin.`);if(chance(8)){L.push('<span class="bad">Atölyede elini yaktın.</span>');ch('saglik',-8);}}
+ else if(f==='tuccar'){const T=S.tech;let g=3+lvl+Math.floor(eff('karizma')/2)+(T.kervansaray?3:0)+(T.demiryolu?4:0)+(T.internet?4:0);if(chance(14-Math.min(8,lvl*2))){g=-ri(3,8);L.push(`<span class="bad">Kervanın soyuldu ya da mal battı: ${g} hazine.</span>`);if(chance(30)&&e<9)L.push(injure(.6));}else L.push(`Ticaret: ${g} hazine kâr ettin.`);rs('hazine',g);if(!fast&&chance(22))scene(pick([EV_tPazarlik,EV_tOrtak]));}
+ else if(f==='asker'){rs('itibar',3+lvl);rs('hazine',1+lvl);if(S.realm)adj(S.realm,'favor',2);L.push(`Askerlik: ${rank||'asker'} olarak bir yıl.`);if(chance(10+(tired?6:0))){L.push(injure(1));}if(chance(2)){p.st.saglik=Math.min(p.st.saglik,0);p.cause='Seferde düştü';L.push('<b class="bad">Sefer dönüşü yoktu.</b>');}if(!fast&&chance(20))scene(EV_aSefer);}
+ else if(f==='katip'){const b=4+lvl*2+Math.floor(eff('zeka')/2);vrs('bilgi',b);rs('itibar',2);rs('hazine',1+Math.floor(lvl/2));L.push(`İlim: ${b} bilgi.`);}
+ else if(f==='din'){rs('itibar',3);ch('vicdan',4);ch('stres',-6);S.vil.huzur=clamp(S.vil.huzur+2,0,100);rs('food',2);L.push('Din hizmeti: halk sana güveniyor.');}
+ else if(f==='hekim'){rs('hazine',2+lvl);rs('itibar',3);S.healer=true;everyone().forEach(m=>{if(m.st)m.st.saglik=clamp((m.st.saglik||80)+3,0,100);});L.push('Hekimlik: hastalara baktın.');if(!fast&&chance(25))scene(EV_sifaVaka);}
+ else if(f==='memur'){rs('hazine',4+lvl*2);rs('itibar',2);if(S.realm)adj(S.realm,'favor',2);L.push(`Memuriyet: ${rank||'memur'} olarak maaşını aldın.`);if(!fast&&chance(15))scene(EV_mTayin);}
+ else if(f==='ogretmen'){vrs('bilgi',3+lvl);rs('itibar',3);rs('hazine',2);S.kids.filter(k=>k.alive&&k.age>=6&&k.age<=16).forEach(k=>k.sk.zeka=Math.min(10,k.sk.zeka+1));L.push('Öğretmenlik: köyün çocukları okumayı öğreniyor.');}
+ else if(f==='isci'){rs('hazine',4+lvl);rs('alet',2);ch('enerji',-10);L.push('Fabrikada bir yıl. Yevmiye düzenli.');if(chance(7)){L.push('<span class="bad">İş kazası!</span> '+injure(.8));}}
+ else if(f==='muhendis'){rs('hazine',8+lvl*3);vrs('bilgi',4);rs('itibar',3);L.push(`Mühendislik: köprüler, yollar, binalar. ${8+lvl*3} hazine kazandın.`);}
+ else if(f==='siyaset'){rs('itibar',4+lvl);rs('hazine',-2);if(S.realm)adj(S.realm,'claim',2,0,100);L.push('Siyaset: toplantılar, ziyaretler, konuşmalar.');if(!fast&&chance(25))scene(EV_sSecim);}};}
+const RANKS={asker:['Er','Onbaşı','Yüzbaşı','Binbaşı','Kumandan','Paşa'],katip:['Talebe','Kâtip','Müderris','Kadı','Molla','Şeyhülislam adayı'],memur:['Kâtip','Şube müdürü','Kaymakam','Mutasarrıf','Vali muavini','Müsteşar'],tuccar:['Çırak','Kalfa','Tüccar','Tüccarbaşı','Bezirgân','Sermayedar'],hekim:['Çırak','Hekim','Başhekim','Saray hekimi','Hekimbaşı','Ünlü hekim'],zanaat:['Çırak','Kalfa','Usta','Usta başı','Lonca kethüdası','Ahi babası'],ogretmen:['Muallim','Başmuallim','Müdür','Maarif müfettişi','Maarif müdürü','Profesör'],muhendis:['Mühendis','Şef','Proje müdürü','Genel müdür','Müteahhit','Holding sahibi'],siyaset:['Üye','İl yöneticisi','Meclis üyesi','Milletvekili adayı','Milletvekili','Bakan'],isci:['İşçi','Usta işçi','Ustabaşı','Şef','Sendika temsilcisi','Fabrika müdürü'],din:['Hizmetli','Vaiz','İmam / rahip','Baş rahip','Şeyh','Büyük âlim']};
+function EV_tPazarlik(){return {icon:'⚖️',art:'trader',title:'Büyük pazarlık',text:'Uzak şehirden gelen bir tüccar bütün malını tek seferde almak istiyor ama fiyatı düşük tutuyor.',choices:[
+ {t:'Sert pazarlık',pct:clamp(40+eff('karizma')*5,10,90),f:()=>{if(chance(40+eff('karizma')*5)){rs('hazine',12);return {text:'Adam pes etti. Senelik kârın bir günde geldi.'};}return {text:'Tüccar başka birine gitti.'};}},
+ {t:'Uzun vadeli ortaklık öner',f:()=>{rs('hazine',5);rs('itibar',3);return {text:'Her yıl kervanların birbirine uğrayacak.'};}}]};}
+function EV_tOrtak(){return {icon:'🤝',art:'trader',title:'Ortaklık teklifi',text:'Tanıdık bir tüccar, uzak bir limana gidecek bir sefer için ortak arıyor. Kazanç büyük, risk de.',choices:[
+ {t:'15 hazine yatır',pct:55,dis:S.res.hazine<15,why:'15 hazine gerekli',f:()=>{rs('hazine',-15);if(chance(55)){rs('hazine',38);return {text:'Gemi döndü! Yatırımın iki buçuk katına çıktı.'};}return {text:'Gemiden haber gelmedi. Para gitti.'};}},
+ {t:'Reddet',f:()=>null}]};}
+function EV_aSefer(){return {icon:'⚔️',art:'war',title:'Seferde',text:'Ordunun öncü birliğindesin. Düşman bir geçidi tutmuş.',choices:[
+ {t:'Öne atıl',pct:clamp(45+eff('guc')*4,10,90),f:()=>{if(chance(45+eff('guc')*4)){rs('itibar',12);rs('hazine',8);setLakap(pick(['Yiğit','Aslan Yürekli','Kılıç']));return {text:'Geçit alındı; adın orduda dilden dile.'};}return {text:injure(1.1)};}},
+ {t:'Emri bekle',f:()=>{rs('itibar',1);return {text:'Birliğin temkinli davrandı.'};}}]};}
+function EV_mTayin(){return {icon:'📜',art:'council',title:'Tayin emri',text:'Uzak bir vilayete tayinin çıktı. Gidersen terfi var; gitmezsen yerinde sayarsın.',choices:[
+ {t:'Git',sub:'Terfi, ama aileden uzak',f:()=>{S.pc.xp.memur=(S.pc.xp.memur||0)+4;rs('hazine',6);everyone().forEach(m=>m.sevgi=clamp(m.sevgi-5,0,100));return {text:'Yeni makamında kısa sürede tanındın.'};}},
+ {t:'Torpil bul, kal',pct:50,f:()=>{if(chance(50)){rs('hazine',-5);return {text:'Tayinin iptal edildi.'};}rs('itibar',-4);return {text:'Torpil işe yaramadı; ceza olarak terfin durdu.'};}}]};}
+function EV_sSecim(){return {icon:'🗳️',art:S.era>=10?'modern':'sanayi',title:'Seçim yarışı',text:'Bir meclis seçimi var ve senin adın konuşuluyor.',choices:[
+ {t:'Aday ol',pct:clamp(30+eff('karizma')*5+S.res.itibar/10,5,90),f:()=>{if(chance(30+eff('karizma')*5+S.res.itibar/10)){rs('itibar',15);S.pc.xp.siyaset=(S.pc.xp.siyaset||0)+4;if(S.realm)adj(S.realm,'claim',10,0,100);return {text:'Seçildin! Meclise girdin.'};}rs('hazine',-8);return {text:'Az farkla kaybettin.'};}},
+ {t:'Bir adayı destekle',f:()=>{rs('itibar',4);if(S.realm)adj(S.realm,'favor',8);return {text:'Desteklediğin aday sana borçlu.'};}}]};}
+
+/* ---- mülkler ---- */
+const PROP={
+ tarla:{n:'Tarla ve bağ',ic:'🌾',e:2,c:{hazine:10},y:{food:8},risk:['Dolu yağdı, bağın mahvoldu.',8]},
+ surü:{n:'Koyun sürüsü',ic:'🐑',e:2,c:{hazine:8},y:{food:4,deri:2},risk:['Kurtlar sürüne daldı.',10]},
+ dukkan:{n:'Çarşıda dükkân',ic:'🏪',e:4,c:{hazine:20},y:{hazine:4},risk:['Çarşıda yangın çıktı; dükkânın yandı.',6]},
+ degirmen:{n:'Su değirmeni',ic:'⚙️',e:6,c:{hazine:30,alet:10},y:{hazine:4,food:6},risk:['Sel değirmeni yıktı.',5]},
+ han:{n:'Han / kervansaray payı',ic:'🏯',e:7,c:{hazine:45},y:{hazine:8},risk:['Eşkıya kervanları bastı; han boş kaldı.',6]},
+ gemi:{n:'Ticaret gemisi',ic:'⛵',e:6,c:{hazine:50,alet:10},y:{hazine:11},risk:['Fırtına gemini batırdı!',9]},
+ hamam:{n:'Hamam',ic:'♨️',e:6,c:{hazine:35},y:{hazine:5},risk:['Hamamın kazanı patladı.',4]},
+ matbaa:{n:'Matbaa',ic:'📰',e:8,c:{hazine:45},y:{hazine:6,bilgi:4},need:'matbaa',risk:['Yazdığın bir şey yüzünden matbaan kapatıldı.',5]},
+ fabrika:{n:'Fabrika',ic:'🏭',e:9,c:{hazine:90,alet:20},y:{hazine:18,alet:4},need:'fabrika',risk:['Grev! Fabrika bir yıl durdu.',8]},
+ apartman:{n:'Kiralık apartman',ic:'🏢',e:10,c:{hazine:80},y:{hazine:12},risk:['Kiracılar kirayı ödemedi.',6]},
+ sirket:{n:'Şirket hissesi',ic:'📈',e:10,c:{hazine:60},y:{hazine:10},need:'internet',risk:['Borsa çöktü; hisselerin eridi.',10]}};
+function propOk(k){const P=PROP[k];if(S.era<P.e)return `Çağ: ${ERA[P.e].name}`;if(P.need&&!S.tech[P.need])return `Gerekli: ${TX(P.need).n}`;for(const [r,v] of Object.entries(P.c))if((S.res[r]||0)<v)return 'Yetersiz';return null;}
+function propCard(){S.prop=S.prop||{};const own=Object.entries(S.prop).filter(([k,n])=>n>0&&PROP[k]);let inc={};own.forEach(([k,n])=>Object.entries(PROP[k].y).forEach(([r,v])=>inc[r]=(inc[r]||0)+v*n));
+ let h=`<div class="card props"><h3>🏛️ Mülklerin</h3><div class="sub" style="margin:-4px 0 8px">Mülkler ailenin malıdır; reis olmasan da her yıl gelir getirir ve mirasla torunlara geçer.</div>`;
+ h+=own.length?`<div class="chips">${own.map(([k,n])=>`<span class="chip good">${PROP[k].ic} ${PROP[k].n} ×${n}</span>`).join('')}</div><div class="legend">Yıllık gelir: ${Object.entries(inc).map(([r,v])=>`${v} ${LB[r].toLowerCase()}`).join(', ')}</div>`:'<div class="sub">Henüz mülkün yok.</div>';
+ h+=`<div class="plist">`;Object.entries(PROP).filter(([k,P])=>S.era>=P.e-1).forEach(([k,P])=>{const why=propOk(k);h+=`<button class="pbtn" data-prop="${k}" ${why?'disabled':''}><span class="pi">${P.ic}</span><span class="px"><b>${P.n}</b><small>${Object.entries(P.c).map(([r,v])=>`${v} ${LB[r].toLowerCase()}`).join(', ')} → yılda ${Object.entries(P.y).map(([r,v])=>`+${v} ${LB[r].toLowerCase()}`).join(', ')}</small>${why?`<small class="why">${why}</small>`:''}</span></button>`;});
+ return h+`</div></div>`;}
+function propBuy(k){const P=PROP[k];if(propOk(k))return;Object.entries(P.c).forEach(([r,v])=>rs(r,-v));S.prop=S.prop||{};S.prop[k]=(S.prop[k]||0)+1;log(`${S.pc.name} ${P.n.toLowerCase()} satın aldı.`);sfx('coin');buzz('ok');render();}
+function propYear(L){const pr=S.prop||{};let got={};Object.entries(pr).forEach(([k,n])=>{const P=PROP[k];if(!P||!n)return;if(chance(P.risk[1])){if(chance(40)){pr[k]--;L.push(`<span class="bad">${P.ic} ${P.risk[0]} (mülk kaybedildi)</span>`);}else L.push(`<span class="bad">${P.ic} ${P.risk[0]} Bu yıl gelir yok.</span>`);return;}Object.entries(P.y).forEach(([r,v])=>{got[r]=(got[r]||0)+v*n;});});
+ Object.entries(got).forEach(([r,v])=>{if(r==='bilgi')vrs(r,v);else rs(r,v);});if(Object.keys(got).length)L.push(`Mülklerinden gelir: ${Object.entries(got).map(([r,v])=>`+${v} ${LB[r].toLowerCase()}`).join(', ')}.`);}
+
+/* ---- çağa özgü fırsatlar ---- */
+const EOPP=[
+ {id:'okul',n:'Çocuğunu okut',ic:'kitap',d:'Mektep, medrese ya da okul',cost:10,w:3,cd:2,cond:()=>S.era<5?'Çağ: Demir Çağı':!S.kids.some(k=>k.alive&&k.age>=6&&k.age<=16)?'Okul çağında çocuk yok':S.res.hazine<6?'6 hazine gerekli':null,run:()=>{const ks=S.kids.filter(k=>k.alive&&k.age>=6&&k.age<=16);const okul=S.era>=10?'okula':S.era>=9?'rüştiyeye':S.era>=7?'medreseye':'bir hocanın yanına';
+  scene({icon:'📚',art:'council',title:'Çocuğunu okut',text:`Hangi çocuğunu ${okul} göndereceksin? (6 hazine)`,choices:ks.slice(0,4).map(k=>({t:`${k.name} (${k.age})`,html:face(k,40),sub:`Zeka ${k.sk.zeka} · Karizma ${k.sk.karizma}`,f:()=>{rs('hazine',-6);k.sk.zeka=Math.min(10,k.sk.zeka+2);k.sk.karizma=Math.min(10,k.sk.karizma+1);k.edu=(k.edu||0)+1;k.sevgi=clamp(k.sevgi+5,0,100);return {text:`${esc(k.name)} ${okul} başladı. Okuyup yazmayı, hesap yapmayı öğreniyor.`};}})).concat([{t:'Vazgeç',f:()=>{cancelOpp();return null;}}])});}},
+ {id:'cesme',n:'Çeşme yaptır',ic:'kuyu',d:'Hayrat: köyün susuzluğunu gider',cost:10,w:2,cd:6,cond:()=>S.era<6?'Çağ: Klasik Çağ':S.res.hazine<10?'10 hazine gerekli':null,run:()=>report('⛲','Çeşme',()=>{rs('hazine',-10);rs('itibar',7);ch('vicdan',6);S.vil.huzur=clamp(S.vil.huzur+3,0,100);return 'Kitabesinde adın yazılı bir çeşme. Gelip geçen herkes sana dua ediyor.';})},
+ {id:'vakif',n:'Vakıf kur',ic:'adak',d:'Medrese, imaret ya da hastane',cost:15,w:2,cd:12,cond:()=>S.era<7||S.era>9?'Bu çağda yok':S.res.hazine<30?'30 hazine gerekli':null,run:()=>report('🕌','Vakıf',()=>{rs('hazine',-30);rs('itibar',16);S.vil.huzur=clamp(S.vil.huzur+6,0,100);vrs('bilgi',10);S.flags.vakif=(S.flags.vakif||0)+1;S.legacy.push({y:S.year,t:`${S.pc.name} bir vakıf kurdu`});return 'Vakfiyen kadı sicillerine kaydedildi. Yüzyıllar boyunca adın anılacak.';})},
+ {id:'sefer',n:'Sefere katıl',ic:'kilic',d:'Hükümdarın ordusunda: ganimet ve şan',cost:30,w:2,cd:3,cond:()=>S.era<5||S.era>9?'Bu çağda yok':S.pc.age>55?'Çok yaşlısın':null,run:()=>{const p0=clamp(55+eff('guc')*3,10,88);scene({icon:'⚔️',art:'war',title:'Sefer',text:'Davullar çaldı, ordu toplanıyor. Gidersen aylarca uzakta kalacaksın.',choices:[{t:'Katıl',pct:p0,f:()=>{if(chance(p0)){rs('hazine',ri(8,18));rs('itibar',10);if(S.realm)adj(S.realm,'favor',10);return {text:'Zaferle döndün; ganimetin ve şanın büyük.'};}if(chance(15)){S.pc.st.saglik=0;S.pc.cause='Seferde şehit düştü';return {text:'<b class="bad">Seferden dönemedin.</b>'};}return {text:'Sefer kötü bitti. '+injure(1)};}},{t:'Bedel ödeyip gitme',sub:'−8 hazine',dis:S.res.hazine<8,f:()=>{rs('hazine',-8);return {text:'Yerine bir başkası gitti.'};}}]});}},
+ {id:'dava',n:'Mahkemede dava aç',ic:'meclis',d:'Komşuyla arazi anlaşmazlığı',cost:10,w:2,cd:4,cond:()=>S.era<6?'Çağ: Klasik Çağ':null,run:()=>{const p0=clamp(40+eff('zeka')*4+eff('karizma')*2,10,90);scene({icon:'⚖️',art:'council',title:S.era>=9?'Mahkeme':S.era>=7?'Kadı mahkemesi':'Vali mahkemesi',text:'Komşun, babandan kalma bir tarlanın kendisine ait olduğunu iddia ediyor.',choices:[{t:'Tanık ve belge getir',pct:p0,f:()=>{if(chance(p0)){rs('hazine',8);S.prop=S.prop||{};S.prop.tarla=(S.prop.tarla||0)+1;return {text:'Hâkim lehine karar verdi; tarla senin.'};}rs('itibar',-3);return {text:'Dava kaybedildi.'};}},{t:'Hâkime hediye gönder',pct:70,f:()=>{rs('hazine',-6);ch('vicdan',-8);if(chance(70)){S.prop=S.prop||{};S.prop.tarla=(S.prop.tarla||0)+1;return {text:'Karar lehine çıktı.'};}rs('itibar',-10);return {text:'Rüşvet ortaya çıktı, rezil oldun.'};}},{t:'Uzlaş',f:()=>{rs('itibar',2);return {text:'Tarlayı paylaştınız.'};}}]});}},
+ {id:'sehir',n:'Büyük şehre yolculuk',ic:'harita',d:'Başkenti gör, bağlantı kur',cost:20,w:2,cd:4,cond:()=>S.era<5?'Çağ: Demir Çağı':S.res.hazine<5?'5 hazine gerekli':null,run:()=>report('🏙️','Başkent',()=>{rs('hazine',-5);vrs('bilgi',8);sk('karizma',1);if(S.realm)adj(S.realm,'favor',4);const city=S.year<330?(S.year<-330?'Sardes':'Efes'):S.year<1453?(S.year<1077?'Konstantinopolis':'Konya'):S.year<1923?'İstanbul':'Ankara';return `${city}’ye gittin. Saraylar, çarşılar, limanlar. Döndüğünde kafanda yeni fikirler, cebinde yeni tanıdıklar vardı.`;})},
+ {id:'timar',n:'Tımar iste',ic:'tarla',d:'Sancakbeyinden dirlik: toprak karşılığı askerlik',cost:15,w:3,cd:6,cond:()=>S.era!==8?'Sadece Osmanlı tımar düzeninde':S.flags.timar?'Zaten tımarın var':!S.realm||S.realm.favor<15?'Saray lütfu 15 gerekli':null,run:()=>report('🌾','Tımar',()=>{S.flags.timar=1;S.prop=S.prop||{};S.prop.tarla=(S.prop.tarla||0)+2;rs('itibar',6);return 'Berat çıktı: artık bir tımar sahibisin. Köylülerin öşrü senin; savaşta atlı ve silahlı olarak sefere çıkmak zorundasın.';})},
+ {id:'gazete',n:'Gazete çıkar',ic:'kitap',d:'Kamuoyu, itibar, risk',cost:15,w:2,cd:5,cond:()=>S.era<9?'Çağ: Modernleşme':S.res.hazine<12?'12 hazine gerekli':null,run:()=>{scene({icon:'📰',art:'sanayi',title:'Gazete',text:'İlk sayı için manşeti seç.',choices:[{t:'Yerel haberler ve ilanlar',f:()=>{rs('hazine',-12);rs('itibar',6);S.prop=S.prop||{};S.prop.matbaa=(S.prop.matbaa||0)+(S.tech.matbaa?1:0);return {text:'Gazeten her kahvede okunuyor.'};}},{t:'Yönetimi eleştiren yazılar',pct:45,f:()=>{rs('hazine',-12);if(chance(45)){rs('itibar',14);if(S.realm)adj(S.realm,'claim',6,0,100);return {text:'Halk yazılarını sevdi; adın her yerde.'};}if(S.realm)adj(S.realm,'favor',-20);return {text:'Gazeten kapatıldı ve uyarı aldın.'};}}]});}},
+ {id:'goc',n:'Ailenden biri gurbete',ic:'harita',d:'Büyük şehre ya da yurt dışına işçi',cost:5,w:2,cd:8,cond:()=>S.era<10?'Çağ: Modern':!S.fam.some(m=>m.alive&&m.age>=18&&m.age<=40&&BLOOD.includes(relOf(m)))?'Uygun akraba yok':null,run:()=>{const m=S.fam.filter(m=>m.alive&&m.age>=18&&m.age<=40&&BLOOD.includes(relOf(m)))[0];report('🚆','Gurbet',()=>{m.left=true;m.alive=false;S.branches.push({name:m.name,rel:relOf(m),why:'gurbete gitti',y:S.year});S.flags.havale=(S.flags.havale||0)+1;return `${m.name} trene bindi. Bundan sonra her yıl havale gönderecek.`;});}}];
+EOPP.forEach(o=>OPPS.push(o));
+['urus','ceylan'].forEach(id=>{const o=OPPS.find(x=>x.id===id);if(o){const c0=o.cond;o.cond=()=>S.era>=7?'Bu çağda büyük av yok':c0();}});
+
+/* ---- saray kademeleri: vezir ve sadrazam ---- */
+Object.assign(OFF,{vezir:{n:()=>S.era>=8?'Kubbealtı Veziri':S.era>=7?'Vezir':S.era>=9?'Nazır':'Kralın Danışmanı',d:'Divan üyesi: her yıl hazine ve taht hakkı; yılda +1 hamle',need:()=>{const G=S.realm;return !G.office||['vezir','sadrazam'].includes(G.office)?'Önce başka bir makamda bulun':G.favor<45?'Lütuf 45 gerekli':null;}},
+ sadrazam:{n:()=>S.era>=10?'Başbakan':S.era>=8?'Sadrazam':S.era>=7?'Büyük Vezir':'Başvezir',d:'Devletin ikinci adamı: büyük gelir, +2 hamle. Lütuf düşerse hayatın tehlikede',need:()=>{const G=S.realm;return G.office!=='vezir'?'Önce vezir ol':G.favor<65?'Lütuf 65 gerekli':null;}}});
+makamScene=function(){const G=S.realm;return {icon:'🏛️',art:'throne',title:'Sarayda makam',text:`${kT(G.king)} ${esc(G.king.name)} karşısındasın. ${G.office?`Şu anki makamın: <b>${OFF[G.office].n()}</b>. Daha yükseğini isteyebilirsin.`:'Hangi makamı isteyeceksin?'} Şans lütfuna ve yeteneğine bağlı.`,choices:Object.entries(OFF).filter(([k])=>k!==G.office&&!(G.modern&&k==='komutan')).map(([k,O])=>{const sk2=k==='komutan'?eff('guc'):k==='kahya'?eff('zeka'):eff('karizma');const p=clamp(20+G.favor/1.5+sk2*4-(k==='sadrazam'?20:k==='vezir'?10:0),5,92);const why=O.need?O.need():(G.office&&!['vezir','sadrazam'].includes(k)?null:null);
+ return {t:O.n(),sub:O.d,pct:why?null:p,dis:!!why,why,f:()=>{useAP();if(chance(p)){G.office=k;adj(G,'claim',k==='sadrazam'?15:k==='vezir'?8:5,0,100);log(`${S.pc.name} ${O.n()} oldu.`);sfx('good');return {art:'throne',text:`Artık <b>${O.n()}</b> sensin.${k==='sadrazam'?' Devletin mührü senin elinde. Ama unutma: bu makamdan pek azı yatağında öldü.':''}`};}adj(G,'favor',-5);return {text:'Hükümdar başka birini seçti (lütuf −5).'};}};}).concat([{t:'Vazgeç',f:()=>null}])};};
+{const a=CACT.find(x=>x.id==='makam');a.cond=()=>{const G=S.realm;return G.office==='sadrazam'?'En yüksek makamdasın':G.favor<20?'Lütuf en az 20 olmalı':null;};a.d='Muhafız başı, kâhya, vezir, sadrazam...';}
+{const _am=apMax;apMax=function(){const G=S.realm;return _am()+(G.office==='vezir'?1:G.office==='sadrazam'?2:0);};}
+{const _ny2=nobleYear;nobleYear=function(L){_ny2(L);const G=S.realm;if(!G||!S.lead||G.you)return;
+ if(G.office==='vezir'){rs('hazine',5+S.era);adj(G,'claim',2,0,100);L.push(`Vezirlik: ${5+S.era} hazine.`);}
+ if(G.office==='sadrazam'){rs('hazine',10+S.era*2);adj(G,'claim',3,0,100);L.push(`Sadrazamlık: ${10+S.era*2} hazine.`);if(G.favor<25&&chance(30)&&!S.fast)scene(EV_azil);}};}
+function EV_azil(){const G=S.realm;return {icon:'📜',art:'throne',title:'Mühr-i hümayun geri istendi',text:`${kT(G.king)} ${esc(G.king.name)} senden bıktı. Rakiplerin fırsat kollamış: mührü geri istiyor ve hakkında ağır suçlamalar var.`,choices:[
+ {t:'Mührü teslim et, sürgüne razı ol',f:()=>{G.office=null;adj(G,'favor',10);rs('itibar',-10);return {text:'Uzak bir kasabaya sürüldün. Canın kurtuldu.'};}},
+ {t:'Hükümdarın huzuruna çık, savun',pct:clamp(30+eff('karizma')*5,5,80),f:()=>{if(chance(30+eff('karizma')*5)){adj(G,'favor',30);return {text:'Sözlerin hükümdarı ikna etti. Makamın yerinde.'};}if(chance(50)){S.pc.st.saglik=0;S.pc.cause='Siyaseten katledildi';log(`${S.pc.name} siyaseten katledildi.`);return {text:'<b class="bad">Ferman çıktı. Cellat kapıdaydı.</b>'};}G.office=null;rs('hazine',-Math.floor(S.res.hazine*.7));return {text:'Mallarına el kondu, makamın gitti. Ama yaşıyorsun.'};}},
+ {t:'Kaç',sub:'Sürgün',f:()=>doExile()}]};}
+
+/* ---- kanca ve arayüz ---- */
+{const _ry5=realmYear;realmYear=function(L){_ry5(L);try{propYear(L);if(S.flags.havale){rs('hazine',4*S.flags.havale);L.push(`Gurbetteki akrabalarından ${4*S.flags.havale} hazine havale geldi.`);}if(S.flags.timar&&S.era!==8)S.flags.timar=0;if(!fociOk(S.focus)){const k=Object.keys(FOCI).find(fociOk);if(k){S.focus=k;L.push(`Çağ değişti: yeni işin ${FOCI[k].n}.`);}}}catch(e){console.error(e);}};}
+{const _th4=tabHtml;tabHtml=function(){let h=_th4.apply(this,arguments);if(tab==='reis'&&S&&!S.over&&S.pc.age>=14){h=h.replace('<div class="card" style="margin-top:12px"><h3>Evin</h3>',propCard()+'<div class="card" style="margin-top:12px"><h3>Evin</h3>');if(S.pc.rank)h=h.replace('Bu işte ',`Rütben: <b>${esc(S.pc.rank)}</b> · Bu işte `);}return h;};}
+document.addEventListener('click',e=>{const b=e.target.closest&&e.target.closest('[data-prop]');if(b&&!b.disabled&&!cur)propBuy(b.dataset.prop);},true);
+{const _rn3=render;render=function(){const r=_rn3.apply(this,arguments);try{const fb=document.getElementById('focusbtn');if(fb)fb.onclick=()=>{if(cur)return;scene({icon:'🛠️',art:'camp',title:'Yıllık işin',text:'Bu iş sen değiştirene kadar her yıl sürer; yaptıkça ustalaşır, rütbe atlarsın. Her çağın kendine has meslekleri var.',choices:Object.entries(FOCI).filter(([k,F])=>!F.era||(S.era>=F.era[0]&&S.era<=F.era[1])).map(([k,F])=>{const why=F.need&&F.need();return {t:`${F.n}${S.focus===k?' ✓':''}`,sub:F.d+(RANKS[k]?` · rütbeler: ${RANKS[k][0]} → ${RANKS[k][RANKS[k].length-1]}`:''),dis:!!why,why,f:()=>{if(S.focus!==k)S.pc.rank='';S.focus=k;return null;}};})});pump();};}catch(e){}return r;};}
+{const _sk=skipTo;skipTo=function(ep){const pr=Object.assign({},S.prop||{});_sk(ep);S.prop={};Object.entries(pr).forEach(([k,n])=>{const m=Math.floor(n*.5);if(m>0&&PROP[k]&&S.era>=PROP[k].e)S.prop[k]=m;});if(!fociOk(S.focus)){const k=Object.keys(FOCI).find(fociOk);if(k)S.focus=k;}save();render();};}
+ACH.push(['vezir','Vezir','Vezir ol',()=>S.realm&&S.realm.office==='vezir'],['sadrazam','İkinci adam','Sadrazam ol',()=>S.realm&&S.realm.office==='sadrazam'],['mulk5','Mülk sahibi','5 mülke sahip ol',()=>Object.values(S.prop||{}).reduce((a,b)=>a+b,0)>=5],['vakif','Hayır sahibi','Bir vakıf kur',()=>!!S.flags.vakif],['rutbe','Zirvede','Bir meslekte en yüksek rütbeye ulaş',()=>S.pc.rank&&Object.values(RANKS).some(r=>r[r.length-1]===S.pc.rank)]);
+/* ---- çağa uymayan eski fırsatları kapat, açıklamaları çağa göre değiştir ---- */
+[['obsidyen',4],['sifaot',5],['sanat',4],['adak',5],['tuzak',5],['kopek',3],['genc',5],['gobekli',2],['ceylan',6],['urus',6]].forEach(([id,mx])=>{const o=OPPS.find(x=>x.id===id);if(o){const c0=o.cond;o.cond=()=>S.era>mx?'Bu çağda yok':c0();}});
+{const g=(o,k,fn)=>{const v0=o[k];Object.defineProperty(o,k,{get(){return (S&&fn(v0))||v0;},configurable:true});};
+ g(FOCI.ciftci,'d',v=>S.era>=5?'Buğday, arpa, bağ ve bahçe. Tarlaların hasadı ikiye katlanır':null);
+ g(FOCI.balik,'d',v=>S.era>=5?'Göl, ırmak ya da deniz kıyısında balıkçılık. Düzenli yiyecek, boğulma riski':null);
+ g(FOCI.coban,'d',v=>S.era>=6?'Koyun, keçi ve sığır sürüleri. Et, süt, yün; kurt ve hırsız tehlikesi':null);
+ g(FOCI.aile,'d',v=>S.era>=6?'Çocukların eğitimi, yaşlıların bakımı, evin düzeni. Huzur ve sevgi getirir':null);
+ const H=OPPS.find(x=>x.id==='hizmet');if(H){g(H,'n',v=>S.era>=6?'Yöneticiye hizmet et':null);g(H,'d',v=>S.era>=6?`${leaderTitle()} güvenini kazan, itibar`:null);}
+ const B=OPPS.find(x=>x.id==='bilge');if(B){g(B,'n',v=>S.era>=9?'Okumaya vakit ayır':S.era>=6?'Bir âlimden ders al':null);}
+ const Gc=OPPS.find(x=>x.id==='gece');if(Gc)g(Gc,'d',v=>S.era>=6?'Kaçakçılık, hırsızlık, şantaj':null);
+ const M=OPPS.find(x=>x.id==='misafir');if(M)g(M,'d',v=>S.era>=6?'Uzak bir şehirden gelen yolcular kapında':null);
+ const Y=OPPS.find(x=>x.id==='yetim');if(Y)g(Y,'d',v=>S.era>=6?'Ailesi ölmüş bir çocuk sokakta':null);
+ const I=OPPS.find(x=>x.id==='ittifak');if(I)g(I,'d',v=>S.era>=6?'Ocaktan birini nüfuzlu bir aileyle evlendir':null);
+ const Kv=OPPS.find(x=>x.id==='kervan');if(Kv)g(Kv,'d',v=>S.era>=9?'Mal yükle, demiryolu ya da limanla uzak pazara sat':S.era>=6?'Mal yükle, uzak şehirlerin pazarına götür':null);}
 
 render();
 </script>
