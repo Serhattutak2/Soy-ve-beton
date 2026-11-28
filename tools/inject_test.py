@@ -12,7 +12,7 @@ setInterval(__show,500);
 tail=r"""<script>
 __log('script sonu, ekran: '+(document.getElementById('go')?'başlangıç':'?')+' sayfa='+document.documentElement.scrollHeight+' pencere='+innerHeight);
 function __step(n,f,ms){setTimeout(function(){try{f();__log('OK '+n);}catch(e){__log('ERR '+n+': '+e+(e.stack?' '+String(e.stack).slice(0,200):''));}},ms);}
-__step('senaryo+başla',function(){document.querySelector('[data-sc=truva]').click();document.getElementById('go').click();},6000);
+__step('senaryo+başla',function(){document.querySelector('[data-sc=osmanli]').click();document.getElementById('go').click();},6000);
 __step('seçimler',function(){for(var i=0;i<6;i++){var b=document.querySelector('#sheet .choice:not([disabled])');if(b)b.click();}__log('yıl='+S.year+' modal='+!!cur);},11000);
 __step('bir yıl',function(){var b=document.querySelector('[data-live]')||null;liveYear(1);},16000);
 __step('seçimler2',function(){for(var i=0;i<12;i++){var b=document.querySelector('#sheet .choice:not([disabled])');if(b)b.click();}__log('yıl='+S.year);},21000);
